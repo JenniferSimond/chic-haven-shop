@@ -38,7 +38,11 @@ Chic Haven Boutique is a full-stack e-commerce web application built with the PE
 
 ## Database Structure & Schema
 
-![photo](./images/chicHavenDB.png)
+The database structure and schema was designed based on app requirements and user stories. The schema was created with dbdiagram.io.
+
+![photo](./images/databaseDiagram.png)
+
+Link to schema 🔗 [here](https://dbdiagram.io/d/Chic-Haven-Database-669ffe328b4bb5230e262715)
 
 ## Design Process
 
