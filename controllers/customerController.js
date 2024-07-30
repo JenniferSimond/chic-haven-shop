@@ -9,6 +9,8 @@ const {
   fetchCustomersByID,
   updateCustomerById,
   deleteCustomerById,
+  authenticateCustomer,
+  findUserByToken,
 } = require('../database/index');
 
 // Customer Signup
@@ -33,7 +35,19 @@ router.get('/auth/me', async (req, res, next) => {
   } catch (error) {}
 });
 
-// ADD LOGIN MODEL
+// LOGIN
+router.post('/auth/login', async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const authenticatedCustomer = await authenticateCustomer({
+      email,
+      password,
+    });
+    res.status(200).json(authenticatedCustomer);
+  } catch (error) {
+    next(error);
+  }
+});
 
 // GET ALL CUSTOMERS
 router.get('/', async (req, res, next) => {

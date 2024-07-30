@@ -1,5 +1,12 @@
 // index.js
 
+// AUTH
+const {
+  authenticateAdmin,
+  authenticateCustomer,
+  findUserByToken,
+} = require('./models/auth');
+
 // ADMINS
 const {
   createAdminRoles,
@@ -11,7 +18,6 @@ const {
 } = require('./models/admin');
 
 // CUSTOMERS
-
 const {
   createCustomer,
   fetchCustomers,
@@ -21,13 +27,17 @@ const {
 } = require('./models/customer');
 
 module.exports = {
+  // AUTH
+  authenticateAdmin,
+  authenticateCustomer,
+  findUserByToken,
+  // ADMINS
   createAdminRoles,
   createAdmin,
   fetchAdmins,
   fetchAdminByID,
   updateAdminById,
   deleteAdminById,
-
   // CUSTOMERS
   createCustomer,
   fetchCustomers,

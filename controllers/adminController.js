@@ -1,3 +1,4 @@
+// Admin Controller
 const express = require('express');
 const router = express('router');
 
@@ -7,8 +8,11 @@ const {
   fetchAdminByID,
   updateAdminById,
   deleteAdminById,
+  authenticateAdmin,
+  findUserByToken,
 } = require('../database/index');
 
+// REGISTER
 router.post('/register', async (req, res, next) => {
   try {
     const { last_name, first_name, email, password, role } = req.body;
@@ -25,6 +29,21 @@ router.post('/register', async (req, res, next) => {
   }
 });
 
+// LOGIN
+router.post('/auth/login', async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const authenticatedAdmin = await authenticateAdmin({
+      email,
+      password,
+    });
+    res.status(200).json(authenticatedAdmin);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// GET ALL ADMINS
 router.get('/', async (req, res, next) => {
   try {
     const admins = await fetchAdmins();
@@ -37,6 +56,7 @@ router.get('/', async (req, res, next) => {
   }
 });
 
+//GET ADMIN BY ID
 router.get('/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -50,6 +70,7 @@ router.get('/:id', async (req, res, next) => {
   }
 });
 
+// UPDATE ADMIN
 router.patch('/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -64,6 +85,7 @@ router.patch('/:id', async (req, res, next) => {
   }
 });
 
+// DELETE ADMIN
 router.delete('/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
