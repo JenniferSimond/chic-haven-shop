@@ -11,8 +11,10 @@ const app = express();
 app.use(express.json());
 
 const admins = require('./controllers/adminController');
+const customers = require('./controllers/customerController');
 
-app.use('/api/admin', admins);
+app.use('/api/admins', admins);
+app.use('/api/customers', customers);
 
 const init = async () => {
   try {

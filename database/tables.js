@@ -1,20 +1,12 @@
-const pg = require('pg');
-const dotenv = require('dotenv').config();
-const secret = process.env.JWT_SECRET || 'shhhlocal';
-
-const pool = new pg.Pool({
-  connectionString: process.env.DATABASE_URL,
-  max: 20, // max users at once
-  idleTimeoutMillis: 3000, // How long client can sit idle in pool and not be checked out before connected
-  connectionTimeoutMillis: 2000, // How long it takes before timeout when connecting to client
-  maxUses: 7500,
-});
+const pool = require('./databaseConfig');
 
 const createTables = async () => {
   const SQL = `
+
+    CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
     DROP TABLE IF EXISTS admins CASCADE;
     DROP TABLE IF EXISTS admin_roles CASCADE;
-    DROP TABLE IF EXISTS customer_permissions CASCADE;
     DROP TABLE IF EXISTS customers CASCADE;
     DROP TABLE IF EXISTS customer_addresses CASCADE;
     DROP TABLE IF EXISTS products CASCADE;
@@ -59,21 +51,15 @@ const createTables = async () => {
 
   -- CUSTOMER 
 
-    CREATE TABLE customer_permissions(
-      id UUID PRIMARY KEY,
-      customer_status customer_status DEFAULT 'active',
-      review_permissions review_permissions DEFAULT 'allowed',
-      created_at TIMESTAMP DEFAULT current_timestamp,
-      modified_at TIMESTAMP DEFAULT current_timestamp
-    );
 
     CREATE TABLE customers(
       id UUID PRIMARY KEY,
       last_name VARCHAR(50),
       first_name VARCHAR(50),
-      email_address VARCHAR(100) UNIQUE NOT NULL,
-      password text,
-      permissions_id UUID REFERENCES customer_permissions(id) ON DELETE CASCADE,
+      email VARCHAR(100) UNIQUE NOT NULL,
+      password VARCHAR(255) NOT NULL,
+      customer_status customer_status DEFAULT 'active',
+      review_permissions review_permissions DEFAULT 'allowed',
       created_at TIMESTAMP DEFAULT current_timestamp,
       modified_at TIMESTAMP DEFAULT current_timestamp
     );
@@ -137,7 +123,7 @@ const createTables = async () => {
 
     CREATE TABLE carts(
       id UUID PRIMARY KEY,
-      customer_id UUID REFERENCES customer_permissions(id) ON DELETE CASCADE,
+      customer_id UUID REFERENCES customers(id) ON DELETE CASCADE,
       created_at TIMESTAMP DEFAULT current_timestamp,
       modified_at TIMESTAMP DEFAULT current_timestamp
     );
@@ -158,7 +144,7 @@ const createTables = async () => {
 
     CREATE TABLE wishlists(
       id UUID PRIMARY KEY,
-      customer_id UUID REFERENCES customer_permissions(id) ON DELETE CASCADE,
+      customer_id UUID REFERENCES customers(id) ON DELETE CASCADE,
       created_at TIMESTAMP DEFAULT current_timestamp,
       modified_at TIMESTAMP DEFAULT current_timestamp
     );
@@ -226,6 +212,24 @@ const createTables = async () => {
 
   -- CUSTOMER ASSOCIATION TRIGGER
 
+  CREATE OR REPLACE FUNCTION create_customer_records() 
+  RETURNS TRIGGER 
+  AS $$
+  BEGIN
+    INSERT INTO carts (id, customer_id, created_at, modified_at)
+    VALUES (uuid_generate_v4(), NEW.id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+    
+    INSERT INTO wishlists (id, customer_id, created_at, modified_at)
+    VALUES (uuid_generate_v4(), NEW.id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+    RETURN NEW;
+  END;
+  $$ LANGUAGE plpgsql;
+
+  CREATE TRIGGER after_customer_create
+  AFTER INSERT ON customers
+  FOR EACH ROW
+  EXECUTE FUNCTION create_customer_records();
   `;
 
   let client; // creating client variable
@@ -244,6 +248,5 @@ const createTables = async () => {
 };
 
 module.exports = {
-  pool,
   createTables,
 };

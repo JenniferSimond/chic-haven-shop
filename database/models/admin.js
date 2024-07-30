@@ -1,10 +1,31 @@
 // ADMIN MODELS
 
-const pool = require('../tables').pool;
+const pool = require('../databaseConfig');
 const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const secret = process.env.JWT_SECRET || 'shhhlocal';
+
+// CREATE ADMIN ROLE
+
+const createAdminRoles = async () => {
+  const client = await pool.connect();
+  const SQL = `
+        INSERT INTO admin_roles(id, admin_type, created_at, modified_at)
+        VALUES
+            ($1, 'admin', current_timestamp, current_timestamp),
+            ($2, 'site_admin', current_timestamp, current_timestamp),
+            ($3, 'super_admin', current_timestamp, current_timestamp)
+    `;
+
+  try {
+    await client.query(SQL, [uuidv4(), uuidv4(), uuidv4()]);
+    console.log('Admin Roles Successfully Created!');
+  } catch (error) {
+    console.error('Error Creating Roles', error.stack);
+  } finally {
+    client.release();
+  }
+};
 
 // LOGIN
 
@@ -53,16 +74,125 @@ const createAdmin = async ({
 
 // FETCH ALL ADMINS
 
-const fetchAdmins = async () => {};
+const fetchAdmins = async () => {
+  const client = await pool.connect();
+  try {
+    const SQL = `
+      SELECT * FROM admins
+    `;
+
+    const response = await client.query(SQL);
+    return response.rows;
+  } catch (error) {
+    console.error('Error fetching admins', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+};
 
 // FETCH ADMIN BY ID
 
-const fetchAdminByID = async () => {};
+const fetchAdminByID = async (id) => {
+  const client = await pool.connect();
+  try {
+    const SQL = `
+  SELECT * FROM admins WHERE id = $1
+`;
+
+    const response = await client.query(SQL, [id]);
+    return response.rows[0];
+  } catch (error) {
+    console.error('Error Fetching Admin', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+};
 
 // UPDATE ADMIN BY ID
 
+const updateAdminById = async (id, updatedAdminData) => {
+  const client = await pool.connect();
+  try {
+    const { last_name, first_name, email, password, role } = updatedAdminData;
+
+    let roleId;
+    if (role) {
+      // Fetch the role ID
+      const roleQuery = 'SELECT id FROM admin_roles WHERE admin_type = $1';
+      const roleResult = await client.query(roleQuery, [role]);
+
+      if (roleResult.rows.length === 0) {
+        console.error(`Role ${role} not found in database`);
+        throw new Error('Invalid role');
+      }
+      roleId = roleResult.rows[0].id;
+    }
+
+    // Hash the password if provided
+    let hashedPassword = password;
+    if (password) {
+      hashedPassword = await bcrypt.hash(password, 10);
+    }
+
+    const SQL = `
+      UPDATE admins
+      SET
+        last_name = COALESCE($2, last_name),
+        first_name = COALESCE($3, first_name),
+        email = COALESCE($4, email),
+        password = COALESCE($5, password),
+        role_id = COALESCE($6, role_id),
+        modified_at = current_timestamp
+      WHERE id = $1
+      RETURNING *;
+    `;
+
+    const response = await client.query(SQL, [
+      id,
+      last_name,
+      first_name,
+      email,
+      hashedPassword,
+      roleId,
+    ]);
+
+    if (response.rows.length === 0) {
+      throw new Error(`Admin with ID ${id} not found`);
+    }
+
+    return response.rows[0];
+  } catch (error) {
+    console.error('Error updating admin', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+};
+
 // DELETE ADMIN BY ID
 
+const deleteAdminById = async (id) => {
+  const client = await pool.connect();
+  try {
+    const SQL = `
+      DELETE FROM admins WHERE id = $1
+    `;
+    await client.query(SQL, [id]);
+  } catch (error) {
+    console.error('Error deleting admin', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+};
+
 module.exports = {
+  createAdminRoles,
   createAdmin,
+  fetchAdmins,
+  fetchAdminByID,
+  updateAdminById,
+  deleteAdminById,
 };
