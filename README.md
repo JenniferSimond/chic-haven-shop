@@ -61,8 +61,6 @@ The project UI/UX design goal was to create a beautiful, inuitive application th
 
 #### 👉🏽 Check Out My Figma File 🔗 [here](https://www.figma.com/design/Jx7WIUytXCqJiObwlrSZNk/Chic-Haven?node-id=0-1&t=fiJwmHDIfXfUwXGV-1)
 
-![photo](./images/databaseDiagram.png)
-
 # Hi-Fi
 
 ![photo](./images/hi-fi.png)
