@@ -1,6 +1,6 @@
 // Admin Controller
 const express = require('express');
-const router = express('router');
+const router = express.Router();
 
 const {
   createAdmin,
@@ -9,11 +9,12 @@ const {
   updateAdminById,
   deleteAdminById,
   authenticateAdmin,
-  findUserByToken,
 } = require('../database/index');
 
+const { isAuthenticated } = require('./shared/userAuth');
+
 // REGISTER
-router.post('/register', async (req, res, next) => {
+router.post('/register', isAuthenticated, async (req, res, next) => {
   try {
     const { last_name, first_name, email, password, role } = req.body;
     const newAdmin = await createAdmin({

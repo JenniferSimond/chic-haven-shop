@@ -26,6 +26,15 @@ const {
   deleteCustomerById,
 } = require('./models/customer');
 
+// CATEGORIES
+const {
+  createCategory,
+  fetchCategories,
+  fetchCategoryById,
+  updateCategoryByID,
+  deleteCategoryById,
+} = require('./models/categories');
+
 module.exports = {
   // AUTH
   authenticateAdmin,
@@ -44,4 +53,10 @@ module.exports = {
   fetchCustomersByID,
   updateCustomerById,
   deleteCustomerById,
+  // CATEGORIES
+  createCategory,
+  fetchCategories,
+  fetchCategoryById,
+  updateCategoryByID,
+  deleteCategoryById,
 };

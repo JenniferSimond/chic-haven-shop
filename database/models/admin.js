@@ -9,15 +9,15 @@ const jwt = require('jsonwebtoken');
 
 const createAdminRoles = async () => {
   const client = await pool.connect();
-  const SQL = `
-        INSERT INTO admin_roles(id, admin_type, created_at, modified_at)
-        VALUES
-            ($1, 'admin', current_timestamp, current_timestamp),
-            ($2, 'site_admin', current_timestamp, current_timestamp),
-            ($3, 'super_admin', current_timestamp, current_timestamp)
-    `;
 
   try {
+    const SQL = `
+    INSERT INTO admin_roles(id, admin_type, created_at, modified_at)
+    VALUES
+        ($1, 'admin', current_timestamp, current_timestamp),
+        ($2, 'site_admin', current_timestamp, current_timestamp),
+        ($3, 'super_admin', current_timestamp, current_timestamp)
+`;
     await client.query(SQL, [uuidv4(), uuidv4(), uuidv4()]);
     console.log('Admin Roles Successfully Created!');
   } catch (error) {

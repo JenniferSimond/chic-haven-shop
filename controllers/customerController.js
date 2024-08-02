@@ -1,7 +1,12 @@
 // Customer Controller
 
 const express = require('express');
-const router = express('router');
+const router = express.Router();
+
+const {
+  isAuthenticated,
+  customerDataAuthorization,
+} = require('./shared/userAuth');
 
 const {
   createCustomer,
@@ -10,7 +15,6 @@ const {
   updateCustomerById,
   deleteCustomerById,
   authenticateCustomer,
-  findUserByToken,
 } = require('../database/index');
 
 // Customer Signup
@@ -29,12 +33,6 @@ router.post('/signup', async (req, res, next) => {
   }
 });
 
-// FINISH AUTH ME
-router.get('/auth/me', async (req, res, next) => {
-  try {
-  } catch (error) {}
-});
-
 // LOGIN
 router.post('/auth/login', async (req, res, next) => {
   try {
@@ -49,7 +47,7 @@ router.post('/auth/login', async (req, res, next) => {
   }
 });
 
-// GET ALL CUSTOMERS
+// GET ALL CUSTOMERS --> ADMINS ONLY
 router.get('/', async (req, res, next) => {
   try {
     const customers = await fetchCustomers();
@@ -63,43 +61,58 @@ router.get('/', async (req, res, next) => {
 });
 
 // GET CUSTOMER BY ID
-router.get('/:id', async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const customer = await fetchCustomersByID(id);
-    if (!customer) {
-      return res.json({ message: 'No Customer Found.' });
+router.get(
+  '/:id',
+  isAuthenticated,
+  customerDataAuthorization,
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const customer = await fetchCustomersByID(id);
+      if (!customer) {
+        return res.json({ message: 'No Customer Found.' });
+      }
+      res.json(customer);
+    } catch (error) {
+      next(error);
     }
-    res.json(customer);
-  } catch (error) {
-    next(error);
   }
-});
+);
 
 // UPDATE CUSTOMER BY ID
-router.patch('/:id', async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const updatedData = req.body;
-    const updatedCustomerDetails = await updateCustomerById(id, updatedData);
-    if (!updatedCustomerDetails) {
-      return res.status(404).json({ message: 'Customer Not Found' });
+router.patch(
+  '/:id',
+  isAuthenticated,
+  customerDataAuthorization,
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const updatedData = req.body;
+      const updatedCustomerDetails = await updateCustomerById(id, updatedData);
+      if (!updatedCustomerDetails) {
+        return res.status(404).json({ message: 'Customer Not Found' });
+      }
+      res.json(updatedCustomerDetails);
+    } catch (error) {
+      next(error);
     }
-    res.json(updatedCustomerDetails);
-  } catch (error) {
-    next(error);
   }
-});
+);
 
 // DELETE CUSTOMER
-router.delete('/:id', async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    await deleteCustomerById(id);
-    res.sendStatus(204);
-  } catch (error) {
-    next(error);
+router.delete(
+  '/:id',
+  isAuthenticated,
+  customerDataAuthorization,
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      await deleteCustomerById(id);
+      res.sendStatus(204);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 module.exports = router;

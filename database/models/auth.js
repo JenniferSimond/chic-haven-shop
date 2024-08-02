@@ -1,6 +1,4 @@
 // Auth Models
-
-const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const secret = process.env.JWT_SECRET || 'shhhlocal';
@@ -9,13 +7,14 @@ const pool = require('../databaseConfig');
 
 const authenticateAdmin = async ({ email, password }) => {
   const client = await pool.connect();
-
   try {
     const SQL = `
-      SELECT a.id, a.password, a.last_name, a.first_name, ar.admin_type
-      FROM admins a
-      JOIN admin_roles ar ON a.role_id = ar.id
-      WHERE a.email = $1;
+      SELECT 
+        at.*,
+        rt.admin_type
+      FROM admins at
+      LEFT JOIN admin_roles rt ON at.role_id = rt.id
+      WHERE at.email = $1;
     `;
 
     const response = await client.query(SQL, [email]);
@@ -34,24 +33,24 @@ const authenticateAdmin = async ({ email, password }) => {
       throw error;
     }
 
-    const adminToken = jwt.sign(
+    const token = jwt.sign(
       {
         id: admin.id,
-        role: 'employee',
+        role: admin.admin_type,
         admin_type: admin.admin_type,
       },
       secret,
-      { expiresIn: '1h' }
+      { expiresIn: '30m' }
     );
 
     return {
-      adminDetails: {
+      userDetails: {
         id: admin.id,
         last_name: admin.last_name,
         first_name: admin.first_name,
-        admin_type: admin.admin_type,
+        role: admin.admin_type,
       },
-      adminToken,
+      token,
     };
   } catch (error) {
     console.error('Error Authenticating Admin', error);
@@ -92,7 +91,7 @@ const authenticateCustomer = async ({ email, password }) => {
       throw error;
     }
 
-    const customerToken = jwt.sign(
+    const token = jwt.sign(
       {
         id: customer.id,
         role: 'customer',
@@ -104,14 +103,15 @@ const authenticateCustomer = async ({ email, password }) => {
     );
 
     return {
-      customerDetails: {
+      userDetails: {
         id: customer.id,
         last_name: customer.last_name,
         first_name: customer.first_name,
+        role: 'customer',
         customer_status: customer.customer_status,
         review_permissions: customer.review_permissions,
       },
-      customerToken,
+      token,
     };
   } catch (error) {
     console.error('Error Authenticating Customer', error);
@@ -125,10 +125,10 @@ const findUserByToken = async (token) => {
   try {
     const decoded = jwt.verify(token, secret);
     return decoded;
-  } catch (ex) {
-    const error = new Error('Not Authorized');
-    error.status = 401;
-    throw error;
+  } catch (error) {
+    const customError = new Error('Not Authorized');
+    customError.status = 401;
+    throw customError;
   }
 };
 

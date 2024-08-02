@@ -1,6 +1,14 @@
 # Chic Haven Store
 
-Chic Haven Boutique is a full-stack e-commerce web application built with the PERN stack (PostgreSQL, Express, React, Node.js). The project scope included project planning, system design, UI/UX design, and development. The application consists of a robust backend that is consumed by a storefront for customers and an admin portal for managing products, users, and orders. The storefront integrates Stripe for payment processing, and the layout is designed with Styled Components. The admin portal is built using Material UI for an enhanced user experience.
+Chic Haven Boutique is a full-stack e-commerce web application built with the PERN stack (PostgreSQL, Express, React, Node.js). The project scope included project planning, system design, UI/UX design, and development. The application consits of a robust backend that is consumed by a store front and admin portal. My personal goals for the project was to challenge myself and grow as a developer and novice designer by creating an appication that was beautiful, functional, and well built, showcasing my ability to own a project from conceptualization to deployment.
+
+New Skills Aquired:
+
+- Stripe
+- Material UI
+- YAML
+- Cors
+- Multer
 
 ## Table of Contents
 
@@ -13,8 +21,7 @@ Chic Haven Boutique is a full-stack e-commerce web application built with the PE
 - [Usage](#usage)
 - [API Endpoints](#api-endpoints)
 - [Deployment](#deployment)
-
-- [Live Demo](#demo)
+- [Live Demo](#live-demo)
 - [Contact](#contact)
 
 ## Features
@@ -40,10 +47,37 @@ Chic Haven Boutique is a full-stack e-commerce web application built with the PE
 
 The database structure and schema was designed based on app requirements and user stories. The schema was created with dbdiagram.io.
 
-Link to schema 🔗 [here](https://dbdiagram.io/d/Chic-Haven-Database-669ffe328b4bb5230e262715)
+#### 👉🏽 Check Out My Dbdiagram File 🔗 [here](https://dbdiagram.io/d/Chic-Haven-Database-669ffe328b4bb5230e262715)
+
 ![photo](./images/databaseDiagram.png)
 
 ## Design Process
+
+The project UI/UX design goal was to create a beautiful, inuitive application that had creative flare and kept accessability in mind. The design process entailed reviewing user stories to identify core app functionality, creating wire-frames (lo-fi, mid-fi, hi-fi).
+
+- Color Palette: Developed with Coolors.
+- Custome icons: Created using Canva, Adobe Illustrator, and Figma.
+- Product & App photos Images: Created with Midjourney with AI prompting.
+
+#### 👉🏽 Check Out My Figma File 🔗 [here](https://www.figma.com/design/Jx7WIUytXCqJiObwlrSZNk/Chic-Haven?node-id=0-1&t=fiJwmHDIfXfUwXGV-1)
+
+![photo](./images/databaseDiagram.png)
+
+# Hi-Fi
+
+![photo](./images/hi-fi.png)
+
+# Custom Assets
+
+![photo](./images/Assets.png)
+
+# Mid-Fi
+
+![photo](./images/mid-fi.png)
+
+# Mid-Fi
+
+![photo](./images/lo-fi.png)
 
 ## Installation
 
@@ -54,3 +88,5 @@ Link to schema 🔗 [here](https://dbdiagram.io/d/Chic-Haven-Database-669ffe328b
 ## Deployment
 
 ### YAML
+
+## Live Demo

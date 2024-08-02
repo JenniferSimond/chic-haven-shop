@@ -44,7 +44,7 @@ const fetchCustomers = async () => {
     const response = await client.query(SQL);
     return response.rows;
   } catch (error) {
-    console.error('Error fetching admins', error);
+    console.error('Error fetching customers', error);
     throw error;
   } finally {
     client.release();
@@ -63,7 +63,7 @@ const fetchCustomersByID = async (id) => {
     const response = await client.query(SQL, [id]);
     return response.rows[0];
   } catch (error) {
-    console.error('Error Fetching Admin', error);
+    console.error('Error fetching customer.', error);
     throw error;
   } finally {
     client.release();
@@ -109,13 +109,13 @@ const updateCustomerById = async (id, updatedCustomerData) => {
       last_name,
       first_name,
       email,
-      password,
+      hashedPassword || password,
       customer_status,
       review_permissions,
     ]);
 
     if (response.rows.length === 0) {
-      throw new Error(`Customer with ID ${id} not found`);
+      throw new Error('Customer not found');
     }
 
     return response.rows[0];
@@ -137,7 +137,7 @@ const deleteCustomerById = async (id) => {
       `;
     await client.query(SQL, [id]);
   } catch (error) {
-    console.error('Error deleting admin', error);
+    console.error('Error deleting customer', error);
     throw error;
   } finally {
     client.release();
