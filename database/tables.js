@@ -102,14 +102,6 @@ CREATE TABLE product_categories(
   modified_by UUID
 );
 
-CREATE TABLE product_inventory(
-  id UUID PRIMARY KEY,
-  quantity INTEGER,
-  is_deleted BOOLEAN DEFAULT FALSE, -- soft delete flag
-  created_at TIMESTAMP DEFAULT current_timestamp,
-  modified_at TIMESTAMP DEFAULT current_timestamp,
-  modified_by UUID
-);
     
 CREATE TABLE discounts(
   id UUID PRIMARY KEY,
@@ -123,13 +115,22 @@ CREATE TABLE discounts(
 CREATE TABLE products(
   id UUID PRIMARY KEY,
   name VARCHAR(100) UNIQUE NOT NULL,
-  SKU VARCHAR(255),
   description VARCHAR(255),
-  image VARCHAR(100),
-  category_id UUID REFERENCES product_categories(id) ON DELETE CASCADE,
-  inventory_id UUID REFERENCES product_inventory(id) ON DELETE CASCADE,
   price DECIMAL CHECK (price > 0),
+  image VARCHAR(100),
+  sku VARCHAR(255),
+  category_id UUID REFERENCES product_categories(id) ON DELETE CASCADE,
   discount_id UUID REFERENCES discounts(id) ON DELETE CASCADE,
+  is_deleted BOOLEAN DEFAULT FALSE, -- soft delete flag
+  created_at TIMESTAMP DEFAULT current_timestamp,
+  modified_at TIMESTAMP DEFAULT current_timestamp,
+  modified_by UUID
+);
+
+CREATE TABLE product_inventory(
+  id UUID PRIMARY KEY,
+  product_id UUID REFERENCES products(id) ON DELETE CASCADE,
+  quantity INTEGER,
   is_deleted BOOLEAN DEFAULT FALSE, -- soft delete flag
   created_at TIMESTAMP DEFAULT current_timestamp,
   modified_at TIMESTAMP DEFAULT current_timestamp,

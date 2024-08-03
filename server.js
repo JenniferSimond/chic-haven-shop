@@ -3,7 +3,7 @@
 const express = require('express');
 const cors = require('cors');
 const { pool, createTables } = require('./database/tables');
-const { seedDatabase } = require('./database/seedDatabase');
+const { seedUsers, seedDatabase } = require('./database/seedDatabase');
 
 const port = process.env.PORT || 3000;
 const app = express();

@@ -31,7 +31,7 @@ const customerDataAuthorization = async (req, res, next) => {
     const targetUser = await fetchCustomersByID(id);
 
     if (!targetUser) {
-      return res.status(404).json({ message: 'User Not Found' });
+      return res.status(401).json({ message: 'Not Authorized' });
     }
 
     if (
@@ -43,30 +43,31 @@ const customerDataAuthorization = async (req, res, next) => {
       return next();
     }
 
-    res.status(403).json({ message: 'Unauthorized' });
+    res.status(403).json({ message: 'Not Authorized' });
   } catch (error) {
-    res.status(403).json({ message: 'Unauthorized' });
+    res.status(403).json({ message: 'Not Authorized' });
   }
 };
 
 // ADMIN DATA AUTHORIZATION
 
-const adminDataAuthentication = async (req, res, next) => {
+const adminDataAutorization = async (req, res, next) => {
   try {
     const { id } = req.params;
     const targetUser = await fetchAdminByID(id);
 
     if (!targetUser) {
-      return res.status(404).json({ message: 'User Not Found' });
+      return res.status(401).json({ message: 'User Not Found' });
     }
 
     if (targetUser.role === 'customer') {
-      res.status(403).json({ message: 'Unauthorized' });
+      res.status(403).json({ message: 'Not Authorized' });
     }
 
     if (
       req.user.id === targetUser.id ||
       req.user.role === 'super_admin' ||
+      (req.user.role === 'site_admin' && targetUser.role === 'site_admin') ||
       (req.user.role === 'site_admin' && targetUser.role === 'admin')
     ) {
       return next();
@@ -78,6 +79,60 @@ const adminDataAuthentication = async (req, res, next) => {
 };
 
 // ADMIN LEVEL AUTHORIZATION
-const isAdminAuthorization = async (req, res, next) => {};
+const adminAuthorization = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const targetUser = await fetchAdminByID(id);
 
-module.exports = { isAuthenticated, customerDataAuthorization };
+    if (!targetUser) {
+      return res.status(401).json({ message: 'User Not Found' });
+    }
+
+    if (targetUser.role === 'customer') {
+      return res.status(403).json({ message: 'Unauthorized' });
+    }
+
+    if (
+      targetUser.role === 'super_admin' ||
+      targetUser.role === 'site_admin' ||
+      targetUser.role === 'admin'
+    ) {
+      return next();
+    }
+
+    res.status(403).json({ message: 'Unauthorized' });
+  } catch (error) {
+    res.status(403).json({ message: 'Forbidden' });
+  }
+};
+
+const upperAdminAuthorization = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const targetUser = await fetchAdminByID(id);
+
+    if (!targetUser) {
+      return res.status(401).json({ message: 'User Not Found' });
+    }
+
+    if (targetUser.role === 'customer' || targetUser.role === 'admin') {
+      return res.status(403).json({ message: 'Unauthorized' });
+    }
+
+    if (targetUser.role === 'super_admin' || targetUser.role === 'site_admin') {
+      return next();
+    }
+
+    res.status(403).json({ message: 'Unauthorized' });
+  } catch (error) {
+    res.status(403).json({ message: 'Forbidden' });
+  }
+};
+
+module.exports = {
+  isAuthenticated,
+  customerDataAuthorization,
+  adminDataAutorization,
+  adminAuthorization,
+  upperAdminAuthorization,
+};

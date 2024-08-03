@@ -3,18 +3,18 @@
 const { v4: uuidv4 } = require('uuid');
 const pool = require('../databaseConfig');
 
-const createCategory = async ({ name, modifiedBy }) => {
+const createCategory = async (name) => {
   const client = await pool.connect();
   try {
     const SQL = `
-        INSERT INTO categories (id, name, updated_at, created_at, modified_at, modified_by)
-        VALUES ($1, $2, current_timestamp, current_timestamp, $3)
-        ON CONFLICT (name) DO NOT UPDATE
-        SET updated_at = excluded.updated_at, modified_at = excluded.modified_at, modified_by = excluded.modified_by
-        RETURNING *;
+      INSERT INTO product_categories (id, name, created_at, modified_at)
+      VALUES ($1, $2, current_timestamp, current_timestamp)
+      ON CONFLICT (name) DO UPDATE
+      SET modified_at = excluded.modified_at
+      RETURNING *;
     `;
 
-    const response = await client.query(SQL, [uuidv4(), name, modifiedBy]);
+    const response = await client.query(SQL, [uuidv4(), name]);
     return response.rows[0];
   } catch (error) {
     console.error('Error creating category.', error);
@@ -28,13 +28,13 @@ const fetchCategories = async (id) => {
   const client = await pool.connect();
   try {
     const SQL = `
-        SELECT * FROM categores
+        SELECT * FROM product_categores
     `;
 
     const response = await client.query(SQL);
     return response.rows;
   } catch (error) {
-    console.error('Error fetching categories.', error);
+    console.error('Error fetching product_categories.', error);
     throw error;
   } finally {
     client.release();
@@ -45,7 +45,7 @@ const fetchCategoryById = async (id) => {
   const client = await pool.connect();
   try {
     const SQL = `
-        SELECT * FROM categories WHERE id = $1 
+        SELECT * FROM product_categories WHERE id = $1 
     `;
 
     const response = await client.query(SQL, [id]);

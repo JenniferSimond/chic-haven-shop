@@ -6,6 +6,7 @@ const router = express.Router();
 const {
   isAuthenticated,
   customerDataAuthorization,
+  adminAuthorization,
 } = require('./shared/userAuth');
 
 const {
@@ -48,7 +49,7 @@ router.post('/auth/login', async (req, res, next) => {
 });
 
 // GET ALL CUSTOMERS --> ADMINS ONLY
-router.get('/', async (req, res, next) => {
+router.get('/', adminAuthorization, async (req, res, next) => {
   try {
     const customers = await fetchCustomers();
     if (!customers) {

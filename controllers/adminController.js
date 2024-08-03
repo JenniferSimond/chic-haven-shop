@@ -11,7 +11,12 @@ const {
   authenticateAdmin,
 } = require('../database/index');
 
-const { isAuthenticated } = require('./shared/userAuth');
+const {
+  isAuthenticated,
+  adminAuthorization,
+  adminDataAutorization,
+  upperAdminAuthorization,
+} = require('./shared/userAuth');
 
 // REGISTER
 router.post('/register', isAuthenticated, async (req, res, next) => {
@@ -45,7 +50,7 @@ router.post('/auth/login', async (req, res, next) => {
 });
 
 // GET ALL ADMINS
-router.get('/', async (req, res, next) => {
+router.get('/', upperAdminAuthorization, async (req, res, next) => {
   try {
     const admins = await fetchAdmins();
     if (!admins) {
@@ -58,7 +63,7 @@ router.get('/', async (req, res, next) => {
 });
 
 //GET ADMIN BY ID
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', adminDataAutorization, async (req, res, next) => {
   try {
     const { id } = req.params;
     const admin = await fetchAdminByID(id);
@@ -72,7 +77,7 @@ router.get('/:id', async (req, res, next) => {
 });
 
 // UPDATE ADMIN
-router.patch('/:id', async (req, res, next) => {
+router.patch('/:id', upperAdminAuthorization, async (req, res, next) => {
   try {
     const { id } = req.params;
     const updatedData = req.body;
@@ -87,7 +92,7 @@ router.patch('/:id', async (req, res, next) => {
 });
 
 // DELETE ADMIN
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', upperAdminAuthorization, async (req, res, next) => {
   try {
     const { id } = req.params;
     await deleteAdminById(id);

@@ -21,7 +21,7 @@ const createAdminRoles = async () => {
     await client.query(SQL, [uuidv4(), uuidv4(), uuidv4()]);
     console.log('Admin Roles Successfully Created!');
   } catch (error) {
-    console.error('Error Creating Roles', error.stack);
+    console.error('Error creating roles', error.stack);
   } finally {
     client.release();
   }
@@ -39,7 +39,7 @@ const createAdmin = async ({
 }) => {
   const client = await pool.connect();
   try {
-    const roleQuery = 'Select id from admin_roles WHERE admin_type = $1';
+    const roleQuery = 'SELECT id FROM admin_roles WHERE admin_type = $1';
     const roleResult = await client.query(roleQuery, [role]);
 
     if (roleResult.rows.length === 0) {
@@ -103,7 +103,7 @@ const fetchAdminByID = async (id) => {
     const response = await client.query(SQL, [id]);
     return response.rows[0];
   } catch (error) {
-    console.error('Error Fetching Admin', error);
+    console.error('Error fetching admin', error);
     throw error;
   } finally {
     client.release();
