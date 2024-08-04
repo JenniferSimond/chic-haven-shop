@@ -4,11 +4,41 @@ const express = require('express');
 const cors = require('cors');
 const { pool, createTables } = require('./database/tables');
 const { seedUsers, seedDatabase } = require('./database/seedDatabase');
+const path = require('path');
 
 const port = process.env.PORT || 3000;
 const app = express();
 
 app.use(express.json());
+
+app.use(
+  cors({
+    origin: [
+      'http://localhost:5173',
+      'http://localhost:5174',
+      'http://localhost:3000',
+    ],
+    credentials: true,
+  })
+);
+
+// Serve static files for the store-front
+app.use(express.static(path.join(__dirname, 'client/store-front/dist')));
+app.get('/store/*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client/store-front/dist/index.html'));
+});
+
+// Serve static files for the admin-portal
+app.use(express.static(path.join(__dirname, 'client/admin-portal/dist')));
+app.get('/store/*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client/admin-portal/dist/index.html'));
+});
+
+// Serve static files from the 'public/productImages' directory
+app.use(
+  '/product-images',
+  express.static(path.join(__dirname, 'public/productImages'))
+);
 
 const admins = require('./controllers/adminController');
 const customers = require('./controllers/customerController');

@@ -68,7 +68,14 @@ const seedDatabase = async () => {
   const createdCustomer = await Promise.all(testCustomers.map(createCustomer));
   console.log('TEST CUSTOMERS ->', createdCustomer);
 
-  const testCategories = ['bottoms', 'dresses', 'sets', 'suits', 'formalwear'];
+  const testCategories = [
+    'bottoms',
+    'dresses',
+    'sets',
+    'suits',
+    'formalwear',
+    'tops',
+  ];
 
   const createdCategory = await Promise.all(testCategories.map(createCategory));
   console.log('TEST CATEGORIES ->', createdCategory);
