@@ -3,6 +3,8 @@
 const express = require('express');
 const router = express.Router();
 
+const errorHandler = require('./shared/errorHandler');
+
 const {
   isAuthenticated,
   customerDataAuthorization,
@@ -116,4 +118,5 @@ router.delete(
   }
 );
 
+router.use(errorHandler);
 module.exports = router;

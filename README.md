@@ -1,6 +1,6 @@
 # Chic Haven Store
 
-Chic Haven Boutique is a full-stack e-commerce web application built with PostgreSQL, Express, React, Node.js. The project scope included project planning/management, system design, UI/UX design, and development. The application consits of a robust backend that is consumed by a store front and admin portal. My personal goals for the project was to challenge myself and grow as a developer and novice designer by creating an appication that was beautiful, functional, and well built, showcasing my ability to own a project from conceptualization to deployment.
+Chic Haven Boutique is a full-stack e-commerce web application built with PostgreSQL, Express, React, Node.js. The project scope included project planning/management, system design, UI/UX design, and development. The application backend that uses a REST API to serve a store front and admin portal. My personal goals for the project was to challenge myself and grow as a developer and novice designer by creating an appication that was beautiful, functional, and well built, showcasing my ability to own a project from conceptualization to deployment.
 
 New Skills Aquired:
 

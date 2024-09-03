@@ -13,7 +13,6 @@ const SearchBarWrapper = styled.form`
   overflow: hidden;
   width: 300px;
   height: 25px;
-  transition: all 0.2s ease;
   
   @media (max-width: 849px) {
       width: 200px;
@@ -34,7 +33,6 @@ const SearchBox = styled.input`
     width: 300px;
     height: 29px;
     border: none;
-  transition: all 0.2s ease;
     margin: 8px;
     outline: none;
      @media (max-width: 849px) {
@@ -63,7 +61,7 @@ const SearchButton = styled.button`
   justify-content: center;
   padding: 10px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  // transition: all 0.2s ease;
   &:hover {
   background-color: #22223B;
   }
@@ -84,7 +82,7 @@ const SearchButton = styled.button`
 const SearchIcon = styled.img`
   width: 29px;
   height: 29px;
-  transition: all 0.2s ease;
+  // transition: all 0.2s ease;
   ${SearchButton}:hover & {
   opacity:0.8;
     content: url(${props => props.$hoverIcon});

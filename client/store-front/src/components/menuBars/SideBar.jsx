@@ -9,7 +9,8 @@ const SideWrapper = styled.div`
     z-index: 90; 
     position: fixed;
     height: 100vh; // Ensure it takes the full height of the viewport
-
+    // transition: all 0.3s ease;
+    
     @media (max-width: 950px) {
     display: none;
     }

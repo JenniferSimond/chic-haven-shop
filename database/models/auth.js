@@ -79,7 +79,7 @@ const authenticateCustomer = async ({ email, password }) => {
     }
 
     if (customer.customer_status === 'banned') {
-      const error = new Error('Account Banned');
+      const error = new Error('User Account Banned');
       error.status = 401;
       throw error;
     }
@@ -114,7 +114,7 @@ const authenticateCustomer = async ({ email, password }) => {
       token,
     };
   } catch (error) {
-    console.error('Error Authenticating Customer', error);
+    console.error('Error Authenticating Customer', error.message);
     throw error;
   } finally {
     client.release();

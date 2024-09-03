@@ -21,7 +21,6 @@ const LI = styled.li`
         line-height: normal;
         letter-spacing: 0.040rem;
         padding-right: 0.5rem;
-        transition: all 0.5s ease;
         &:hover {
         color: rgba(var(--cream), 0.8);
         

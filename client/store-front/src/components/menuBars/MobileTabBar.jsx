@@ -13,6 +13,8 @@ const SvgIcon = styled.img`
     width: ${({ width }) => width};
     height: ${({ height }) => height};
     cursor: pointer;
+
+
 `;
 
 const TabBarWrapper = styled.div`
@@ -55,6 +57,13 @@ const SvgBox = styled.div`
         color: rgba(var(--cream), 0.9);
         margin-top: 5px;
     }
+
+     @media (max-width: 318px) {
+     
+     p {
+      font-size: 0.70rem;
+     }
+     }
 `;
 
 const MobileTabBar = () => {
