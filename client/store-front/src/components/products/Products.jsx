@@ -13,18 +13,17 @@ margin-bottom: 2%;
 const ProductWrapper = styled.div`
     
     flex-grow: 1;
-   display: flex;
-   flex-direction: row;
-   flex-wrap: wrap;
-   row-gap: 40px;
-   column-gap: 15px;
-   justify-content: center;  // Aligns items to the left
-   align-content: flex-start;
-   width: 100%;  
-   max-height: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    row-gap: 40px;
+    column-gap: 15px;
+    justify-content: center;  // Aligns items to the left
+    align-content: flex-start;
+    width: 100%;  
+    max-height: 100%;
     margin-right: 250px; 
-
-  margin-bottom: 2%;
+    margin-bottom: 2%;
     margin-top: 2%;
     
 @media (max-width: 950px) {

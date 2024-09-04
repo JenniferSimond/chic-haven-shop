@@ -9,26 +9,32 @@ import { CustomerContext } from '../../../CustomerContext';
 const MobileWrapper = styled.div`
 display: flex;
 flex-direction: column;
-// justify-content: center;
 align-items: center;
 width: 100%;
-height: 90%;
+min-height: 85vh;
 justify-content: center;
 transition: all 0.3s ease;
-margin-top: 50px;
 `;
 
 const ModelBox = styled.div`
-    // border: 4px solid rgb(var(--ras-pink));
+   
     height: 290px;
     width: 290px;
     margin-top: 60px;
     background-color: rgb(var(--mustard));
     position: relative;
 
-    @media (max-width: 375px) {
-    margin-top: 15%;
+    
+
+    @media (max-width: 427px) {
+    height: 240px;
+    width: 240px;
    }
+
+   @media (max-width: 385px) {
+    height: 220px;
+    width: 220px;
+    }
 `;
 
 const FormWrapper = styled.div`
@@ -53,6 +59,8 @@ display: block;
   top: 46%;
   left: 7%;
   transform: translate(-1.5%, -53.9%);
+
+  
 `
 
 const InnerFormWrapper = styled.div`
@@ -87,15 +95,24 @@ const Input = styled.input`
 
   transition: all 0.3s ease;
   
-
   &::placeholder {
     color: #f9f5e3;
     opacity: 0.8;
-  }
 
-   @media (max-width: 375px) {
-    width: 165px;
+  }
+     @media (max-width: 427px) {
+    width: 160px;
+    font-size: 13px;
    }
+
+   @media (max-width: 385px) {
+    width: 155px;
+    font-size: 12px;
+   }
+
+   @media (max-width:323px) {
+      width: 150px
+    }
 
 `;
 
@@ -140,16 +157,21 @@ const H1 = styled.h1`
     color: rgb(var(--purple-mid));
   }
  
-  @media (max-width: 425px) {
+
+  @media (max-width: 465px) {
+    font-size: 35px;
+  }
+
+  @media (max-width: 427px) {
     font-size: 30px;
-    }
+  }
 
     @media (max-width: 385px) {
     font-size: 25px;
     }
 
     @media (max-width:323px) {
-      font-size: 20px
+      font-size: 23px
     }
 `;
 
@@ -160,13 +182,26 @@ const P1 = styled.p`
   font-style: normal;
   font-weight: 200;
   line-height: normal;
-//   padding-left: 3.2%;
   margin-top: 2%;
   text-transform: uppercase;
   transition: all 0.3s ease;
 
-  @media (max-width: 375px) {
-    font-size: 40px;
+ @media (max-width: 465px) {
+    font-size: 30px;
+  }
+
+  @media (max-width: 427px) {
+    font-size: 28px;
+  }
+
+    @media (max-width: 385px) {
+    font-size: 25px;
+     margin-bottom: 5px;
+
+    }
+
+    @media (max-width:323px) {
+      font-size: 22px
     }
 
 `;
