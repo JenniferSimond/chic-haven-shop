@@ -1,5 +1,5 @@
 
-import React, {useState} from 'react';
+import React, {useContext, useState, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import windowResize from '../shared/hooks/windowResize';
@@ -7,6 +7,7 @@ import { customerLogin } from '../../api/customers.js';
 import { setToken } from '../shared/auth.js';
 import SideBar from '../menuBars/SideBar.jsx';
 import loginModImg from '../../assets/img-png/loginModImg.png';
+import { CustomerContext } from '../../CustomerContext.jsx';
 
 const WebLoginWrapper = styled.div`
     display: flex;
@@ -359,14 +360,6 @@ const P2 = styled.p`
       transform: translate(-25%, -20%);
       }
 
-    // @media (max-width: 950px) {
-    //   font-size: 11px;
-    //    margin-top: 5%;
-    //     position: static;
-        
-        
-    // }
-
     @media (max-width: 950px) {
     margin-top: 5%;
     text-align: center;
@@ -381,10 +374,12 @@ const P2 = styled.p`
 const Login = () => {
   const navigate = useNavigate();
   const { width } = windowResize();
+  const {customerData, setCustomerData} = useContext(CustomerContext);
   const [loginFormData, setLoginFormData] = useState({
     email: '',
     password: ''
   });
+
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -395,6 +390,7 @@ const Login = () => {
   
       if (data && data.token) {
         setToken(data.token);
+        setCustomerData(data.userDetails)
         navigate('/account');
       } else {
         // If data doesn't contain a token but has a message, we handle it here.

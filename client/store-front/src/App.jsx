@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import React, { useContext, useState, useEffect} from 'react';
+import { Route, Routes, useInRouterContext } from 'react-router-dom';
 import styled from 'styled-components';
 import LandingPage from './components/mainSite/LandingPage';
 import NavBar from './components/menuBars/navBar/NavBar'
@@ -12,6 +12,9 @@ import Wishlist from './components/customer/Wishlist';
 import Products from './components/products/Products';
 import Cart from './components/customer/Cart';
 import MobileTabBar from './components/menuBars/MobileTabBar';
+
+import { CustomerContext, CustomerProvider } from './CustomerContext';
+
 
 
 
@@ -56,16 +59,19 @@ const FootWrapper = styled.div`
 `;
 
 function App() {
- 
+
+    const { customerData } = useContext(CustomerContext);
+    useEffect(() => {
+      console.log('Customer Data updated:', customerData);
+    }, [customerData]);
 
   return (
   <AppWrapper>
+        <CustomerProvider>
     <NavWrapper>
     <NavBar />
     </NavWrapper>
       <ContentWindow>
-        
-
         <Routes>
           <Route path='/' element={<LandingPage />} />
           <Route path='/Home' element={<LandingPage />} />
@@ -82,6 +88,7 @@ function App() {
       <Footer />
       <MobileTabBar />
       </FootWrapper>
+        </CustomerProvider>
   </AppWrapper>
   
   

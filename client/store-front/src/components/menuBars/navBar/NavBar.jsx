@@ -1,4 +1,4 @@
-import React from "react"
+import React, {useContext} from "react"
 import {useNavigate} from 'react-router-dom'
 import styled from "styled-components"
 import account from '../../../assets/icons-svg/account/account.svg'
@@ -9,7 +9,7 @@ import cartLight from '../../../assets/icons-svg/cart/cartLight.svg'
 import SearchBar from './SearchBar'
 import NavLinks from './NavLinks'
 import { getToken, removeToken } from '../../shared/auth'
-
+import { CustomerContext } from "../../../CustomerContext.jsx"
 
 const Header = styled.header`
     display: flex;
@@ -169,7 +169,7 @@ const LogInOut = styled.button`
 `;
 
 const NavBar = () => {
-
+    const {setCustomerData} = useContext(CustomerContext);
     const token = getToken()
     
     const navigate = useNavigate();
@@ -192,6 +192,7 @@ const NavBar = () => {
 
     const logoutClickHandler = () => {
         removeToken()
+        setCustomerData({})
         navigate('/home')
     }
 

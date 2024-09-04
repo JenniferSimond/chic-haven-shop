@@ -37,14 +37,16 @@ app.get('/store/*', (req, res) => {
 // Serve static files from the 'public/productImages' directory
 app.use(
   '/product-images',
-  express.static(path.join(__dirname, 'public/productImages'))
+  express.static(path.join(__dirname, 'public/product-images'))
 );
 
 const admins = require('./controllers/adminController');
 const customers = require('./controllers/customerController');
+const products = require('./controllers/productController');
 
 app.use('/api/admins', admins);
 app.use('/api/customers', customers);
+app.use('/api/products', products);
 
 const init = async () => {
   try {

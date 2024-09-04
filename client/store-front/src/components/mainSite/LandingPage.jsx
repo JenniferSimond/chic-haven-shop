@@ -1,5 +1,6 @@
 
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import SideBar from "../menuBars/SideBar";
 import product1 from '../../assets/img-png/product1.png';
@@ -382,7 +383,7 @@ const ProductImage = styled.img`
 `;
 
 const ProductText = styled.p`
-    color: ${props => props.highlight ? '#D81159' : '#4A4E69'};
+    color: ${props => props.$highlight ? '#D81159' : '#4A4E69'};
     font-family: Montserrat;
     font-size: 15px;
     font-weight: 550;
@@ -405,12 +406,17 @@ const ProductText = styled.p`
 `;
 
 const LandingPage = () => {
+    const navigate = useNavigate();
     const homePageProducts = [
         { id: 1, image: product1, text: 'Hot Pick!', highlight: 'true' },
         { id: 2, image: product2, text: 'Back In Stock!', highlight: 'false' },
         { id: 3, image: product3, text: 'Top Seller', highlight: 'true' },
         { id: 4, image: newCollection, text: 'New Collection!', highlight: 'false' }
     ];
+
+    const handleClick = () => {
+        navigate('/signup')
+    }
 
     return (
         <OuterWrapper>
@@ -432,14 +438,14 @@ const LandingPage = () => {
                         <P3>
                             Become a member, earn points with every purchase, and enjoy <span>15%</span> off your first order!
                         </P3>
-                        <HeroButton>Register</HeroButton>
+                        <HeroButton onClick={handleClick}>Register</HeroButton>
                     </HeroTextWrapper>
                 </HeroWrapper>
                 <ProductWrapper>
                     {homePageProducts.map((product) => (
                         <Product key={product.id}>
                             <ProductImage src={product.image} alt={product.text} />
-                            <ProductText highlight={product.highlight}>{product.text}</ProductText>
+                            <ProductText $highlight={product.highlight}>{product.text}</ProductText>
                         </Product>
                     ))}
                 </ProductWrapper>

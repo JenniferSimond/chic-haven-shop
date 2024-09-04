@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { customerSignup } from '../../../api/customers.js';
 import styled from 'styled-components';
 import SideBar from '../../menuBars/SideBar.jsx';
 import signupPic from '../../../assets/img-png/signupPic.png';
 import {useNavigate} from 'react-router-dom';
 import { setToken } from '../../shared/auth.js';
+import { CustomerContext } from '../../../CustomerContext.jsx';
 
 const WebWrapper = styled.div`
     display: flex;
@@ -252,6 +253,7 @@ const P2 = styled.p`
 `;
 
 const RegisterWeb = () => {
+  const {setCustomerData} = useContext(CustomerContext);
   const [signupFormData, setSignupData] = useState({
     last_name: '',
     first_name: '',
@@ -266,6 +268,14 @@ const RegisterWeb = () => {
     try {
       const data = customerSignup(signupFormData);
       console.log(data)
+      if (data ) {
+        setToken(data.token);
+        setCustomerData(data.userDetails);
+        navigate('/account')
+      } else {
+        alert('There was an issue with account signup!', error)
+      }
+
     } catch (error) {
       console.error(error)
     }

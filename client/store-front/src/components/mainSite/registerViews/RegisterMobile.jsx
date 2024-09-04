@@ -1,11 +1,10 @@
-import React, { useState} from 'react';
+import React, {useContext, useState} from 'react';
 import styled from 'styled-components';
-import loginModImg from '../../../assets/img-png/loginModImg.png';
 import signupPic from '../../../assets/img-png/signupPic.png';
 import { useNavigate } from 'react-router-dom';
 import { setToken } from '../../shared/auth';
 import { customerSignup } from '../../../api/customers';
-
+import { CustomerContext } from '../../../CustomerContext';
 
 const MobileWrapper = styled.div`
 display: flex;
@@ -175,14 +174,15 @@ const P1 = styled.p`
 
 
 const RegisterMobile = () => {
-  
+  const navigate = useNavigate();
+  const {setCustomerData} = useContext(CustomerContext);
   const [signupFormData, setSignupData] = useState({
     last_name: '',
     first_name: '',
     email: '',
     password: '',
   });
-  const navigate = useNavigate();
+
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -191,8 +191,10 @@ const RegisterMobile = () => {
       const data = customerSignup(signupFormData);
       console.log(data)
 
-      if (data) {
+      if (data ) {
         setToken(data.token);
+        setCustomerData(data.userDetails);
+        navigate('/account')
       } else {
         alert('There was an issue with account signup!', error)
       }
@@ -225,14 +227,14 @@ const RegisterMobile = () => {
             </ModelBox>
             <P1>today!</P1>
           <FormWrapper>
-          <form >
+          <form onSubmit={handleSubmit}>
               <InnerFormWrapper>
                 <InputDivs>
                   <Input
                     name="first_name"
                     type="text"
-                    // onChange={handleChange}
-                    // value={loginFormData.email}
+                    onChange={handleChange}
+                    value={signupFormData.first_name}
                     placeholder="First Name"
                   />
                 </InputDivs>
@@ -240,8 +242,8 @@ const RegisterMobile = () => {
                   <Input
                     name="last_name"
                     type="text"
-                    // onChange={handleChange}
-                    // value={loginFormData.email}
+                    onChange={handleChange}
+                    value={signupFormData.last_name}
                     placeholder="Last Name"
                   />
                 </InputDivs>
@@ -249,8 +251,8 @@ const RegisterMobile = () => {
                   <Input
                     name="email"
                     type="text"
-                    // onChange={handleChange}
-                    // value={loginFormData.email}
+                    onChange={handleChange}
+                    value={signupFormData.email}
                     placeholder="Email"
                   />
                 </InputDivs>
@@ -258,8 +260,8 @@ const RegisterMobile = () => {
                   <Input
                     name="password"
                     type="password"
-                    // onChange={handleChange}
-                    // value={loginFormData.password}
+                    onChange={handleChange}
+                    value={signupFormData.password}
                     placeholder="Password"
                   />
                 </InputDivs>
