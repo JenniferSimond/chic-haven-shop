@@ -14,9 +14,9 @@ const {
 const {
   isAuthenticated,
   adminAuthorization,
-  adminDataAutorization,
+  adminDataAuthorization,
   upperAdminAuthorization,
-} = require('./shared/userAuth');
+} = require('../middleware/userAuth');
 
 // REGISTER
 router.post('/register', isAuthenticated, async (req, res, next) => {
@@ -63,7 +63,7 @@ router.get('/', upperAdminAuthorization, async (req, res, next) => {
 });
 
 //GET ADMIN BY ID
-router.get('/:id', adminDataAutorization, async (req, res, next) => {
+router.get('/:id', adminDataAuthorization, async (req, res, next) => {
   try {
     const { id } = req.params;
     const admin = await fetchAdminByID(id);

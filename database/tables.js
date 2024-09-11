@@ -26,10 +26,12 @@ DROP TABLE IF EXISTS product_reviews CASCADE;
 DROP TYPE IF EXISTS admin_type CASCADE;
 DROP TYPE IF EXISTS customer_status CASCADE;
 DROP TYPE IF EXISTS review_permissions CASCADE;
+DROP TYPE IF EXISTS stock_status CASCADE;
 
 CREATE TYPE admin_type AS ENUM ('admin','site_admin', 'super_admin');
 CREATE TYPE customer_status AS ENUM ('active', 'banned');
 CREATE TYPE review_permissions AS ENUM ('allowed', 'blocked');
+CREATE TYPE stock_status AS ENUM ('in_stock', 'low_stock', 'out_of_stock');
 
 -- CHANGE LOG
 CREATE TABLE change_log(
@@ -48,8 +50,7 @@ CREATE TABLE admin_roles(
   id UUID PRIMARY KEY,
   admin_type admin_type,
   created_at TIMESTAMP DEFAULT current_timestamp,
-  modified_at TIMESTAMP DEFAULT current_timestamp,
-  modified_by UUID
+  modified_at TIMESTAMP DEFAULT current_timestamp
 );
 
 CREATE TABLE admins(
@@ -60,8 +61,7 @@ CREATE TABLE admins(
   password VARCHAR(255) NOT NULL,
   role_id UUID REFERENCES admin_roles(id) ON DELETE CASCADE,
   created_at TIMESTAMP DEFAULT current_timestamp,
-  modified_at TIMESTAMP DEFAULT current_timestamp,
-  modified_by UUID
+  modified_at TIMESTAMP DEFAULT current_timestamp
 );
 
 -- CUSTOMER 
@@ -74,8 +74,7 @@ CREATE TABLE customers(
   customer_status customer_status DEFAULT 'active',
   review_permissions review_permissions DEFAULT 'allowed',
   created_at TIMESTAMP DEFAULT current_timestamp,
-  modified_at TIMESTAMP DEFAULT current_timestamp,
-  modified_by UUID
+  modified_at TIMESTAMP DEFAULT current_timestamp
 );
 
 CREATE TABLE customer_addresses(
@@ -88,8 +87,7 @@ CREATE TABLE customer_addresses(
   zip_code VARCHAR(100),
   country VARCHAR(100),
   created_at TIMESTAMP DEFAULT current_timestamp,
-  modified_at TIMESTAMP DEFAULT current_timestamp,
-  modified_by UUID
+  modified_at TIMESTAMP DEFAULT current_timestamp
 );
 
 -- PRODUCTS 
@@ -98,8 +96,7 @@ CREATE TABLE product_categories(
   name VARCHAR(100) UNIQUE NOT NULL,
   is_deleted BOOLEAN DEFAULT FALSE, -- soft delete flag
   created_at TIMESTAMP DEFAULT current_timestamp,
-  modified_at TIMESTAMP DEFAULT current_timestamp,
-  modified_by UUID
+  modified_at TIMESTAMP DEFAULT current_timestamp
 );
 
     
@@ -108,8 +105,7 @@ CREATE TABLE discounts(
   name VARCHAR(25) UNIQUE NOT NULL,
   is_deleted BOOLEAN DEFAULT FALSE, -- soft delete flag
   created_at TIMESTAMP DEFAULT current_timestamp,
-  modified_at TIMESTAMP DEFAULT current_timestamp,
-  modified_by UUID
+  modified_at TIMESTAMP DEFAULT current_timestamp
 );
 
 CREATE TABLE products(
@@ -123,18 +119,18 @@ CREATE TABLE products(
   discount_id UUID REFERENCES discounts(id) ON DELETE CASCADE,
   is_deleted BOOLEAN DEFAULT FALSE, -- soft delete flag
   created_at TIMESTAMP DEFAULT current_timestamp,
-  modified_at TIMESTAMP DEFAULT current_timestamp,
-  modified_by UUID
+  modified_at TIMESTAMP DEFAULT current_timestamp
 );
 
 CREATE TABLE product_inventory(
   id UUID PRIMARY KEY,
   product_id UUID REFERENCES products(id) ON DELETE CASCADE,
-  quantity INTEGER,
-  is_deleted BOOLEAN DEFAULT FALSE, -- soft delete flag
+  size VARCHAR(20),
+  quantity INTEGER CHECK (quantity >= 0),
+  stock_status stock_status DEFAULT 'in_stock',
+  is_deleted BOOLEAN DEFAULT FALSE, -- soft delete flag to manage discontinued sizes, variants, etc.
   created_at TIMESTAMP DEFAULT current_timestamp,
-  modified_at TIMESTAMP DEFAULT current_timestamp,
-  modified_by UUID
+  modified_at TIMESTAMP DEFAULT current_timestamp
 );
 
 -- CART
@@ -142,8 +138,7 @@ CREATE TABLE carts(
   id UUID PRIMARY KEY,
   customer_id UUID REFERENCES customers(id) ON DELETE CASCADE,
   created_at TIMESTAMP DEFAULT current_timestamp,
-  modified_at TIMESTAMP DEFAULT current_timestamp,
-  modified_by UUID
+  modified_at TIMESTAMP DEFAULT current_timestamp
 );
 
 CREATE TABLE cart_items(
@@ -155,8 +150,7 @@ CREATE TABLE cart_items(
   total_price DECIMAL CHECK (total_price > 0),
   discount_id UUID REFERENCES discounts(id) ON DELETE CASCADE,
   created_at TIMESTAMP DEFAULT current_timestamp,
-  modified_at TIMESTAMP DEFAULT current_timestamp,
-  modified_by UUID
+  modified_at TIMESTAMP DEFAULT current_timestamp
 );
 
 -- WISHLIST
@@ -164,8 +158,7 @@ CREATE TABLE wishlists(
   id UUID PRIMARY KEY,
   customer_id UUID REFERENCES customers(id) ON DELETE CASCADE,
   created_at TIMESTAMP DEFAULT current_timestamp,
-  modified_at TIMESTAMP DEFAULT current_timestamp,
-  modified_by UUID
+  modified_at TIMESTAMP DEFAULT current_timestamp
 );
 
 CREATE TABLE wishlist_items(
@@ -173,8 +166,7 @@ CREATE TABLE wishlist_items(
   wishlist_id UUID REFERENCES wishlists(id) ON DELETE CASCADE,
   product_id UUID REFERENCES products(id) ON DELETE CASCADE,
   created_at TIMESTAMP DEFAULT current_timestamp,
-  modified_at TIMESTAMP DEFAULT current_timestamp,
-  modified_by UUID
+  modified_at TIMESTAMP DEFAULT current_timestamp
 );
     
 -- ORDERS
@@ -187,8 +179,7 @@ CREATE TABLE orders(
   total_price DECIMAL CHECK (total_price > 0),
   status VARCHAR(50),
   created_at TIMESTAMP DEFAULT current_timestamp,
-  modified_at TIMESTAMP DEFAULT current_timestamp,
-  modified_by UUID
+  modified_at TIMESTAMP DEFAULT current_timestamp
 );
 
 CREATE TABLE ordered_items(
@@ -198,8 +189,7 @@ CREATE TABLE ordered_items(
   quantity INTEGER,
   order_total DECIMAL CHECK (order_total > 0),
   created_at TIMESTAMP DEFAULT current_timestamp,
-  modified_at TIMESTAMP DEFAULT current_timestamp,
-  modified_by UUID
+  modified_at TIMESTAMP DEFAULT current_timestamp
 );
 
 CREATE TABLE payments(
@@ -210,8 +200,7 @@ CREATE TABLE payments(
   currency VARCHAR(20),
   payment_method VARCHAR(50),
   created_at TIMESTAMP DEFAULT current_timestamp,
-  modified_at TIMESTAMP DEFAULT current_timestamp,
-  modified_by UUID
+  modified_at TIMESTAMP DEFAULT current_timestamp
 );
 
 -- REVIEWS
@@ -221,8 +210,7 @@ CREATE TABLE product_reviews(
   rating INTEGER,
   comment VARCHAR(255),
   created_at TIMESTAMP DEFAULT current_timestamp,
-  modified_at TIMESTAMP DEFAULT current_timestamp,
-  modified_by UUID
+  modified_at TIMESTAMP DEFAULT current_timestamp
 );
 
 CREATE TABLE customer_reviews(
@@ -230,8 +218,7 @@ CREATE TABLE customer_reviews(
   customer_id UUID REFERENCES customers(id) ON DELETE CASCADE,
   review_id UUID REFERENCES product_reviews(id) ON DELETE CASCADE,
   created_at TIMESTAMP DEFAULT current_timestamp,
-  modified_at TIMESTAMP DEFAULT current_timestamp,
-  modified_by UUID
+  modified_at TIMESTAMP DEFAULT current_timestamp
 );
 
 -- CHANGE TRACKING TRIGGER
@@ -241,22 +228,27 @@ AS $$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
     INSERT INTO change_log (table_name, operation, record_id, new_values, changed_at, changed_by)
-    VALUES (TG_TABLE_NAME, TG_OP, NEW.id, row_to_json(NEW), CURRENT_TIMESTAMP, NEW.modified_by);
+    VALUES (TG_TABLE_NAME, TG_OP, NEW.id, row_to_json(NEW), CURRENT_TIMESTAMP,
+            COALESCE(current_setting('myapp.user_id', true), '00000000-0000-0000-0000-000000000000')::UUID);
     RETURN NEW;
 
   ELSIF (TG_OP = 'UPDATE') THEN
     INSERT INTO change_log (table_name, operation, record_id, old_values, new_values, changed_at, changed_by)
-    VALUES (TG_TABLE_NAME, TG_OP, NEW.id, row_to_json(OLD), row_to_json(NEW), CURRENT_TIMESTAMP, NEW.modified_by);
+    VALUES (TG_TABLE_NAME, TG_OP, NEW.id, row_to_json(OLD), row_to_json(NEW), CURRENT_TIMESTAMP,
+            COALESCE(current_setting('myapp.user_id', true), '00000000-0000-0000-0000-000000000000')::UUID);
     RETURN NEW;
 
   ELSIF (TG_OP = 'DELETE') THEN
     INSERT INTO change_log (table_name, operation, record_id, old_values, changed_at, changed_by)
-    VALUES (TG_TABLE_NAME, TG_OP, OLD.id, row_to_json(OLD), CURRENT_TIMESTAMP, OLD.modified_by);
+    VALUES (TG_TABLE_NAME, TG_OP, OLD.id, row_to_json(OLD), CURRENT_TIMESTAMP,
+            COALESCE(current_setting('myapp.user_id', true), '00000000-0000-0000-0000-000000000000')::UUID);
     RETURN OLD;
   END IF;
   RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
+
+
 
 CREATE TRIGGER track_admin_changes
 AFTER INSERT OR UPDATE OR DELETE ON admins
@@ -270,6 +262,11 @@ EXECUTE FUNCTION track_table_changes();
 
 CREATE TRIGGER track_product_changes
 AFTER INSERT OR UPDATE OR DELETE ON products
+FOR EACH ROW
+EXECUTE FUNCTION track_table_changes();
+
+CREATE TRIGGER track_review_changes
+AFTER INSERT OR UPDATE OR DELETE ON product_reviews
 FOR EACH ROW
 EXECUTE FUNCTION track_table_changes();
 
@@ -292,6 +289,27 @@ CREATE TRIGGER after_customer_create
 AFTER INSERT ON customers
 FOR EACH ROW
 EXECUTE FUNCTION create_customer_records();
+
+-- STOCK STATUS TRIGGER
+CREATE OR REPLACE FUNCTION update_stock_status()
+RETURNS TRIGGER
+AS $$
+BEGIN
+  IF NEW.quantity = 0 THEN
+    NEW.stock_status := 'out_of_stock';
+  ELSIF NEW.quantity <= 20 THEN
+    NEW.stock_status := 'low_stock';
+  ELSE
+    NEW.stock_status := 'in_stock';
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_stock_status_trigger
+BEFORE INSERT OR UPDATE ON product_inventory
+FOR EACH ROW
+EXECUTE FUNCTION update_stock_status();
   `;
 
   let client; // creating client variable

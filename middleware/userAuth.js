@@ -6,7 +6,7 @@ const {
   findUserByToken,
   fetchCustomersByID,
   fetchAdminByID,
-} = require('../../database/index');
+} = require('../database/index');
 
 // AUTHENTICATION
 const isAuthenticated = async (req, res, next) => {
@@ -51,7 +51,7 @@ const customerDataAuthorization = async (req, res, next) => {
 
 // ADMIN DATA AUTHORIZATION
 
-const adminDataAutorization = async (req, res, next) => {
+const adminDataAuthorization = async (req, res, next) => {
   try {
     const { id } = req.params;
     const targetUser = await fetchAdminByID(id);
@@ -132,7 +132,7 @@ const upperAdminAuthorization = async (req, res, next) => {
 module.exports = {
   isAuthenticated,
   customerDataAuthorization,
-  adminDataAutorization,
+  adminDataAuthorization,
   adminAuthorization,
   upperAdminAuthorization,
 };

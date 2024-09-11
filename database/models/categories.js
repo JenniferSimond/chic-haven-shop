@@ -58,7 +58,7 @@ const fetchCategoryById = async (id) => {
   }
 };
 
-const updateCategoryByID = async (id, updatedData, modifiedBy) => {
+const updateCategoryByID = async (id, updatedData) => {
   const client = await pool.connect();
   try {
     const { name, is_deleted = false } = updatedData;
@@ -68,9 +68,8 @@ const updateCategoryByID = async (id, updatedData, modifiedBy) => {
             SET
                 name = COALESCE($2, name),
                 is_deleted = $3,
-                modified_by = $4,
-                modified_by = CURRENT_TIMESTAMP
-            WHERE id = $1
+                modified_at = CURRENT_TIMESTAMP
+           
             RETURNING *;   
     `;
 

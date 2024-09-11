@@ -33,6 +33,8 @@ const authenticateAdmin = async ({ email, password }) => {
       throw error;
     }
 
+    await setAppUserId(admin.id);
+
     const token = jwt.sign(
       {
         id: admin.id,
@@ -91,6 +93,8 @@ const authenticateCustomer = async ({ email, password }) => {
       throw error;
     }
 
+    await setAppUserId(customer.id);
+
     const token = jwt.sign(
       {
         id: customer.id,
@@ -129,6 +133,21 @@ const findUserByToken = async (token) => {
     const customError = new Error('Not Authorized');
     customError.status = 401;
     throw customError;
+  }
+};
+
+const setAppUserId = async (userId) => {
+  const client = await pool.connect();
+
+  try {
+    const SQL = `SET myapp.user_id to $1`;
+    await client.query(SQL, [userId]);
+    console.log('User ID set for session:', userId);
+  } catch (error) {
+    console.error('Error setting myapp.user_id', error);
+    throw error;
+  } finally {
+    client.release();
   }
 };
 

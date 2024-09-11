@@ -51,7 +51,7 @@ const FormWrapper = styled.div`
 `;
 
 const ModelImg = styled.img`
-display: block;
+  display: block;
   width: auto;
   height: auto;
   max-width: 90%;

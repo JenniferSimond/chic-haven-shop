@@ -6,6 +6,7 @@ const {
   createCustomer,
   createCategory,
   createProduct,
+  createInventory,
 } = require('./index');
 
 const seedDatabase = async () => {
@@ -310,6 +311,27 @@ const seedDatabase = async () => {
 
   const createdProducts = await Promise.all(testProducts.map(createProduct));
   console.log('Created Products ->', createdProducts);
+
+  const inventoryValues = [
+    { size: 'X-Small', quantity: 20 },
+    { size: 'Small', quantity: 50 },
+    { size: 'medium', quantity: 100 },
+    { size: 'large', quantity: 100 },
+    { size: 'X-Large', quantity: 70 },
+    { size: 'XX-Large', quantity: 26 },
+  ];
+
+  for (const product of createdProducts) {
+    for (const inventory of inventoryValues) {
+      const inventoryData = {
+        product_id: product.id,
+        size: inventory.size,
+        quantity: inventory.quantity,
+      };
+      await createInventory(inventoryData);
+      console.log('Created Inventory:', inventoryData);
+    }
+  }
 };
 
 module.exports = {

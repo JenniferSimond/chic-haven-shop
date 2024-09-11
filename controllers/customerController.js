@@ -3,13 +3,13 @@
 const express = require('express');
 const router = express.Router();
 
-const errorHandler = require('./shared/errorHandler');
+const errorHandler = require('../middleware/errorHandler');
 
 const {
   isAuthenticated,
   customerDataAuthorization,
   adminAuthorization,
-} = require('./shared/userAuth');
+} = require('../middleware/userAuth');
 
 const {
   createCustomer,
@@ -117,6 +117,8 @@ router.delete(
     }
   }
 );
+
+// USER REVIEWS
 
 router.use(errorHandler);
 module.exports = router;

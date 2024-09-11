@@ -9,7 +9,12 @@ const {
   fetchProductById,
   updateProductById,
   deleteProductById,
-} = require('../database/models/products');
+  createInventory,
+  UpdateInventoryById,
+  fetchAllInventory,
+  fetchInventoryById,
+  DeleteInventoryById,
+} = require('../database/index');
 
 // Create Product
 router.post('/', async (req, res, next) => {
@@ -91,5 +96,117 @@ router.delete('/:id', async (req, res, next) => {
     next(error);
   }
 });
+
+// PRODUCT INVENTORY
+
+// Create Inventory
+router.post('/:product_id/inventory', async (req, res, next) => {
+  try {
+    const { product_id } = req.params;
+    const { size, quantity } = req.body;
+    const newInventory = await createInventory({
+      product_id,
+      size,
+      quantity,
+    });
+    res.status(201).json(newInventory);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Get All Inventory
+router.get('/inventory', async (req, res, next) => {
+  try {
+    const { stock_status, size } = req.query; // Add query parameters for filtering
+    let inventory = await fetchAllInventory();
+
+    // Filter by stock status if provided
+    if (stock_status) {
+      inventory = inventory.filter(
+        (item) => item.stock_status === stock_status
+      );
+    }
+
+    // Filter by size if provided
+    if (size) {
+      inventory = inventory.filter((item) => item.size === size);
+    }
+
+    if (!inventory.length) {
+      return res.status(404).json({ message: 'No Inventory Found.' });
+    }
+
+    res.json(inventory);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Get All Inventory
+router.get('/inventory', async (req, res, next) => {
+  try {
+    const inventory = await fetchAllInventory();
+    if (!inventory.length) {
+      return res.status(404).json({ message: 'No Inventory Found.' });
+    }
+    res.json(inventory);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Get Inventory by Product ID
+router.get('/:product_id/inventory', async (req, res, next) => {
+  try {
+    const { product_id } = req.params;
+    const inventory = await fetchInventoryById(product_id);
+    if (!inventory.length) {
+      return res
+        .status(404)
+        .json({ message: 'Inventory Not Found for this Product.' });
+    }
+    res.json(inventory);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Update Inventory
+router.patch('/:product_id/inventory/:inventory_id', async (req, res, next) => {
+  try {
+    const { product_id, inventory_id } = req.params;
+    const { size, quantity, stock_status } = req.body;
+    const updatedInventory = await UpdateInventoryById(
+      inventory_id,
+      product_id,
+      size,
+      quantity,
+      stock_status
+    );
+    if (!updatedInventory) {
+      return res.status(404).json({ message: 'Inventory Not Found.' });
+    }
+    res.json(updatedInventory);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Delete Inventory
+router.delete(
+  '/:product_id/inventory/:inventory_id',
+  async (req, res, next) => {
+    try {
+      const { product_id, inventory_id } = req.params;
+      await DeleteInventoryById(inventory_id, product_id);
+      res.sendStatus(204);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// PRODUCT REVIEWS
 
 module.exports = router;

@@ -10,6 +10,7 @@ import Account from './components/customer/AccountPage';
 import About from './components/mainSite/About';
 import Wishlist from './components/customer/Wishlist';
 import Products from './components/products/Products';
+import ProductView from './components/products/ProductView'
 import Cart from './components/customer/Cart';
 import MobileTabBar from './components/menuBars/MobileTabBar';
 
@@ -76,6 +77,7 @@ function App() {
           <Route path='/' element={<LandingPage />} />
           <Route path='/Home' element={<LandingPage />} />
           <Route path='/Products' element={<Products />} />
+          <Route path='/Products/:ProductId' element={ProductView}/>
           <Route path='/about' element={<About />}/>
           <Route path='/login' element={<Login />}/>
           <Route path='/signup' element={<Register />}/>

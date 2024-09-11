@@ -43,11 +43,22 @@ const {
   updateProductById,
   deleteProductById,
 } = require('./models/products');
+
+// PRODUCT INVENTORY
+const {
+  createInventory,
+  fetchAllInventory,
+  fetchInventoryById,
+  UpdateInventoryById,
+  DeleteInventoryById,
+} = require('./models/inventory');
+
 module.exports = {
   // AUTH
   authenticateAdmin,
   authenticateCustomer,
   findUserByToken,
+
   // ADMINS
   createAdminRoles,
   createAdmin,
@@ -73,4 +84,10 @@ module.exports = {
   fetchProductById,
   updateProductById,
   deleteProductById,
+  //PRODUCT INVENTORY
+  createInventory,
+  fetchAllInventory,
+  fetchInventoryById,
+  UpdateInventoryById,
+  DeleteInventoryById,
 };

@@ -3,7 +3,6 @@ const pool = require('../databaseConfig');
 const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 
-// CREATE PRODCUCT
 // CREATE PRODUCT
 const createProduct = async ({
   name,
@@ -107,10 +106,10 @@ const updateProductById = async (
               image = COALESCE($5, image),
               category_id = COALESCE($6, category_id),
               price = COALESCE($7, price),
-              discount_id = COALESCE($8, discunt_id),
-              modified_at = CURRENT_TIMESTAMP
+              discount_id = COALESCE($8, discount_id),
+              
           WHERE id = $1
-          RERURNING *
+          REtURNING *
       `;
 
     const response = await client.query(SQL, [

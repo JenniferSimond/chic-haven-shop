@@ -27,8 +27,6 @@ const createAdminRoles = async () => {
   }
 };
 
-// LOGIN
-
 // REGISTER
 const createAdmin = async ({
   last_name,
@@ -65,6 +63,7 @@ const createAdmin = async ({
 
     return response.rows[0];
   } catch (error) {
+    // ROLL BACK IF NO ROLE FOUND
     console.error('Error creating admin.', error);
     throw error;
   } finally {
@@ -73,7 +72,6 @@ const createAdmin = async ({
 };
 
 // FETCH ALL ADMINS
-
 const fetchAdmins = async () => {
   const client = await pool.connect();
   try {
@@ -92,7 +90,6 @@ const fetchAdmins = async () => {
 };
 
 // FETCH ADMIN BY ID
-
 const fetchAdminByID = async (id) => {
   const client = await pool.connect();
   try {
@@ -111,7 +108,6 @@ const fetchAdminByID = async (id) => {
 };
 
 // UPDATE ADMIN BY ID
-
 const updateAdminById = async (id, updatedAdminData) => {
   const client = await pool.connect();
   try {
@@ -172,7 +168,6 @@ const updateAdminById = async (id, updatedAdminData) => {
 };
 
 // DELETE ADMIN BY ID
-
 const deleteAdminById = async (id) => {
   const client = await pool.connect();
   try {
