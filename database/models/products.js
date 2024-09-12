@@ -68,12 +68,26 @@ const fetchProducts = async () => {
 };
 
 // FETCH PRODUCT
-const fetchProductById = async () => {
+const fetchProductById = async (id) => {
   const client = await pool.connect();
   try {
     const SQL = `
-  SELECT * FROM products WHERE id = $1
-`;
+      SELECT 
+        p.*,
+        COALESCE(
+          json_agg(
+            json_build_object(
+              'size', i.size,
+              'quantity', i.quantity,
+              'stock_status', i.stock_status
+            )
+          ) FILTER (WHERE i.product_id IS NOT NULL), '[]'
+        ) AS inventory
+      FROM products p
+      LEFT JOIN product_inventory i ON p.id = i.product_id
+      WHERE p.id = $1
+      GROUP BY p.id;
+    `;
 
     const response = await client.query(SQL, [id]);
     return response.rows[0];
@@ -92,8 +106,7 @@ const updateProductById = async (
   description,
   image,
   category_id,
-  price,
-  discount_id
+  price
 ) => {
   const client = await pool.connect();
   try {
@@ -106,7 +119,6 @@ const updateProductById = async (
               image = COALESCE($5, image),
               category_id = COALESCE($6, category_id),
               price = COALESCE($7, price),
-              discount_id = COALESCE($8, discount_id),
               
           WHERE id = $1
           REtURNING *
@@ -119,7 +131,6 @@ const updateProductById = async (
       image,
       category_id,
       price,
-      discount_id,
     ]);
     if (response.rows.length === 0) {
       throw new Error('Customer not found');

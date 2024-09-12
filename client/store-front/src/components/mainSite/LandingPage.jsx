@@ -351,7 +351,7 @@ const ProductWrapper = styled.div`
      @media (max-width: 596px) {
      
        grid-column-gap: 0px;
-      margin: 0% 0% 0% 0%;
+      margin: 0% 0% 0% 5%;
      }
      
 `;
@@ -370,7 +370,6 @@ const Product = styled.div`
          margin-right: 0%;
     }
 
-  
 `;
 
 const ProductImage = styled.img`

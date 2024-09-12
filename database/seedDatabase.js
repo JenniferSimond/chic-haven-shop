@@ -315,8 +315,8 @@ const seedDatabase = async () => {
   const inventoryValues = [
     { size: 'X-Small', quantity: 20 },
     { size: 'Small', quantity: 50 },
-    { size: 'medium', quantity: 100 },
-    { size: 'large', quantity: 100 },
+    { size: 'Medium', quantity: 100 },
+    { size: 'Large', quantity: 100 },
     { size: 'X-Large', quantity: 70 },
     { size: 'XX-Large', quantity: 26 },
   ];

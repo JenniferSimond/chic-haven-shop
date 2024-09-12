@@ -116,7 +116,6 @@ CREATE TABLE products(
   image VARCHAR(100),
   sku VARCHAR(255),
   category_id UUID REFERENCES product_categories(id) ON DELETE CASCADE,
-  discount_id UUID REFERENCES discounts(id) ON DELETE CASCADE,
   is_deleted BOOLEAN DEFAULT FALSE, -- soft delete flag
   created_at TIMESTAMP DEFAULT current_timestamp,
   modified_at TIMESTAMP DEFAULT current_timestamp
@@ -146,9 +145,7 @@ CREATE TABLE cart_items(
   cart_id UUID REFERENCES carts(id) ON DELETE CASCADE,
   product_id UUID REFERENCES products(id) ON DELETE CASCADE,
   quantity INTEGER CHECK (quantity > 0),
-  price DECIMAL CHECK (price > 0),
   total_price DECIMAL CHECK (total_price > 0),
-  discount_id UUID REFERENCES discounts(id) ON DELETE CASCADE,
   created_at TIMESTAMP DEFAULT current_timestamp,
   modified_at TIMESTAMP DEFAULT current_timestamp
 );
