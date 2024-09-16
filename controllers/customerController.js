@@ -8,7 +8,7 @@ const errorHandler = require('../middleware/errorHandler');
 const {
   isAuthenticated,
   customerDataAuthorization,
-  adminAuthorization,
+  isAnyAdmin,
 } = require('../middleware/userAuth');
 
 const {
@@ -23,10 +23,10 @@ const {
 // Customer Signup
 router.post('/signup', async (req, res, next) => {
   try {
-    const { last_name, first_name, email, password } = req.body;
+    const { lastName, firstName, email, password } = req.body;
     const newCustomer = await createCustomer({
-      last_name,
-      first_name,
+      lastName,
+      firstName,
       email,
       password,
     });
@@ -51,7 +51,7 @@ router.post('/auth/login', async (req, res, next) => {
 });
 
 // GET ALL CUSTOMERS --> ADMINS ONLY
-router.get('/', adminAuthorization, async (req, res, next) => {
+router.get('/', isAuthenticated, isAnyAdmin, async (req, res, next) => {
   try {
     const customers = await fetchCustomers();
     if (!customers) {
@@ -117,8 +117,6 @@ router.delete(
     }
   }
 );
-
-// USER REVIEWS
 
 router.use(errorHandler);
 module.exports = router;

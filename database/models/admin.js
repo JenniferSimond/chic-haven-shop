@@ -28,13 +28,7 @@ const createAdminRoles = async () => {
 };
 
 // REGISTER
-const createAdmin = async ({
-  last_name,
-  first_name,
-  email,
-  password,
-  role,
-}) => {
+const createAdmin = async ({ lastName, firstName, email, password, role }) => {
   const client = await pool.connect();
   try {
     const roleQuery = 'SELECT id FROM admin_roles WHERE admin_type = $1';
@@ -54,8 +48,8 @@ const createAdmin = async ({
 
     const response = await client.query(SQL, [
       uuidv4(),
-      last_name,
-      first_name,
+      lastName,
+      firstName,
       email,
       await bcrypt.hash(password, 10),
       roleId,
@@ -111,7 +105,7 @@ const fetchAdminByID = async (id) => {
 const updateAdminById = async (id, updatedAdminData) => {
   const client = await pool.connect();
   try {
-    const { last_name, first_name, email, password, role } = updatedAdminData;
+    const { lastName, firstName, email, password, role } = updatedAdminData;
 
     let roleId;
     if (role) {
@@ -147,8 +141,8 @@ const updateAdminById = async (id, updatedAdminData) => {
 
     const response = await client.query(SQL, [
       id,
-      last_name,
-      first_name,
+      lastName,
+      firstName,
       email,
       hashedPassword,
       roleId,

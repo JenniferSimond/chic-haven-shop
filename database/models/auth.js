@@ -13,7 +13,8 @@ const authenticateAdmin = async ({ email, password }) => {
         at.*,
         rt.admin_type
       FROM admins at
-      LEFT JOIN admin_roles rt ON at.role_id = rt.id
+      LEFT JOIN admin_roles rt 
+      ON at.role_id = rt.id
       WHERE at.email = $1;
     `;
 
@@ -62,13 +63,78 @@ const authenticateAdmin = async ({ email, password }) => {
   }
 };
 
+// const authenticateCustomer = async ({ email, password }) => {
+//   const client = await pool.connect();
+//   try {
+//     const SQL = `
+//       SELECT id, password, last_name, first_name, customer_status, review_permissions
+//       FROM customers
+//       WHERE email = $1;
+//     `;
+
+//     const response = await client.query(SQL, [email]);
+//     const customer = response.rows[0];
+
+//     if (!customer) {
+//       const error = new Error('Account Not Found');
+//       error.status = 401;
+//       throw error;
+//     }
+
+//     if (customer.customer_status === 'banned') {
+//       const error = new Error('User Account Banned');
+//       error.status = 401;
+//       throw error;
+//     }
+
+//     const passwordMatch = await bcrypt.compare(password, customer.password);
+//     if (!passwordMatch) {
+//       const error = new Error('Invalid Password');
+//       error.status = 401;
+//       throw error;
+//     }
+
+//     await setAppUserId(customer.id);
+
+//     const token = jwt.sign(
+//       {
+//         id: customer.id,
+//         role: 'customer',
+//         customer_status: customer.customer_status,
+//         review_permissions: customer.review_permissions,
+//       },
+//       secret,
+//       { expiresIn: '1h' }
+//     );
+
+//     return {
+//       userDetails: {
+//         id: customer.id,
+//         last_name: customer.last_name,
+//         first_name: customer.first_name,
+//         role: 'customer',
+//         customer_status: customer.customer_status,
+//         review_permissions: customer.review_permissions,
+//       },
+//       token,
+//     };
+//   } catch (error) {
+//     console.error('Error Authenticating Customer', error.message);
+//     throw error;
+//   } finally {
+//     client.release();
+//   }
+// };
+
 const authenticateCustomer = async ({ email, password }) => {
   const client = await pool.connect();
   try {
     const SQL = `
-      SELECT id, password, last_name, first_name, customer_status, review_permissions
-      FROM customers
-      WHERE email = $1;
+      SELECT c.id AS cart_id, w.id AS wishlist_id, cu.id, cu.password, cu.last_name, cu.first_name, cu.customer_status, cu.review_permissions
+      FROM customers cu
+      LEFT JOIN carts c ON c.customer_id = cu.id
+      LEFT JOIN wishlists w ON w.customer_id = cu.id
+      WHERE cu.email = $1;
     `;
 
     const response = await client.query(SQL, [email]);
@@ -80,12 +146,6 @@ const authenticateCustomer = async ({ email, password }) => {
       throw error;
     }
 
-    if (customer.customer_status === 'banned') {
-      const error = new Error('User Account Banned');
-      error.status = 401;
-      throw error;
-    }
-
     const passwordMatch = await bcrypt.compare(password, customer.password);
     if (!passwordMatch) {
       const error = new Error('Invalid Password');
@@ -93,12 +153,12 @@ const authenticateCustomer = async ({ email, password }) => {
       throw error;
     }
 
-    await setAppUserId(customer.id);
-
     const token = jwt.sign(
       {
         id: customer.id,
         role: 'customer',
+        cart_id: customer.cart_id, // Add cart_id to the token
+        wishlist_id: customer.wishlist_id, // Add wishlist_id to the token
         customer_status: customer.customer_status,
         review_permissions: customer.review_permissions,
       },
@@ -112,8 +172,8 @@ const authenticateCustomer = async ({ email, password }) => {
         last_name: customer.last_name,
         first_name: customer.first_name,
         role: 'customer',
-        customer_status: customer.customer_status,
-        review_permissions: customer.review_permissions,
+        cart_id: customer.cart_id, // Include cart_id in the response
+        wishlist_id: customer.wishlist_id, // Include wishlist_id in the response
       },
       token,
     };
@@ -140,8 +200,8 @@ const setAppUserId = async (userId) => {
   const client = await pool.connect();
 
   try {
-    const SQL = `SET myapp.user_id to $1`;
-    await client.query(SQL, [userId]);
+    const SQL = `SET myapp.user_id = '${userId}'`; // Interpolate the userId directly
+    await client.query(SQL);
     console.log('User ID set for session:', userId);
   } catch (error) {
     console.error('Error setting myapp.user_id', error);

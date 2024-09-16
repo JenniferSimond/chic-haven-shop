@@ -43,10 +43,16 @@ app.use(
 const admins = require('./controllers/adminController');
 const customers = require('./controllers/customerController');
 const products = require('./controllers/productController');
+const inventory = require('./controllers/inventoryController');
+const carts = require('./controllers/cartController');
+const reviews = require('./controllers/reviewController');
 
 app.use('/api/admins', admins);
 app.use('/api/customers', customers);
 app.use('/api/products', products);
+app.use('/api/inventory', inventory);
+app.use('/api/carts', carts);
+app.use('/api/reviews', reviews);
 
 const init = async () => {
   try {

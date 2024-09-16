@@ -7,67 +7,248 @@ const {
   createCategory,
   createProduct,
   createInventory,
+  createReview,
 } = require('./index');
 
 const seedDatabase = async () => {
   await createAdminRoles();
 
   const testAdmins = [
+    // Super Admins
     {
-      last_name: 'Simond',
-      first_name: 'Jennifer',
+      lastName: 'Simond',
+      firstName: 'Jennifer',
       email: 'jsimond@gmail.com',
       password: 'js_password',
       role: 'super_admin',
     },
     {
-      last_name: 'Stark',
-      first_name: 'Tony',
+      lastName: 'Banner',
+      firstName: 'Bruce',
+      email: 'bbanner@gmail.com',
+      password: 'bb_password',
+      role: 'super_admin',
+    },
+    {
+      lastName: 'Rogers',
+      firstName: 'Steve',
+      email: 'srogers@gmail.com',
+      password: 'sr_password',
+      role: 'super_admin',
+    },
+    // Site Admins
+    {
+      lastName: 'Stark',
+      firstName: 'Tony',
       email: 'tstark@gmail.com',
       password: 'ts_password',
       role: 'site_admin',
     },
     {
-      last_name: 'Barns',
-      first_name: 'Bucky',
+      lastName: 'Romanoff',
+      firstName: 'Natasha',
+      email: 'nromanoff@gmail.com',
+      password: 'nr_password',
+      role: 'site_admin',
+    },
+    // Regular Admins
+    {
+      lastName: 'Barns',
+      firstName: 'Bucky',
       email: 'bbarns@gmail.com',
       password: 'bb_password',
       role: 'admin',
     },
+    {
+      lastName: 'Parker',
+      firstName: 'Peter',
+      email: 'pparker@gmail.com',
+      password: 'pp_password',
+      role: 'admin',
+    },
+    {
+      lastName: 'Strange',
+      firstName: 'Stephen',
+      email: 'sstrange@gmail.com',
+      password: 'ss_password',
+      role: 'admin',
+    },
+    {
+      lastName: 'Wilson',
+      firstName: 'Sam',
+      email: 'swilson@gmail.com',
+      password: 'sw_password',
+      role: 'admin',
+    },
+    {
+      lastName: 'Odinson',
+      firstName: 'Thor',
+      email: 'todinson@gmail.com',
+      password: 'to_password',
+      role: 'admin',
+    },
+    {
+      lastName: 'Maximoff',
+      firstName: 'Wanda',
+      email: 'wmaximoff@gmail.com',
+      password: 'wm_password',
+      role: 'admin',
+    },
+    {
+      lastName: 'Rhodes',
+      firstName: 'James',
+      email: 'jrhodes@gmail.com',
+      password: 'jr_password',
+      role: 'admin',
+    },
+    {
+      lastName: 'Barton',
+      firstName: 'Clint',
+      email: 'cbarton@gmail.com',
+      password: 'cb_password',
+      role: 'admin',
+    },
+    {
+      lastName: 'Danvers',
+      firstName: 'Carol',
+      email: 'cdanvers@gmail.com',
+      password: 'cd_password',
+      role: 'admin',
+    },
+    {
+      lastName: 'Romanoff',
+      firstName: 'Yelena',
+      email: 'yromanoff@gmail.com',
+      password: 'yr_password',
+      role: 'admin',
+    },
   ];
-
   const createdAdmins = await Promise.all(testAdmins.map(createAdmin));
-  console.log('TEST ADMINS ->', createdAdmins);
 
   const testCustomers = [
     {
-      last_name: 'Ramirez',
-      first_name: 'Kimberly',
+      lastName: 'Ramirez',
+      firstName: 'Kimberly',
       email: 'kramirez@gmail.com',
       password: 'kr_password',
     },
     {
-      last_name: 'Smith',
-      first_name: 'Jane',
+      lastName: 'Smith',
+      firstName: 'Jane',
       email: 'jsmith@gmail.com',
       password: 'js_password',
     },
     {
-      last_name: 'Peters',
-      first_name: 'Joe',
+      lastName: 'Peters',
+      firstName: 'Joe',
       email: 'jpeters@gmail.com',
       password: 'jp_password',
     },
     {
-      last_name: 'Anderson',
-      first_name: 'Emily',
+      lastName: 'Anderson',
+      firstName: 'Emily',
       email: 'eanderson@gmail.com',
       password: 'ea_password',
+    },
+    {
+      lastName: 'Miller',
+      firstName: 'Thomas',
+      email: 'tmiller@gmail.com',
+      password: 'tm_password',
+    },
+    {
+      lastName: 'Johnson',
+      firstName: 'Sarah',
+      email: 'sjohnson@gmail.com',
+      password: 'sj_password',
+    },
+    {
+      lastName: 'Brown',
+      firstName: 'Michael',
+      email: 'mbrown@gmail.com',
+      password: 'mb_password',
+    },
+    {
+      lastName: 'Williams',
+      firstName: 'Jessica',
+      email: 'jwilliams@gmail.com',
+      password: 'jw_password',
+    },
+    {
+      lastName: 'Davis',
+      firstName: 'Chris',
+      email: 'cdavis@gmail.com',
+      password: 'cd_password',
+    },
+    {
+      lastName: 'Martinez',
+      firstName: 'Sofia',
+      email: 'smartinez@gmail.com',
+      password: 'sm_password',
+    },
+    {
+      lastName: 'Garcia',
+      firstName: 'Luis',
+      email: 'lgarcia@gmail.com',
+      password: 'lg_password',
+    },
+    {
+      lastName: 'Wilson',
+      firstName: 'Anna',
+      email: 'awilson@gmail.com',
+      password: 'aw_password',
+    },
+    {
+      lastName: 'Taylor',
+      firstName: 'David',
+      email: 'dtaylor@gmail.com',
+      password: 'dt_password',
+    },
+    {
+      lastName: 'Moore',
+      firstName: 'Laura',
+      email: 'lmoore@gmail.com',
+      password: 'lm_password',
+    },
+    {
+      lastName: 'White',
+      firstName: 'Daniel',
+      email: 'dwhite@gmail.com',
+      password: 'dw_password',
+    },
+    {
+      lastName: 'Clark',
+      firstName: 'Sophia',
+      email: 'sclark@gmail.com',
+      password: 'sc_password',
+    },
+    {
+      lastName: 'Harris',
+      firstName: 'John',
+      email: 'jharris@gmail.com',
+      password: 'jh_password',
+    },
+    {
+      lastName: 'Lewis',
+      firstName: 'Olivia',
+      email: 'olewis@gmail.com',
+      password: 'ol_password',
+    },
+    {
+      lastName: 'Young',
+      firstName: 'James',
+      email: 'jyoung@gmail.com',
+      password: 'jy_password',
+    },
+    {
+      lastName: 'Hall',
+      firstName: 'Grace',
+      email: 'ghall@gmail.com',
+      password: 'gh_password',
     },
   ];
 
   const createdCustomer = await Promise.all(testCustomers.map(createCustomer));
-  console.log('TEST CUSTOMERS ->', createdCustomer);
 
   const testCategories = [
     'bottoms',
@@ -79,7 +260,6 @@ const seedDatabase = async () => {
   ];
 
   const createdCategory = await Promise.all(testCategories.map(createCategory));
-  console.log('TEST CATEGORIES ->', createdCategory);
 
   const testProducts = [
     {
@@ -316,7 +496,7 @@ const seedDatabase = async () => {
     { size: 'X-Small', quantity: 20 },
     { size: 'Small', quantity: 50 },
     { size: 'Medium', quantity: 100 },
-    { size: 'Large', quantity: 100 },
+    { size: 'large', quantity: 100 },
     { size: 'X-Large', quantity: 70 },
     { size: 'XX-Large', quantity: 26 },
   ];
@@ -324,7 +504,7 @@ const seedDatabase = async () => {
   for (const product of createdProducts) {
     for (const inventory of inventoryValues) {
       const inventoryData = {
-        product_id: product.id,
+        productId: product.id,
         size: inventory.size,
         quantity: inventory.quantity,
       };
@@ -332,6 +512,35 @@ const seedDatabase = async () => {
       console.log('Created Inventory:', inventoryData);
     }
   }
+
+  // Reviews data
+  const reviewData = [
+    { rating: 5, comment: 'Excellent quality!' },
+    { rating: 4, comment: 'Very nice, but it runs a little small.' },
+    { rating: 3, comment: 'Amazing outfit!.' },
+  ];
+
+  // Create 3 reviews for each product
+  for (const product of createdProducts) {
+    for (let i = 0; i < 3; i++) {
+      const customer = createdCustomer[i % createdCustomer.length]; // Cycle through customers
+      const review = reviewData[i]; // Use predefined reviews
+      await createReview(
+        product.id,
+        customer.id,
+        review.rating,
+        review.comment
+      );
+      console.log(
+        `Created review for product ${product.name} by customer ${customer.first_name} ${customer.last_name}`
+      );
+    }
+  }
+
+  console.log('TEST CATEGORIES ->', createdCategory);
+  console.log('TEST PRODUCTS ->', createdProducts);
+  console.log('TEST CUSTOMERS ->', createdCustomer);
+  console.log('TEST ADMINS ->', createdAdmins);
 };
 
 module.exports = {

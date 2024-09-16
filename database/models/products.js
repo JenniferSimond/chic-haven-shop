@@ -1,7 +1,6 @@
 // Product Models
 const pool = require('../databaseConfig');
 const { v4: uuidv4 } = require('uuid');
-const bcrypt = require('bcrypt');
 
 // CREATE PRODUCT
 const createProduct = async ({
@@ -68,7 +67,7 @@ const fetchProducts = async () => {
 };
 
 // FETCH PRODUCT
-const fetchProductById = async (id) => {
+const fetchProductById = async ({ id }) => {
   const client = await pool.connect();
   try {
     const SQL = `
@@ -77,6 +76,7 @@ const fetchProductById = async (id) => {
         COALESCE(
           json_agg(
             json_build_object(
+              'inventory_id', i.id,
               'size', i.size,
               'quantity', i.quantity,
               'stock_status', i.stock_status
@@ -89,7 +89,7 @@ const fetchProductById = async (id) => {
       GROUP BY p.id;
     `;
 
-    const response = await client.query(SQL, [id]);
+    const response = await client.query(SQL, [id]); // Make sure id is a UUID
     return response.rows[0];
   } catch (error) {
     console.error('Error fetching product', error);
@@ -100,14 +100,15 @@ const fetchProductById = async (id) => {
 };
 
 // UPDATE PRODUCT
-const updateProductById = async (
+const updateProductById = async ({
+  id,
   name,
   SKU,
   description,
   image,
-  category_id,
-  price
-) => {
+  categoryId,
+  price,
+}) => {
   const client = await pool.connect();
   try {
     const SQL = `
@@ -118,18 +119,19 @@ const updateProductById = async (
               description = COALESCE($4, description),
               image = COALESCE($5, image),
               category_id = COALESCE($6, category_id),
-              price = COALESCE($7, price),
+              price = COALESCE($7, price)
               
           WHERE id = $1
           REtURNING *
       `;
 
     const response = await client.query(SQL, [
+      id,
       name,
       SKU,
       description,
       image,
-      category_id,
+      categoryId,
       price,
     ]);
     if (response.rows.length === 0) {
@@ -145,7 +147,20 @@ const updateProductById = async (
 };
 
 // DELETE PRODUCT
-const deleteProductById = async () => {};
+const deleteProductById = async (id) => {
+  const client = await pool.connect();
+  try {
+    const SQL = `
+      DELETE FROM products WHERE id = $1 
+    `;
+    await client.query(SQL, [id]);
+  } catch (error) {
+    console.error('Error deleting product', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+};
 
 module.exports = {
   createProduct,

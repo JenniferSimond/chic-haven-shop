@@ -4,7 +4,7 @@ const pool = require('../databaseConfig');
 const { v4: uuidv4 } = require('uuid');
 
 // CREATE INVENTORY
-const createInventory = async ({ product_id, size, quantity }) => {
+const createInventory = async ({ productId, size, quantity }) => {
   const client = await pool.connect();
   try {
     const SQL = `
@@ -15,7 +15,7 @@ const createInventory = async ({ product_id, size, quantity }) => {
 
     const response = await client.query(SQL, [
       uuidv4(),
-      product_id,
+      productId,
       size,
       quantity,
     ]);
@@ -32,8 +32,8 @@ const fetchAllInventory = async () => {
   const client = await pool.connect();
   try {
     const SQL = `
-        SELECT * FROM product_inventory
-    `;
+          SELECT * FROM product_inventory
+      `;
 
     const response = await client.query(SQL);
     return response.rows;
@@ -46,14 +46,14 @@ const fetchAllInventory = async () => {
 };
 
 // FETCH INVENTORY BY ID
-const fetchInventoryById = async (product_id) => {
+const fetchInventoryById = async (productId) => {
   const client = await pool.connect();
   try {
     const SQL = `
         SELECT * FROM product_inventory WHERE product_id = $1
     `;
 
-    const response = await client.query(SQL, [product_id]);
+    const response = await client.query(SQL, [productId]);
     return response.rows;
   } catch (error) {
     console.error('Error product inventory.', error);
@@ -64,12 +64,12 @@ const fetchInventoryById = async (product_id) => {
 };
 
 // UPDATE INVENTORY
-const UpdateInventoryById = async (
+const updateInventoryById = async (
   id,
-  product_id,
+  productId,
   size,
   quantity,
-  stock_status
+  stockStatus
 ) => {
   const client = await pool.connect();
   try {
@@ -87,10 +87,10 @@ const UpdateInventoryById = async (
 
     const response = await client.query(SQL, [
       id,
-      product_id,
+      productId,
       size,
       quantity,
-      stock_status,
+      stockStatus,
     ]);
 
     return response.rows[0];
@@ -103,13 +103,13 @@ const UpdateInventoryById = async (
 };
 
 // DELETE INVENTORY
-const DeleteInventoryById = async (id, product_id) => {
+const deleteInventoryById = async (id, productId) => {
   const client = await pool.connect();
   try {
     const SQL = `
           DELETE FROM product_inventory WHERE product_id = $2 AND id = $1
         `;
-    await client.query(SQL, [id]);
+    await client.query(SQL, [id, productId]);
   } catch (error) {
     console.error('Error deleting product', error);
     throw error;
@@ -122,6 +122,6 @@ module.exports = {
   createInventory,
   fetchAllInventory,
   fetchInventoryById,
-  UpdateInventoryById,
-  DeleteInventoryById,
+  updateInventoryById,
+  deleteInventoryById,
 };

@@ -18,7 +18,7 @@ const ProductWrapper = styled.div`
     flex-wrap: wrap;
     row-gap: 40px;
     column-gap: 15px;
-    justify-content: center;  // Aligns items to the left
+    justify-content: center;  // align products 
     align-content: flex-start;
     width: 100%;  
     max-height: 100%;
@@ -28,7 +28,6 @@ const ProductWrapper = styled.div`
     
 @media (max-width: 950px) {
     margin-right: 0px;
-    justify-content: center;
     margin-bottom: 10%;
 }
 `

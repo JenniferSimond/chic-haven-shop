@@ -37,17 +37,17 @@ const NavWrapper = styled.div`
 const ContentWindow = styled.div`
   flex-grow: 1;
   padding-top: 7rem;
-  padding-bottom: 5rem;
+  padding-bottom: 3rem;
   overflow-y auto;
 
    @media (max-width: 768px) {
         padding-top: 5rem;
-        pdding-bottom: 3rem;
+        // padding-bottom: 3rem;
   }
 
   @media (max-width: 500px) {
         padding-top: 4rem;
-        pdding-bottom: 3rem;
+        // padding-bottom: 3rem;
   }
 `;
 
@@ -75,12 +75,12 @@ function App() {
       <ContentWindow>
         <Routes>
           <Route path='/' element={<LandingPage />} />
-          <Route path='/Home' element={<LandingPage />} />
-          <Route path='/Products' element={<Products />} />
-          <Route path='/Products/:ProductId' element={ProductView}/>
+          <Route path='/home' element={<LandingPage />} />
+          <Route path='/products' element={<Products />} />
+          <Route path='/products/:productId' element={<ProductView />}/>
           <Route path='/about' element={<About />}/>
           <Route path='/login' element={<Login />}/>
-          <Route path='/signup' element={<Register />}/>
+          <Route path='/sign-up' element={<Register />}/>
           <Route path='/account' element={<Account />}/>
           <Route path='/cart' element={<Cart />}/>
           <Route path='/wishlist' element={<Wishlist />}/>

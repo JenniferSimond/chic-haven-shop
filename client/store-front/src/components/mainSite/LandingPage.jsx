@@ -414,7 +414,7 @@ const LandingPage = () => {
     ];
 
     const handleClick = () => {
-        navigate('/signup')
+        navigate('/sign-up')
     }
 
     return (

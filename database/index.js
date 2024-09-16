@@ -1,13 +1,13 @@
-// index.js
+//index.js
 
-// AUTH
+//AUTH
 const {
   authenticateAdmin,
   authenticateCustomer,
   findUserByToken,
 } = require('./models/auth');
 
-// ADMINS
+//ADMINS
 const {
   createAdminRoles,
   createAdmin,
@@ -17,7 +17,7 @@ const {
   deleteAdminById,
 } = require('./models/admin');
 
-// CUSTOMERS
+//CUSTOMERS
 const {
   createCustomer,
   fetchCustomers,
@@ -26,7 +26,7 @@ const {
   deleteCustomerById,
 } = require('./models/customer');
 
-// CATEGORIES
+//CATEGORIES
 const {
   createCategory,
   fetchCategories,
@@ -35,7 +35,7 @@ const {
   deleteCategoryById,
 } = require('./models/categories');
 
-// PRODUCTS
+//PRODUCTS
 const {
   createProduct,
   fetchProducts,
@@ -44,22 +44,47 @@ const {
   deleteProductById,
 } = require('./models/products');
 
-// PRODUCT INVENTORY
+//PRODUCT INVENTORY
 const {
   createInventory,
   fetchAllInventory,
   fetchInventoryById,
-  UpdateInventoryById,
-  DeleteInventoryById,
+  updateInventoryById,
+  deleteInventoryById,
 } = require('./models/inventory');
 
+//CARTS
+const {
+  fetchCartAndItems,
+  addCartItem,
+  updateCartItem,
+  deleteCartItem,
+} = require('./models/carts');
+
+//WISHLISTS
+const {
+  fetchWishlistAndItems,
+  addItemToWishlist,
+  moveWishlistItemToCart,
+  deleteWishlistItem,
+} = require('./models/wishlists');
+
+//REVIEWS
+const {
+  createReview,
+  fetchAllReviews,
+  fetchReviewsByProduct,
+  fetchReviewsByUser,
+  updateProductReview,
+  deleteProductReview,
+} = require('./models/reviews');
+
 module.exports = {
-  // AUTH
+  //AUTH
   authenticateAdmin,
   authenticateCustomer,
   findUserByToken,
-
-  // ADMINS
+  //ADMINS
   createAdminRoles,
   createAdmin,
   fetchAdmins,
@@ -72,7 +97,7 @@ module.exports = {
   fetchCustomersByID,
   updateCustomerById,
   deleteCustomerById,
-  // CATEGORIES
+  //CATEGORIES
   createCategory,
   fetchCategories,
   fetchCategoryById,
@@ -84,10 +109,27 @@ module.exports = {
   fetchProductById,
   updateProductById,
   deleteProductById,
+  //CARTS
+  fetchCartAndItems,
+  addCartItem,
+  updateCartItem,
+  deleteCartItem,
   //PRODUCT INVENTORY
   createInventory,
   fetchAllInventory,
   fetchInventoryById,
-  UpdateInventoryById,
-  DeleteInventoryById,
+  updateInventoryById,
+  deleteInventoryById,
+  //WISHLIST
+  fetchWishlistAndItems,
+  addItemToWishlist,
+  moveWishlistItemToCart,
+  deleteWishlistItem,
+  //REVIEWS
+  createReview,
+  fetchAllReviews,
+  fetchReviewsByProduct,
+  fetchReviewsByUser,
+  updateProductReview,
+  deleteProductReview,
 };

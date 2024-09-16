@@ -13,27 +13,33 @@ const {
 
 const {
   isAuthenticated,
-  adminAuthorization,
+  isAnyAdmin,
   adminDataAuthorization,
-  upperAdminAuthorization,
+  isSuperAdmin,
+  isSiteAdmin,
 } = require('../middleware/userAuth');
 
 // REGISTER
-router.post('/register', isAuthenticated, async (req, res, next) => {
-  try {
-    const { last_name, first_name, email, password, role } = req.body;
-    const newAdmin = await createAdmin({
-      last_name,
-      first_name,
-      email,
-      password,
-      role,
-    });
-    res.status(201).json(newAdmin);
-  } catch (error) {
-    next(error);
+router.post(
+  '/register',
+  isAuthenticated,
+  isSuperAdmin,
+  async (req, res, next) => {
+    try {
+      const { lastName, firstName, email, password, role } = req.body;
+      const newAdmin = await createAdmin({
+        lastName,
+        firstName,
+        email,
+        password,
+        role,
+      });
+      res.status(201).json(newAdmin);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 // LOGIN
 router.post('/auth/login', async (req, res, next) => {
@@ -50,7 +56,7 @@ router.post('/auth/login', async (req, res, next) => {
 });
 
 // GET ALL ADMINS
-router.get('/', upperAdminAuthorization, async (req, res, next) => {
+router.get('/', isAuthenticated, isAnyAdmin, async (req, res, next) => {
   try {
     const admins = await fetchAdmins();
     if (!admins) {
@@ -63,36 +69,46 @@ router.get('/', upperAdminAuthorization, async (req, res, next) => {
 });
 
 //GET ADMIN BY ID
-router.get('/:id', adminDataAuthorization, async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const admin = await fetchAdminByID(id);
-    if (!admin) {
-      return res.status(404).json({ message: 'Admin Not Found' });
+router.get(
+  '/:id',
+  isAuthenticated,
+  adminDataAuthorization,
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const admin = await fetchAdminByID(id);
+      if (!admin) {
+        return res.status(404).json({ message: 'Admin Not Found' });
+      }
+      res.json(admin);
+    } catch (error) {
+      next(error);
     }
-    res.json(admin);
-  } catch (error) {
-    next(error);
   }
-});
+);
 
 // UPDATE ADMIN
-router.patch('/:id', upperAdminAuthorization, async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const updatedData = req.body;
-    const updatedAdminDetails = await updateAdminById(id, updatedData);
-    if (!updatedAdminDetails) {
-      return res.status(404).json({ message: 'Admin not found' });
+router.patch(
+  '/:id',
+  isAuthenticated,
+  adminDataAuthorization,
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const updatedData = req.body;
+      const updatedAdminDetails = await updateAdminById(id, updatedData);
+      if (!updatedAdminDetails) {
+        return res.status(404).json({ message: 'Admin not found' });
+      }
+      res.json(updatedAdminDetails);
+    } catch (error) {
+      next(error);
     }
-    res.json(updatedAdminDetails);
-  } catch (error) {
-    next(error);
   }
-});
+);
 
 // DELETE ADMIN
-router.delete('/:id', upperAdminAuthorization, async (req, res, next) => {
+router.delete('/:id', isAuthenticated, isSuperAdmin, async (req, res, next) => {
   try {
     const { id } = req.params;
     await deleteAdminById(id);

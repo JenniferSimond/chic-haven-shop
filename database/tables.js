@@ -21,8 +21,7 @@ DROP TABLE IF EXISTS wishlist_items CASCADE;
 DROP TABLE IF EXISTS orders CASCADE;
 DROP TABLE IF EXISTS ordered_items CASCADE;
 DROP TABLE IF EXISTS payments CASCADE;
-DROP TABLE IF EXISTS customer_reviews CASCADE;
-DROP TABLE IF EXISTS product_reviews CASCADE;
+DROP TABLE IF EXISTS reviews CASCADE;
 DROP TYPE IF EXISTS admin_type CASCADE;
 DROP TYPE IF EXISTS customer_status CASCADE;
 DROP TYPE IF EXISTS review_permissions CASCADE;
@@ -132,6 +131,18 @@ CREATE TABLE product_inventory(
   modified_at TIMESTAMP DEFAULT current_timestamp
 );
 
+-- REVIEWS
+CREATE TABLE reviews (
+  id UUID PRIMARY KEY,
+  product_id UUID REFERENCES products(id) ON DELETE CASCADE,
+  customer_id UUID REFERENCES customers(id) ON DELETE CASCADE,
+  rating INTEGER CHECK (rating BETWEEN 1 AND 5),
+  comment VARCHAR(255),
+  created_at TIMESTAMP DEFAULT current_timestamp,
+  modified_at TIMESTAMP DEFAULT current_timestamp
+);
+
+
 -- CART
 CREATE TABLE carts(
   id UUID PRIMARY KEY,
@@ -144,6 +155,7 @@ CREATE TABLE cart_items(
   id UUID PRIMARY KEY,
   cart_id UUID REFERENCES carts(id) ON DELETE CASCADE,
   product_id UUID REFERENCES products(id) ON DELETE CASCADE,
+  product_size VARCHAR(25),
   quantity INTEGER CHECK (quantity > 0),
   total_price DECIMAL CHECK (total_price > 0),
   created_at TIMESTAMP DEFAULT current_timestamp,
@@ -200,23 +212,7 @@ CREATE TABLE payments(
   modified_at TIMESTAMP DEFAULT current_timestamp
 );
 
--- REVIEWS
-CREATE TABLE product_reviews(
-  id UUID PRIMARY KEY,
-  product_id UUID REFERENCES products(id) ON DELETE CASCADE,
-  rating INTEGER,
-  comment VARCHAR(255),
-  created_at TIMESTAMP DEFAULT current_timestamp,
-  modified_at TIMESTAMP DEFAULT current_timestamp
-);
 
-CREATE TABLE customer_reviews(
-  id UUID PRIMARY KEY,
-  customer_id UUID REFERENCES customers(id) ON DELETE CASCADE,
-  review_id UUID REFERENCES product_reviews(id) ON DELETE CASCADE,
-  created_at TIMESTAMP DEFAULT current_timestamp,
-  modified_at TIMESTAMP DEFAULT current_timestamp
-);
 
 -- CHANGE TRACKING TRIGGER
 CREATE OR REPLACE FUNCTION track_table_changes()
@@ -263,7 +259,7 @@ FOR EACH ROW
 EXECUTE FUNCTION track_table_changes();
 
 CREATE TRIGGER track_review_changes
-AFTER INSERT OR UPDATE OR DELETE ON product_reviews
+AFTER INSERT OR UPDATE OR DELETE ON reviews
 FOR EACH ROW
 EXECUTE FUNCTION track_table_changes();
 
@@ -307,6 +303,8 @@ CREATE TRIGGER update_stock_status_trigger
 BEFORE INSERT OR UPDATE ON product_inventory
 FOR EACH ROW
 EXECUTE FUNCTION update_stock_status();
+
+
   `;
 
   let client; // creating client variable

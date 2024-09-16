@@ -24,11 +24,11 @@ const createCategory = async (name) => {
   }
 };
 
-const fetchCategories = async (id) => {
+const fetchCategories = async () => {
   const client = await pool.connect();
   try {
     const SQL = `
-        SELECT * FROM product_categores
+        SELECT * FROM product_categories
     `;
 
     const response = await client.query(SQL);

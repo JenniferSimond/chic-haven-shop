@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 
 // CREATE CUSTOMER
 
-const createCustomer = async ({ last_name, first_name, email, password }) => {
+const createCustomer = async ({ lastName, firstName, email, password }) => {
   const client = await pool.connect();
   try {
     const SQL = `
@@ -17,8 +17,8 @@ const createCustomer = async ({ last_name, first_name, email, password }) => {
 
     const response = await client.query(SQL, [
       uuidv4(),
-      last_name,
-      first_name,
+      lastName,
+      firstName,
       email,
       await bcrypt.hash(password, 10),
     ]);
@@ -77,12 +77,12 @@ const updateCustomerById = async (id, updatedCustomerData) => {
 
   try {
     const {
-      last_name,
-      first_name,
+      lastName,
+      firstName,
       email,
       password,
-      customer_status = 'active',
-      review_permissions = 'allowed',
+      customerStatus = 'active',
+      reviewPermissions = 'allowed',
     } = updatedCustomerData;
 
     let hashedPassword;
@@ -101,17 +101,17 @@ const updateCustomerById = async (id, updatedCustomerData) => {
             review_permissions = $7,
             modified_at = CURRENT_TIMESTAMP
         WHERE id = $1
-        RETURNING *;
+        RETURNING *
         `;
 
     const response = await client.query(SQL, [
       id,
-      last_name,
-      first_name,
+      lastName,
+      firstName,
       email,
       hashedPassword || password,
-      customer_status,
-      review_permissions,
+      customerStatus,
+      reviewPermissions,
     ]);
 
     if (response.rows.length === 0) {
