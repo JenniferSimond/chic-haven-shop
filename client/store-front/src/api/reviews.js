@@ -40,8 +40,12 @@ const fetchAllReviews = async (token) => {
 // Fetch Reviews by Product
 const fetchReviewsByProduct = async (productId) => {
   try {
-    const response = await fetch(`${API_URL}/reviews/product/${productId}`);
-
+    const response = await fetch(`${API_URL}/reviews/products/${productId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
     const productReviews = await response.json();
     console.log('Fetched Reviews for Product (API) -->', productReviews);
     return productReviews;
@@ -51,9 +55,9 @@ const fetchReviewsByProduct = async (productId) => {
 };
 
 // Fetch Reviews by User
-const fetchReviewsByUser = async (token, userId) => {
+const fetchReviewsByUser = async (token, customerId) => {
   try {
-    const response = await fetch(`${API_URL}/reviews/user/${userId}`, {
+    const response = await fetch(`${API_URL}/reviews/customers/${customerId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

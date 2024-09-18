@@ -53,8 +53,12 @@ router.get(
 // Create Inventory
 router.post('/', isAuthenticated, isSuperAdmin, async (req, res, next) => {
   try {
-    const { productId, size, quantity } = req.body;
-    const newInventory = await createInventory({ productId, size, quantity });
+    const { productId, productSize, quantity } = req.body;
+    const newInventory = await createInventory({
+      productId,
+      productSize,
+      quantity,
+    });
     res.status(201).json(newInventory);
   } catch (error) {
     next(error);
@@ -69,12 +73,12 @@ router.patch(
   async (req, res, next) => {
     try {
       const { inventoryId } = req.params;
-      const { size, quantity, stock_status } = req.body;
+      const { productSize, quantity, stockStatus } = req.body;
       const updatedInventory = await updateInventoryById(
         inventoryId,
-        size,
+        productSize,
         quantity,
-        stock_status
+        stockStatus
       );
       if (!updatedInventory) {
         return res.status(404).json({ message: 'Inventory Not Found.' });

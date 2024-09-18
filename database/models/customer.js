@@ -57,8 +57,20 @@ const fetchCustomersByID = async (id) => {
   const client = await pool.connect();
   try {
     const SQL = `
-    SELECT * FROM customers WHERE id = $1
-  `;
+      SELECT 
+        cu.id,
+        cu.first_name,
+        cu.last_name,
+        cu.email,
+        cu.customer_status,
+        cu.review_permissions,
+        ca.id AS cart_id,
+        wl.id AS wishlist_id
+      FROM customers cu
+      LEFT JOIN carts ca ON ca.customer_id = cu.id
+      LEFT JOIN wishlists wl ON wl.customer_id = cu.id
+      WHERE cu.id = $1;
+    `;
 
     const response = await client.query(SQL, [id]);
     return response.rows[0];

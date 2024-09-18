@@ -34,7 +34,6 @@ router.get(
 );
 
 //  Add Cart Item
-// Add Cart Item Route
 router.post(
   '/:cartId/items',
   isAuthenticated,
@@ -42,10 +41,18 @@ router.post(
   async (req, res, next) => {
     try {
       const { cartId } = req.params;
-      const { productId, quantity, productSize } = req.body; // Get the size from the request body
+      const { productId, inventoryId, productSize, quantity } = req.body; // Get the size from the request body
+
+      // Debugging logs
+      console.log('Cart ID:', cartId);
+      console.log('Product ID:', productId);
+      console.log('Inventory ID:', inventoryId);
+      console.log('Product Size:', productSize);
+      console.log('Quantity:', quantity);
       const newCartItem = await addCartItem({
         cartId,
         productId,
+        inventoryId,
         productSize,
         quantity,
       });
@@ -58,14 +65,18 @@ router.post(
 
 // Update Cart Item
 router.patch(
-  '/items/:id',
+  '/:cartId/items/:itemId',
   isAuthenticated,
   validateCartOrWishlistAccess,
   async (req, res, next) => {
     try {
-      const { id } = req.params;
-      const { cartId, quantity } = req.body;
-      const updatedCartItem = await updateCartItem({ id, cartId, quantity });
+      const { cartId, itemId } = req.params;
+      const { quantity } = req.body;
+      const updatedCartItem = await updateCartItem({
+        cartId,
+        itemId,
+        quantity,
+      });
       if (!updatedCartItem) {
         return res.status(404).json({ message: 'Cart item not found' });
       }
@@ -78,14 +89,14 @@ router.patch(
 
 // delete Cart Item
 router.delete(
-  '/items/:id',
+  '/:cartId/items/:itemsId',
   isAuthenticated,
   validateCartOrWishlistAccess,
   async (req, res, next) => {
     try {
-      const { id } = req.params;
-      const { cartId } = req.body;
-      const deletedCartItem = await deleteCartItem({ id, cartId });
+      const { cartId, itemId } = req.params;
+
+      const deletedCartItem = await deleteCartItem({ cartId, itemId });
       if (!deletedCartItem) {
         return res.status(404).json({ message: 'Cart item not found' });
       }

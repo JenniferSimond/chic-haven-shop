@@ -153,6 +153,8 @@ const authenticateCustomer = async ({ email, password }) => {
       throw error;
     }
 
+    await setAppUserId(customer.id);
+
     const token = jwt.sign(
       {
         id: customer.id,

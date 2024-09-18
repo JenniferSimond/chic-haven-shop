@@ -164,19 +164,56 @@ const isAuthorizedCustomer = (req, res, next) => {
   }
 };
 
+// const validateCartOrWishlistAccess = async (req, res, next) => {
+//   try {
+//     // Ensure the user is authenticated
+//     if (!req.user) {
+//       return res.status(401).json({ message: 'Not Authorized' });
+//     }
+
+//     // Extract cart_id and wishlist_id from req.params and req.body
+//     const cart_id = req.params.cartId || req.body.cartId; // Check both params and body for cartId
+//     const wishlist_id = req.params.wishlistId || req.body.wishlistId; // Check both params and body for wishlistId
+
+//     // Validate cart access
+//     if (cart_id && req.user.cart_id !== cart_id) {
+//       return res
+//         .status(403)
+//         .json({ message: 'Forbidden: Cannot access this cart' });
+//     }
+
+//     // Validate wishlist access
+//     if (wishlist_id && req.user.wishlist_id !== wishlist_id) {
+//       return res
+//         .status(403)
+//         .json({ message: 'Forbidden: Cannot access this wishlist' });
+//     }
+
+//     // If validation passes, allow the request to proceed
+//     next();
+//   } catch (error) {
+//     res.status(403).json({ message: 'Forbidden: Access Denied' });
+//   }
+// };
+
 const validateCartOrWishlistAccess = async (req, res, next) => {
   try {
     // Ensure the user is authenticated
     if (!req.user) {
+      console.log('User not authenticated'); // Debugging
       return res.status(401).json({ message: 'Not Authorized' });
     }
 
     // Extract cart_id and wishlist_id from req.params and req.body
-    const cart_id = req.params.cartId || req.body.cartId; // Check both params and body for cartId
-    const wishlist_id = req.params.wishlistId || req.body.wishlistId; // Check both params and body for wishlistId
+    const cart_id = req.params.cartId || req.body.cartId;
+    const wishlist_id = req.params.wishlistId || req.body.wishlistId;
+
+    console.log('User Cart ID:', req.user.cart_id); // Debugging
+    console.log('Provided Cart ID:', cart_id); // Debugging
 
     // Validate cart access
     if (cart_id && req.user.cart_id !== cart_id) {
+      console.log('Cart ID mismatch'); // Debugging
       return res
         .status(403)
         .json({ message: 'Forbidden: Cannot access this cart' });
@@ -184,6 +221,7 @@ const validateCartOrWishlistAccess = async (req, res, next) => {
 
     // Validate wishlist access
     if (wishlist_id && req.user.wishlist_id !== wishlist_id) {
+      console.log('Wishlist ID mismatch'); // Debugging
       return res
         .status(403)
         .json({ message: 'Forbidden: Cannot access this wishlist' });
@@ -192,6 +230,7 @@ const validateCartOrWishlistAccess = async (req, res, next) => {
     // If validation passes, allow the request to proceed
     next();
   } catch (error) {
+    console.error('Error in validateCartOrWishlistAccess:', error); // Debugging
     res.status(403).json({ message: 'Forbidden: Access Denied' });
   }
 };

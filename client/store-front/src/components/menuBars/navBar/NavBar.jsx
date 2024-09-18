@@ -171,6 +171,9 @@ const LogInOut = styled.button`
 const NavBar = () => {
     const {setCustomerData} = useContext(CustomerContext);
     const token = getToken()
+    const { customerData } = useContext(CustomerContext);
+
+    const customerId = customerData.id;
     
     const navigate = useNavigate();
 
@@ -211,7 +214,7 @@ const NavBar = () => {
                 <Account  src={account} alt='Account' $hoverIcon={accountLight} onClick={accountClickHandler}/>
                 <Cart src={cart} alt='Cart' $hoverIcon={cartLight} onClick={cartClickHandler}/>
             </IconContainer>
-            {token ? <LogInOut onClick={logoutClickHandler}>Logout</LogInOut> : <LogInOut onClick={loginClickHandler} >Login</LogInOut>}
+            {token && customerId ? <LogInOut onClick={logoutClickHandler}>Logout</LogInOut> : <LogInOut onClick={loginClickHandler} >Login</LogInOut>}
         </NavbarRight>
 
         <NavBarRightMobile>

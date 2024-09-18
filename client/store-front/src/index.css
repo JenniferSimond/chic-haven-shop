@@ -51,7 +51,7 @@ body {
   
 }
 
-@media (max-width: 905px) {
+@media (max-width: 950px) {
   ::-webkit-scrollbar-track {
     background-color: rgba(var(--mustard),1);
     border: 2px solid rgb(var(--mustard));

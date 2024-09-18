@@ -77,7 +77,7 @@ const fetchProductById = async ({ id }) => {
           json_agg(
             json_build_object(
               'inventory_id', i.id,
-              'size', i.size,
+              'product_size', i.product_size,
               'quantity', i.quantity,
               'stock_status', i.stock_status
             )

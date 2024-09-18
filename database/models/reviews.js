@@ -62,19 +62,24 @@ const fetchReviewsByProduct = async (productId) => {
   try {
     const SQL = `
       SELECT
-        r.*,
-        c.first_name
-        FROM reviews r
-        LEFT JOIN customer c
-        ON r.customer_id = c.id
+        r.id,
+        r.product_id,
+        r.customer_id,
+        r.rating,
+        r.comment,
+        r.created_at,
+        r.modified_at,
+        c.first_name,
+        c.last_name
+      FROM reviews r
+      LEFT JOIN customers c
+      ON r.customer_id = c.id
       WHERE r.product_id = $1
-      ORDER BY r.rating DESC
-      RETURNING *
-        
+      ORDER BY r.rating DESC;
     `;
 
     const response = await client.query(SQL, [productId]);
-    return response.rows;
+    return response.rows; // Return the rows directly without RETURNING *
   } catch (error) {
     console.error(
       'Error fetching reviews for product with customer info.',
@@ -86,7 +91,7 @@ const fetchReviewsByProduct = async (productId) => {
 };
 
 // Fetch reviews by a specific user
-const fetchReviewsByUser = async (userId) => {
+const fetchReviewsByUser = async (customerId) => {
   const client = await pool.connect();
 
   try {
@@ -102,7 +107,7 @@ const fetchReviewsByUser = async (userId) => {
       RETURNING *
     `;
 
-    const response = await client.query(SQL, [userId]);
+    const response = await client.query(SQL, [customerId]);
     return response.rows;
   } catch (error) {
     console.error('Error fetching reviews by user.', error);

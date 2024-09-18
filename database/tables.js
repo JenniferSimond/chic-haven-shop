@@ -123,7 +123,7 @@ CREATE TABLE products(
 CREATE TABLE product_inventory(
   id UUID PRIMARY KEY,
   product_id UUID REFERENCES products(id) ON DELETE CASCADE,
-  size VARCHAR(20),
+  product_size VARCHAR(25),
   quantity INTEGER CHECK (quantity >= 0),
   stock_status stock_status DEFAULT 'in_stock',
   is_deleted BOOLEAN DEFAULT FALSE, -- soft delete flag to manage discontinued sizes, variants, etc.
@@ -148,13 +148,15 @@ CREATE TABLE carts(
   id UUID PRIMARY KEY,
   customer_id UUID REFERENCES customers(id) ON DELETE CASCADE,
   created_at TIMESTAMP DEFAULT current_timestamp,
-  modified_at TIMESTAMP DEFAULT current_timestamp
+  modified_at TIMESTAMP DEFAULT current_timestamp,
+  CONSTRAINT unique_customer UNIQUE (customer_id, id)
 );
 
 CREATE TABLE cart_items(
   id UUID PRIMARY KEY,
   cart_id UUID REFERENCES carts(id) ON DELETE CASCADE,
   product_id UUID REFERENCES products(id) ON DELETE CASCADE,
+  inventory_id UUID REFERENCES product_inventory(id) ON DELETE CASCADE,
   product_size VARCHAR(25),
   quantity INTEGER CHECK (quantity > 0),
   total_price DECIMAL CHECK (total_price > 0),
@@ -195,6 +197,8 @@ CREATE TABLE ordered_items(
   id UUID PRIMARY KEY,
   order_id UUID REFERENCES orders(id) ON DELETE CASCADE,
   product_id UUID REFERENCES products(id) ON DELETE CASCADE,
+  inventory_id UUID REFERENCES product_inventory(id) ON DELETE CASCADE,
+  product_size VARCHAR(25),
   quantity INTEGER,
   order_total DECIMAL CHECK (order_total > 0),
   created_at TIMESTAMP DEFAULT current_timestamp,

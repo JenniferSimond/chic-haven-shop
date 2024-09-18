@@ -18,7 +18,7 @@ const {
 
 //  Add Wishlist Item
 router.post(
-  '/wishlists/:wishlistId/items',
+  '/:wishlistId/items',
   isAuthenticated,
   validateCartOrWishlistAccess,
   async (req, res, next) => {

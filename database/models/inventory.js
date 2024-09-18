@@ -4,11 +4,11 @@ const pool = require('../databaseConfig');
 const { v4: uuidv4 } = require('uuid');
 
 // CREATE INVENTORY
-const createInventory = async ({ productId, size, quantity }) => {
+const createInventory = async ({ productId, productSize, quantity }) => {
   const client = await pool.connect();
   try {
     const SQL = `
-       INSERT INTO product_inventory (id, product_id, size, quantity, created_at, modified_at )   
+       INSERT INTO product_inventory (id, product_id, product_size, quantity, created_at, modified_at )   
        VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
        RETURNING *
     `;
@@ -16,7 +16,7 @@ const createInventory = async ({ productId, size, quantity }) => {
     const response = await client.query(SQL, [
       uuidv4(),
       productId,
-      size,
+      productSize,
       quantity,
     ]);
   } catch (error) {
@@ -67,7 +67,7 @@ const fetchInventoryById = async (productId) => {
 const updateInventoryById = async (
   id,
   productId,
-  size,
+  productSize,
   quantity,
   stockStatus
 ) => {
@@ -76,7 +76,7 @@ const updateInventoryById = async (
     const SQL = `
         UPDATE product_inventory 
         SET
-          size = COALESCE($3, size),
+          product_size = COALESCE($3, product_size),
           quantity = COALESCE($4, quantity),
           stock_status = COALESCE($5, stock_status),
           modified_at = CURRENT_TIMESTAMP
@@ -88,7 +88,7 @@ const updateInventoryById = async (
     const response = await client.query(SQL, [
       id,
       productId,
-      size,
+      productSize,
       quantity,
       stockStatus,
     ]);

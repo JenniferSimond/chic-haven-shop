@@ -18,7 +18,40 @@ const {
   updateCustomerById,
   deleteCustomerById,
   authenticateCustomer,
+  findUserByToken,
 } = require('../database/index');
+
+// GET CUSTOMER DATA BY TOKEN
+router.get('/auth/me', isAuthenticated, async (req, res, next) => {
+  try {
+    // The isAuthenticated middleware will populate req.user based on the token
+    const user = req.user;
+
+    if (!user) {
+      return res.status(401).json({ message: 'Not Authorized' });
+    }
+
+    // Fetch additional customer details if necessary
+    const customer = await fetchCustomersByID(user.id); // Assuming you have a function like this
+
+    if (!customer) {
+      return res.status(404).json({ message: 'Customer not found' });
+    }
+
+    // Return customer details
+    res.status(200).json({
+      id: customer.id,
+      first_name: customer.first_name,
+      last_name: customer.last_name,
+      cart_id: customer.cart_id,
+      wishlist_id: customer.wishlist_id,
+      customer_status: customer.customer_status,
+      review_permissions: customer.review_permissions,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
 
 // Customer Signup
 router.post('/signup', async (req, res, next) => {

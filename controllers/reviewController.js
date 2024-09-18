@@ -49,12 +49,12 @@ router.get('/', isAuthenticated, isAnyAdmin, async (req, res, next) => {
 });
 
 // Fetch reviews for a specific product
-router.get('/product/:productId', async (req, res, next) => {
+router.get('/products/:productId', async (req, res, next) => {
   try {
     const { productId } = req.params;
     const productReviews = await fetchReviewsByProduct(productId);
 
-    if (!productReviews.length) {
+    if (!productReviews) {
       return res.status(404).json({ message: 'No reviews for this product.' });
     }
     res.json(productReviews);
@@ -65,13 +65,13 @@ router.get('/product/:productId', async (req, res, next) => {
 
 // Fetch reviews by a specific user
 router.get(
-  '/user/:userId',
+  '/customers/:customerId',
   isAuthenticated,
   customerDataAuthorization,
   async (req, res, next) => {
     try {
-      const { userId } = req.params;
-      const userReviews = await fetchReviewsByUser(userId);
+      const { customerId } = req.params;
+      const userReviews = await fetchReviewsByUser(customerId);
 
       if (!userReviews.length) {
         return res.status(404).json({ message: 'This user has no reviews.' });

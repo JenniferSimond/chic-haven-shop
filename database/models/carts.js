@@ -15,6 +15,7 @@ const fetchCartAndItems = async (customerId) => {
         c.modified_at AS cart_modified_at,
         ci.id AS cart_item_id,
         ci.product_id,
+        ci.inventory_id,
         ci.product_size AS cart_item_size,  -- Include the size here
         ci.quantity AS cart_item_quantity,
         ci.created_at AS cart_item_created_at,
@@ -47,7 +48,8 @@ const fetchCartAndItems = async (customerId) => {
         ? response.rows.map((row) => ({
             cart_item_id: row.cart_item_id,
             product_id: row.product_id,
-            product_size: row.cart_item_size, // Include the product size here
+            inventory_id: row.inventory_id,
+            product_size: row.cart_item_size,
             product_name: row.product_name,
             product_description: row.product_description,
             product_price: row.product_price,
@@ -70,7 +72,13 @@ const fetchCartAndItems = async (customerId) => {
 };
 
 // ADD CART ITEM
-const addCartItem = async ({ cartId, productId, productSize, quantity }) => {
+const addCartItem = async ({
+  cartId,
+  productId,
+  inventoryId,
+  productSize,
+  quantity,
+}) => {
   const client = await pool.connect();
   try {
     // Fetch the product to validate its existence and get the price
@@ -92,6 +100,7 @@ const addCartItem = async ({ cartId, productId, productSize, quantity }) => {
         id,
         cart_id,
         product_id,
+        inventory_id,
         product_size,  -- Include the size in the insert
         quantity,
         total_price,
@@ -102,9 +111,10 @@ const addCartItem = async ({ cartId, productId, productSize, quantity }) => {
         $1,
         $2,
         $3,
-        $4,  -- size goes here
-        $5,
+        $4,
+        $5,  -- size goes here
         $6,
+        $7,
         CURRENT_TIMESTAMP, 
         CURRENT_TIMESTAMP
       )
@@ -115,6 +125,7 @@ const addCartItem = async ({ cartId, productId, productSize, quantity }) => {
       uuidv4(), // Generate a new unique ID for the cart item
       cartId, // Use the provided cart ID
       productId, // Use the provided product ID
+      inventoryId,
       productSize, // Include the provided size
       quantity, // Use the provided quantity
       totalPrice, // Use the calculated total price (product price * quantity)
@@ -130,17 +141,17 @@ const addCartItem = async ({ cartId, productId, productSize, quantity }) => {
 };
 
 // UPDATE CART ITEM
-const updateCartItem = async ({ id, cartId, quantity }) => {
+const updateCartItem = async ({ cartId, itemId, quantity }) => {
   const client = await pool.connect();
   try {
     const SQL = `
         UPDATE cart_items
         SET quantity = $3, modified_at = current_timestamp
-        WHERE id = $1 AND cart_id = $2
+        WHERE id = $2 AND cart_id = $1
         RETURNING *;
       `;
 
-    const response = await client.query(SQL, [id, cartId, quantity]);
+    const response = await client.query(SQL, [cartId, itemId, quantity]);
     return response.rows[0];
   } catch (error) {
     console.error('Error updating cart item', error);
@@ -151,16 +162,16 @@ const updateCartItem = async ({ id, cartId, quantity }) => {
 };
 
 // DELETE CART ITEM
-const deleteCartItem = async ({ id, cartId }) => {
+const deleteCartItem = async ({ cartId, itemId }) => {
   const client = await pool.connect();
   try {
     const SQL = `
         DELETE FROM cart_items
-        WHERE id = $1 AND cart_id =$2
+        WHERE id = $2 AND cart_id =$1
         RETURNING *;
       `;
 
-    const response = await client.query(SQL, [id, cartId]);
+    const response = await client.query(SQL, [cartId, itemId]);
     return response.rows[0]; // Optional, return the deleted item
   } catch (error) {
     console.error('Error deleting cart item', error);

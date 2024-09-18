@@ -28,7 +28,8 @@ const ProductWrapper = styled.div`
     
 @media (max-width: 950px) {
     margin-right: 0px;
-    margin-bottom: 10%;
+    justify-content: center;
+    margin-bottom: 12%;
 }
 `
 

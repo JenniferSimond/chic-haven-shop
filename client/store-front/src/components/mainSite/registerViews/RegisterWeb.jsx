@@ -31,7 +31,7 @@ const InnerContentWrapper = styled.div`
     }
     
     @media (max-width: 1400px) {
-        margin-right: 10%;
+        margin-right: 15%;
     }
 
     @media (max-width: 1050px) {
@@ -97,7 +97,7 @@ const ModelImg = styled.img`
         position: absolute;
         top: 45%;
         left: 13%;
-        transform: translate(-25%, -53.7%);
+        transform: translate(-25%, -55.7%);
     }
 
      @media (max-width: 1050px) {

@@ -27,6 +27,10 @@ const WebViewInnerWrapper = styled.div`
     // background-color: red;
     justify-content: center;
     transition: all 0.3s ease;
+
+    @media (max-width: 1400px ) {
+      padding-left: 8%;
+    }
     
     @media (max-width: 1300px) {
     padding-left: 4.5%;
@@ -77,17 +81,18 @@ const MobileLoginWrapper = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 100%;
-  margin-top: 3%;
+  height: 83vh;
+  // margin-top: 3%;
+  // background-color: pink;
 
   @media (max-width: 768px) {
-    margin-top: 10%;
+    // margin-top: 10%;
   }
   @media (max-width: 500px) {
-    margin-top: 8%;
+    // margin-top: 8%;
   }
   @media (max-width: 375px) {
-    margin-top: 15%;
+    // margin-top: 15%;
   }
 `
 const MobileModelBox = styled.div`

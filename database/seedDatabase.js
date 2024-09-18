@@ -493,19 +493,19 @@ const seedDatabase = async () => {
   console.log('Created Products ->', createdProducts);
 
   const inventoryValues = [
-    { size: 'X-Small', quantity: 20 },
-    { size: 'Small', quantity: 50 },
-    { size: 'Medium', quantity: 100 },
-    { size: 'large', quantity: 100 },
-    { size: 'X-Large', quantity: 70 },
-    { size: 'XX-Large', quantity: 26 },
+    { product_size: 'X-Small', quantity: 20 },
+    { product_size: 'Small', quantity: 50 },
+    { product_size: 'Medium', quantity: 100 },
+    { product_size: 'large', quantity: 100 },
+    { product_size: 'X-Large', quantity: 70 },
+    { product_size: 'XX-Large', quantity: 26 },
   ];
 
   for (const product of createdProducts) {
     for (const inventory of inventoryValues) {
       const inventoryData = {
         productId: product.id,
-        size: inventory.size,
+        productSize: inventory.product_size,
         quantity: inventory.quantity,
       };
       await createInventory(inventoryData);
@@ -515,9 +515,20 @@ const seedDatabase = async () => {
 
   // Reviews data
   const reviewData = [
-    { rating: 5, comment: 'Excellent quality!' },
-    { rating: 4, comment: 'Very nice, but it runs a little small.' },
-    { rating: 3, comment: 'Amazing outfit!.' },
+    {
+      rating: 5,
+      comment: 'Excellent quality! The Haven has delivered another winner!!',
+    },
+    {
+      rating: 4,
+      comment:
+        'Very nice, but it runs a little small. I had to exchange for a larger size.',
+    },
+    {
+      rating: 4,
+      comment:
+        'Super cute, I got a ton of compliments. It was a little pricy but totally worth it!',
+    },
   ];
 
   // Create 3 reviews for each product
@@ -525,15 +536,16 @@ const seedDatabase = async () => {
     for (let i = 0; i < 3; i++) {
       const customer = createdCustomer[i % createdCustomer.length]; // Cycle through customers
       const review = reviewData[i]; // Use predefined reviews
-      await createReview(
+      const newReview = await createReview(
         product.id,
         customer.id,
         review.rating,
         review.comment
       );
-      console.log(
-        `Created review for product ${product.name} by customer ${customer.first_name} ${customer.last_name}`
-      );
+      // console.log(
+      //   `Created review for product ${product.name} by customer ${customer.first_name} ${customer.last_name}`
+      // );
+      console.log('Reviews -->', newReview);
     }
   }
 
