@@ -9,15 +9,38 @@ import diamondGrey from '../../assets/icons-svg/reviewDiamond/diamondGrey.svg';
 import halfDiamond from '../../assets/icons-svg/reviewDiamond/halfDiamond.svg';
 import reviewAccount from '../../assets/icons-svg/account/reviewAccount.svg'
 
-const WebReview = styled.div`
-   
-width: 700px;
-width: 100%;
+const WebView = styled.div`
+
+   display: flex;
+   flex-grow: 1;
+   justify-content: center;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
 `;
 
 
 const MobileView = styled.div`
+    display: flex;
+   justify-content: center;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+//    background-color: pink;
+`;
 
+const MobileReviewsBox = styled.div`
+    flex-direction: column;
+    margin-top: 1%;
+    width: 40%;
+    max-height: 100px;
+    max-width: 400px;
+    min-width: 240px;
+    padding: 2%;
+    border: 2px solid rgb(var(--purple-mid));
+    border-radius: 3px;
+
+    
 `;
 
 const RatingWrapper = styled.div`
@@ -26,42 +49,56 @@ const RatingWrapper = styled.div`
     justify-content: center;
     gap: 5%;
     background-color: rgb(var(--purple-mid));
-    width: 700px;
-    max-width: 80%;
+    width: ${props => props.$width || '450px'};;
+    max-width: ${props => props.$maxWidth || '70%'};
     padding: 2%;
     align-items: center;
+    justify-content: space-evenly;
     border-radius: 3px;
     border: 2px solid rgb(var(--purple-mid));
+
+    @media (max-width: 950px) {
+        min-width: 40%;
+        height: 85px;
+    }
 `;
 
+// Outside wrapper for customer rating area
 const InnerRatingWrapper = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
-    width: 350px;
-    height: 100%;
+    width: 250px;
+    height: 90%;
     max-width: 70%;
-    // background-color: pink;
+
+    @media (max-width: 950px) {
+        width: 200px;
+    }
      
 `;
 
 const DiamondWrapper = styled.div`
     display: flex;
     flex-direction: row;
-    gap: 8%;
+    gap: ${props => props.$gap || '8%'};
+    align-content center;
+    align-items: center;    
     justify-content: center;
-    max-width: 400px;
-    min-height: 40px;
-    width: 80%;
-    margin-left: 10%;
-    align-items: center;
+    max-width: 260px;
+    min-height: 15px;
+    width: 100%;
+    margin-bottom: 3%;
+
+ 
 `;
 
+
 const SvgIcon = styled.img`
-    max-height: ${props => props.maxHeight || '35px'};
-    max-width: ${props => props.maxWidth || '35px'};
-    height: ${props => props.height ||'12%'};
-    width: ${props => props.width ||'12%'};
+    max-height: ${props => props.$maxHeight || '20px'};
+    max-width: ${props => props.$maxWidth || '20px'};
+    height: ${props => props.$height ||'100%'};
+    width: ${props => props.$width ||'100%'};
     
 `;
 
@@ -69,15 +106,13 @@ const ReviewInput = styled.textarea`
     border: none;
     background-color: rgba(var(--cream), 1);
     
-    min-height: 20px;
-    max-height: 90%;
-    
-    margin: 2% 10%;
+    min-height: ${props => props.$minHeight || '20px'};
+    max-width: 250px;
     color: rgba(var(--purple-mid), 0.8);
     border: 3px solid rgba(var(--cream), 1);
     border-radius: 3px;
-    padding: 2%;
-    font-size: 15px;
+    padding-left: 1%;
+    font-size: ${props => props.$fontSize || '13px'};
     font-family: Montserrat, sans-serif;
 
     &::placeholder {
@@ -87,36 +122,42 @@ const ReviewInput = styled.textarea`
     &:focus {
         border-color: rgb(var(--purple-light));
     }
+
+    @media (max-width: 950px) {
+     max-width: 200px;
+    }
 `;
 
 const Button = styled.button`
-  width: 68px;
-  height: 68px;
+  width: 48px;
+  height: 48px;
   border: none;
   border-radius: 50%;
   background-color: rgb(var(--cream));
   color: rgb(var(--purple-deep));
   font-family: Montserrat;
-  font-size: 13px;
+  font-size: 10px;
   font-style: normal;
   font-weight: 600;
   line-height: normal;
-  letter-spacing: 0.30px;
   text-transform: capitalize;
-  margin-top: 2%;
     
 
    @media (max-width: 1300px) {
-    width: 58px;
-    height: 58px;
-    font-size: 11px;
-    font-weight: 700;
+    width: 45px;
+    height: 45px;
+    font-size: 9px;
+
   }
    @media (max-width: 1050px) {
-    width: 54px;
-    height: 54px;
-    font-size: 10px;
-    font-weight: 700;
+    width: 42px;
+    height: 42px;
+    font-size: 8px;
+  }
+   @media (max-width: 950px) {
+    width: 40px;
+    height: 40px;
+    font-size: 8px;
   }
 
   &:hover {
@@ -126,21 +167,22 @@ const Button = styled.button`
   }
 `;
 
-
+// Wrapper for product reviews
 const ReviewWrapper = styled.div`
 
     display: flex;
     flex-direction: column;
-
-    margin-top: 2%;
-    width: 700px;
-    min-height: 210px;
-    max-height: 90%;
-    max-width: 80%;
+    margin-top: ${props => props.$marginTop || '1%'};
+    width: ${props => props.$width || '450px'};
+    min-height: 60px;
+    max-height: ${props => props.$maxHeight || '70%'};
+    max-width: ${props => props.$maxWidth || '70%'};
     padding: 2%;
     border: 2px solid rgb(var(--purple-mid));
     border-radius: 3px;
+    
 `;
+
 
 const ReviewRatingWrapper = styled.div`
     display: flex;
@@ -150,68 +192,84 @@ const ReviewRatingWrapper = styled.div`
     background-color: rgb(var(--purple-mid));
     border-radius: 3px;
     align-items: center;
-    padding: 1%;
+    padding:  1% 2%;
     gap: 4%;
     justify-content: center;
      
-    
+    @media (max-width 950px) {
+        min-height: 60px;
+    }
 `;
 
 const ReviewDiamondWrapper = styled.div`
     display: flex;
     flex-direction: row;
-    gap: 5%;
+    gap: ${props => props.$gap || '5%'};;
     justify-content: center;
-    max-width: 180px;
-    min-height: 30px;
-    width: 80%;
+    max-width: 170px;
+    min-height: 0px;
+    width: 85%;
     align-items: center;
 `;
 
-const ReviewTitle = styled.h3`
-    font-family: Montserrat;
-    font-size: 25px;
-    color: rgb(var(--purple-mid));
-    text-align: center;
-    font-style: italic;
-    font-weight: 500;
-    // letter-spacing: 1.32px;
-    margin-bottom: 10px;
-    letter-spacing: 1.5px;
-`;
-
-
-
 const AverageRating = styled.p`
-      color: rgb(var(--cream));
+  color: rgb(var(--cream));
   font-family: Montserrat;
-  font-size: 15px;
+  font-size: 12px;
   font-style: normal;
   font-weight: 600;
   line-height: normal;
   letter-spacing: 0.215px;
 `;
 
+// Outer Wrapper for Product
 const ReviewsWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    height: 120px;
-     width: 600px;
+    height: ${props => props.$height ||'120px'};
+     width: ${props => props.$width || '450px'};
     max-width: 100%;
-    margin-top: 2%;
-    // background-color: grey;
-    gap: 5px;
+    margin-top: ${props => props.$marginTop || '2%'};
+    gap: 8px;
+    overflow-x: hidden;
+    overflow-y: auto;
+   
+
+&::-webkit-scrollbar {
+  width: 5px;
+  border-radius: 3px;
+}
+
+
+
+&::-webkit-scrollbar-track {
+  background: rgba(var(--cream),1);
+  border-radius: 5px;
+  border: 2px solid rgb(var(--cream));
+  background-clip: content-box; 
+  
+}
+
+&::-webkit-scrollbar-thumb {
+  background:rgba(var(--purple-mid), 1);
+  width: 5px;
+  
+  border-radius: 1px;
+
+}
 `;
 
 const CustomerReviewWrapper = styled.div`
     display: flex;
     flex-direction: column;
-   
+    // min-height: 40px;
+    max-height: 120px;
     gap: 1%;
-    height: 40px;
+   
     border-radius: 3px;
     border: 1px solid rgb(var(--purple-mid));
-    padding: 0% 1.5%;
+    padding: 4px 4px;
+    margin: 0% 1%;
    
 `;
 
@@ -220,9 +278,9 @@ const InnerReview = styled.div`
     display: flex;
     flex-direction: row;
     align-items: center;
-    max-width: 700px;
     width: 100%;
     height: 100%;
+    padding-left: 3px;
     gap: 2%;
 `;
 
@@ -230,17 +288,28 @@ const ReviewerName = styled.div`
      display: flex;
         flex-direction: row;
         width: 20%;
-        min-width: 80px;
-        // margin: 0px 5px 0px 9px;
+        margin-right: 1%;
+        min-width: 65px;
+
+        
     p { 
         
         color: rgb(var(--purple-mid));
         font-family: Cinzel;
-        font-size: 13px;
-        font-weight: 700;
+        font-size: 12px;
+        font-weight: 600;
         letter-spacing: 1px;
         
     }
+
+    @media (max-width: 950px) {
+        width: 10%;
+      p {
+            font-size: 11px;
+        }
+    }
+
+
 `;
 
 
@@ -248,24 +317,36 @@ const ReviewCommentWrapper = styled.div`
         display: flex;
         flex-direction: row;
         width: 70%;
-        min-width: 130px;
-    //    background-color: pink;
+      
+        // min-width: 130px;
+       margin-right: 1%;
+   
     p {
         font-size: 13px;
         color: rgb(var(--ras-pink));
     }
+
+     @media (max-width: 950px) {
+
+
+     p {
+            font-size: 11px;
+        }
+    
+}
 `;
 
 
 
 
-const ProductReviews = ({selectedProduct}) => {
+const ProductReviews = ({selectedProduct, viewMobileReviews}) => {
     const {width} = windowResize();
     const token = getToken();
     const [reviews, setReviews] = useState([]);
     const [newRating, setNewRating] = useState(0);
     const [newComment, setNewComment] = useState("");
     const [averageRating, setAverageRating] = useState(0);
+   
 
     const {customerData} = useContext(CustomerContext);
     
@@ -314,10 +395,93 @@ const ProductReviews = ({selectedProduct}) => {
         <>
             {width <= 950 ? (
                 <MobileView>
+                    
+                     { !viewMobileReviews ? (
+                                        <RatingWrapper $maxWidth={'100%'}>
+                                        <InnerRatingWrapper>
+                                        <DiamondWrapper $gap={'8%'}>
+                                            {[1,2,3,4,5].map((value) => (
+                                                <SvgIcon 
+                                                $maxHeight={'20px'}
+                                                $maxWidth={'20px'}
+                                                $width={'70%'}
+                                                $height={'70%'}
+                                                key={value}
+                                                src={value <= newRating ? diamondFilled : diamondGrey}
+                                                onClick={()=> handleRatingClick(value)}                         
+                                                />
+                                            ))}
+                                        </DiamondWrapper>
+                                        <ReviewInput 
+                                            $minHeight={'10px'}
+                                            $fontSize={'11px'}
+                                            spellCheck="true"
+                                            type="text"
+                                            value={newComment}
+                                            onChange={handleCommentChange}
+                                            placeholder="Leave a review here!"
+                                        />
+                    
+                                        </InnerRatingWrapper>
+                                        <Button>Submit</Button>
+                                    </RatingWrapper>
+                    ) : (
+                        //see existing reviews
+                        <ReviewWrapper $width={'500px'} $maxWidth={'80%'} $maxHeight={'100%'} $marginTop={'0%'}>
+                    <ReviewRatingWrapper>
+                        
+                        <AverageRating>{averageRating.toFixed(1)}{''} Diamonds</AverageRating>
+                    
+                        <ReviewDiamondWrapper>
 
+                       
+                        {[1, 2, 3, 4, 5].map((value) => (
+                            <SvgIcon
+                            key={value}
+                            $maxHeight={'20px'}
+                            $maxWidth={'20px'}
+                            $width={'10%'}
+                            $height={'10%'}
+                            src={value <= averageRating ? diamondFilled : diamondGrey}
+                            alt={`${value} diamond`}
+                            />
+                        ))}
+                        </ReviewDiamondWrapper>
+                    </ReviewRatingWrapper>
+                    <ReviewsWrapper $height={'70px'} >
+                        {reviews.length === 0 ?(
+                            <p>Be the first to leave a review!</p>
+                        ): (
+                            reviews.map((review) => (
+                                <CustomerReviewWrapper key={review.id}>
+                                    <InnerReview>
+                                        <SvgIcon 
+                                            $maxHeight={'15px'}
+                                            $maxWidth={'15px'}
+                                            $width={'80%'}
+                                            $height={'80%'}
+                                            src={reviewAccount}
+                                        />
+                                       <ReviewerName>
+                                        <p>{review.first_name}:</p>
+                                       </ReviewerName>
+                                        <ReviewCommentWrapper>
+                                            <p>{review.comment}</p>
+                                        </ReviewCommentWrapper>
+                                        
+                                    </InnerReview>
+                                   
+                                </CustomerReviewWrapper>
+                            ))
+                        )}
+                    </ReviewsWrapper>
+                </ReviewWrapper>
+                    
+                    )}
+                    
                 </MobileView>
             ) : (
-                <WebReview>
+                <WebView>
 
                 <RatingWrapper>
                     <InnerRatingWrapper>
@@ -351,11 +515,11 @@ const ProductReviews = ({selectedProduct}) => {
                        
                         {[1, 2, 3, 4, 5].map((value) => (
                             <SvgIcon
-                            maxHeight={'60px'}
-                            maxWidth={'60px'}
-                            width={'15%'}
-                            height={'15%'}
+                            $maxHeight={'20px'}
                             key={value}
+                            $maxWidth={'30px'}
+                            $width={'10%'}
+                            $height={'10%'}
                             src={value <= averageRating ? diamondFilled : diamondGrey}
                             alt={`${value} star`}
                             />
@@ -370,10 +534,10 @@ const ProductReviews = ({selectedProduct}) => {
                                 <CustomerReviewWrapper key={review.id}>
                                     <InnerReview>
                                         <SvgIcon 
-                                            maxHeight={'24px'}
-                                            maxWidth={'24px'}
-                                            width={'100%'}
-                                            height={'100%'}
+                                            $maxHeight={'20px'}
+                                            $maxWidth={'20px'}
+                                            $width={'80%'}
+                                            $height={'80%'}
                                             src={reviewAccount}
                                         />
                                        <ReviewerName>
@@ -391,7 +555,7 @@ const ProductReviews = ({selectedProduct}) => {
                     </ReviewsWrapper>
                 </ReviewWrapper>
                         
-                </WebReview>
+                </WebView>
             )}
         </>
     )

@@ -252,7 +252,7 @@ const Button = styled.button`
 const H1 = styled.h1`
   color: #ffbc42;
   font-family: Cinzel;
-  font-size: 90px;
+  font-size: 85px;
   font-style: normal;
   font-weight: 700;
   line-height: normal;
