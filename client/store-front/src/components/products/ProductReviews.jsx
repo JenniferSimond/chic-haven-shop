@@ -6,7 +6,6 @@ import { fetchReviewsByProduct, createReview } from "../../api/reviews";
 import windowResize from "../shared/hooks/windowResize";
 import diamondFilled from '../../assets/icons-svg/reviewDiamond/diamondFilled.svg';
 import diamondGrey from '../../assets/icons-svg/reviewDiamond/diamondGrey.svg';
-import halfDiamond from '../../assets/icons-svg/reviewDiamond/halfDiamond.svg';
 import reviewAccount from '../../assets/icons-svg/account/reviewAccount.svg'
 
 const WebView = styled.div`
@@ -26,22 +25,19 @@ const MobileView = styled.div`
    flex-direction: column;
    align-items: center;
    justify-content: center;
-//    background-color: pink;
 `;
 
-const MobileReviewsBox = styled.div`
-    flex-direction: column;
-    margin-top: 1%;
-    width: 40%;
-    max-height: 100px;
-    max-width: 400px;
-    min-width: 240px;
-    padding: 2%;
-    border: 2px solid rgb(var(--purple-mid));
-    border-radius: 3px;
+const LoginMessageText = styled.p`
+    font-family: Montserrat, sans-serif;
+        font-size: ${props => props.$fontSize || '14px'};
+        font-style: italic;
+        font-weight: 600;
+        color: rgb(var(--purple-mid));
+        letter-spacing: 0.5px;
+        margin-bottom: 2px;
 
-    
 `;
+
 
 const RatingWrapper = styled.div`
     display: flex;
@@ -135,7 +131,7 @@ const Button = styled.button`
   border-radius: 50%;
   background-color: rgb(var(--cream));
   color: rgb(var(--purple-deep));
-  font-family: Montserrat;
+  font-family: Montserrat, sans-serif;
   font-size: 10px;
   font-style: normal;
   font-weight: 600;
@@ -184,6 +180,7 @@ const ReviewWrapper = styled.div`
 `;
 
 
+
 const ReviewRatingWrapper = styled.div`
     display: flex;
     flex-direction: row;
@@ -214,7 +211,7 @@ const ReviewDiamondWrapper = styled.div`
 
 const AverageRating = styled.p`
   color: rgb(var(--cream));
-  font-family: Montserrat;
+  font-family: Montserrat, sans-serif;
   font-size: 12px;
   font-style: normal;
   font-weight: 600;
@@ -317,12 +314,14 @@ const ReviewCommentWrapper = styled.div`
         display: flex;
         flex-direction: row;
         width: 70%;
-      
-        // min-width: 130px;
-       margin-right: 1%;
+        margin-right: 1%;
+        
    
     p {
+        font-family: Montserrat, sans-serif;
         font-size: 13px;
+        font-weight: 500;
+        letter-spacing: 0.5px;
         color: rgb(var(--ras-pink));
     }
 
@@ -331,12 +330,11 @@ const ReviewCommentWrapper = styled.div`
 
      p {
             font-size: 11px;
+            font-weight: 500;
         }
     
 }
 `;
-
-
 
 
 const ProductReviews = ({selectedProduct, viewMobileReviews}) => {
@@ -349,6 +347,10 @@ const ProductReviews = ({selectedProduct, viewMobileReviews}) => {
    
 
     const {customerData} = useContext(CustomerContext);
+
+    if (!selectedProduct) {
+        return <div>Product Not Found! 🤦🏽‍♀️</div>;
+      }
     
     useEffect(() => {
         const getProductReviews = async () => {
@@ -371,24 +373,49 @@ const ProductReviews = ({selectedProduct, viewMobileReviews}) => {
                 setAverageRating(0);
             }
         }
-        getProductReviews();
-    }, [selectedProduct.id])
+
+        if (selectedProduct.id) {
+            getProductReviews();
+
+        }
+        
+    }, [selectedProduct.id, reviews.length])
+
+  
 
     const handleRatingClick = (value) => {
         setNewRating(value)
+        console.log('New Rating ->',newRating);
     }
 
     const handleCommentChange = (event) => {
         setNewComment(event.target.value)
+        console.log(newComment);
     }
 
     const handleReviewSubmit = async () => {
-        try {
-            
-        } catch (error) {
-            
+
+        if (!customerData.id) {
+            setNewRating(0);
+            setNewComment('')
+            return;
         }
-    }
+
+        if (newRating === 0 || newComment.trim() === ""){
+            return;
+        }
+        try {
+            const newReview = await createReview(token, selectedProduct.id, customerData.id, newRating, newComment );
+            console.log('New Review -->', newReview);
+            setReviews([...reviews, newReview])
+            const newAvgRating = [...reviews, newReview].reduce((accumulator, review) => accumulator + review.rating, 0) / (reviews.length + 1) //all reviews + new review
+            setAverageRating(newAvgRating);
+            setNewRating(0);
+            setNewComment('')
+        } catch (error) {
+            console.error('Error submitting review', error)
+        }
+    };
 
 
     return(
@@ -397,7 +424,14 @@ const ProductReviews = ({selectedProduct, viewMobileReviews}) => {
                 <MobileView>
                     
                      { !viewMobileReviews ? (
+                                        <>
+                                        { !customerData.id ? 
+                                       (<LoginMessageText>Please log in to leave a review</LoginMessageText>) : (
+                                        <></>
+                                       )
+                                    }
                                         <RatingWrapper $maxWidth={'100%'}>
+                                          
                                         <InnerRatingWrapper>
                                         <DiamondWrapper $gap={'8%'}>
                                             {[1,2,3,4,5].map((value) => (
@@ -423,8 +457,9 @@ const ProductReviews = ({selectedProduct, viewMobileReviews}) => {
                                         />
                     
                                         </InnerRatingWrapper>
-                                        <Button>Submit</Button>
+                                        <Button onClick={handleReviewSubmit}>Submit</Button>
                                     </RatingWrapper>
+                                    </>
                     ) : (
                         //see existing reviews
                         <ReviewWrapper $width={'500px'} $maxWidth={'80%'} $maxHeight={'100%'} $marginTop={'0%'}>
@@ -462,10 +497,10 @@ const ProductReviews = ({selectedProduct, viewMobileReviews}) => {
                                             $height={'80%'}
                                             src={reviewAccount}
                                         />
-                                       <ReviewerName>
+                                       <ReviewerName key={review.id}>
                                         <p>{review.first_name}:</p>
                                        </ReviewerName>
-                                        <ReviewCommentWrapper>
+                                        <ReviewCommentWrapper  key={review.id}>
                                             <p>{review.comment}</p>
                                         </ReviewCommentWrapper>
                                         
@@ -482,7 +517,11 @@ const ProductReviews = ({selectedProduct, viewMobileReviews}) => {
                 </MobileView>
             ) : (
                 <WebView>
-
+                   { !customerData.id ? 
+                        (<LoginMessageText $fontSize={'16px'}>Please log in to leave a review</LoginMessageText>) : (
+                            <></>
+                         )
+                    }
                 <RatingWrapper>
                     <InnerRatingWrapper>
                     <DiamondWrapper>
@@ -503,7 +542,7 @@ const ProductReviews = ({selectedProduct, viewMobileReviews}) => {
                     />
 
                     </InnerRatingWrapper>
-                    <Button>Submit</Button>
+                    <Button onClick={handleReviewSubmit}>Submit</Button>
                 </RatingWrapper>
                 <ReviewWrapper>
                     <ReviewRatingWrapper>

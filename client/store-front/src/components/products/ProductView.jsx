@@ -12,6 +12,24 @@ import ProductReviews from './ProductReviews';
 import cartCream from '../../assets/icons-svg/cart/cartCream.svg';
 import wishlistLight from '../../assets/icons-svg/wishlist/wishlistLight.svg';
 
+const NullProductView = styled.div`
+   display: flex;
+  flex-direction: column;
+  align-content: center;
+  align-items: center;
+  justify-content: space-evenly;
+  height: 82vh;
+  padding: 0% 3%;
+
+  p {
+    font-family: Montserrat;
+    font-size: 25px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: rgb(var(--purple-mid));
+  }
+`;
+
 const WebView = styled.div`
   display: flex;
   flex-direction: column;
@@ -97,10 +115,18 @@ const MobileButton = styled.button`
    padding: 7px 5px;
    font-size: 9px;
   }
+
+  // &:disabled {
+  //   background-color: rgba(var(--purple-light), 1);
+  //   color: rgba(var(--cream), 0.7); // Lighter text color for disabled state
+  //   cursor: not-allowed; // Change cursor to indicate disabled state
+  //   box-shadow: none; // Remove any box-shadow if present
+  //   opacity: 0.7; // Reduce opacity to indicate disabled state
+  // }
 `;
 
 const MobileOptionButton = styled.button`
-  background-color: rgb(var(--purple-light));
+  background-color: rgba(var(--purple-light), 1);
   color: rgb(var(--cream));
   font-family: Montserrat;
   font-size: ${props => props.$fontSize || '11px'};
@@ -364,14 +390,20 @@ const Button = styled.button`
 `;
 
 const ProductView = () => {
+  const navigate = useNavigate();
   const { width } = windowResize();
   const token = getToken();
+  const { productId } = useParams();
+  const { customerData } = useContext(CustomerContext);
+
   const [selectedProduct, setSelectedProduct] = useState('');
   const [viewMobileReviews, setVewMobileReviews] = useState(false);
-  const { productId } = useParams();
-  const navigate = useNavigate();
+  const [customerSelection, setCustomerSelection] = useState({
+    inventoryId: '',
+    productSize: '',
+    quantity: 1,
+  })
 
-  const { customerData } = useContext(CustomerContext);
   let conditionalButtonText = '';
 
   viewMobileReviews === false ? conditionalButtonText = 'See Reviews' : conditionalButtonText = 'Leave Review';
@@ -391,16 +423,49 @@ const ProductView = () => {
     }
   }, [productId]);
 
-  if (!selectedProduct) {
-    return <div>Product Not Found! 🤦🏽‍♀️</div>;
+  if (!selectedProduct.inventory) {
+    return <NullProductView>
+      <p>Product Not Found! 🤦🏽‍♀️</p>
+    </NullProductView>;
   }
 
   const imageUrl = `${BASE_URL}${selectedProduct.image}`;
 
   const handleReviewOptClick = () => {
     setVewMobileReviews(!viewMobileReviews);
+  };
+
+  const handleSizeSelect = (event) => {
+    const selectedSize = event.target.value;
+    const selectedInventory = selectedProduct.inventory.find((item) => item.product_size === selectedSize);
+    setCustomerSelection(prevState => ({
+      ...prevState,
+      productSize: selectedSize,
+      inventoryId: selectedInventory ? selectedInventory.inventory_id : ''
+    }))
+
+    console.log('Customer Selection Size Select ->', selectedInventory, selectedSize)
+  };
+
+  const handleQtySelect = (event) => {
+    const selectedQty = event.target.value;
+    setCustomerSelection(prevState => ({
+      ...prevState,
+      quantity: selectedQty
+    }))
   }
- 
+
+  const handleAddCartClick = async () => {
+    if (!customerData.id) {
+      alert('Please log in to add items to cart.')
+    }
+    try {
+      const newCartItem = await addCartIem(token, customerData.cart_id, selectedProduct.id, customerSelection.inventoryId, customerSelection.productSize, customerSelection.quantity )
+      console.log('Added Item -->', newCartItem);
+    } catch (error) {
+      
+    }
+  }
 
   return (
     <>
@@ -412,29 +477,31 @@ const ProductView = () => {
             <Description>{selectedProduct.description}</Description>
           </DescriptionBox>
           <MobileButtonBox>
-            <Price $fontSize={'14px'}>{selectedProduct.price}</Price>
+            <Price $fontSize={'13px'}>{`$${selectedProduct.price}`}</Price>
               <QtySelectBox>
-                  <form>
-                  <Select $fontSize={'11px'} $fontWeight={'600'} $padding={'5px 5px '}>
+                  
+                  <Select $fontSize={'11px'} $fontWeight={'600'} $padding={'5px 5px '} onChange={handleQtySelect}>
                     {[1,2,3,4,5].map((value)=>(
                       <Option key={value}>{value}</Option>
                     ))}
                   </Select>
-                  </form>
+                  
                 </QtySelectBox>
 
                 <SizeSelectionBox>
-                  <Select $fontSize={'11px'} $fontWeight={'600'}>
-                    {selectedProduct &&
+                  <Select $fontSize={'11px'} $fontWeight={'600'} onChange={handleSizeSelect}>
+                    {selectedProduct.inventory && 
                       selectedProduct.inventory.map((item) => (
-                        <Option key={item.inventory_id}>{item.product_size}</Option>
+                        <Option key={item.inventory_id} value={item.product_size}>{item.product_size}</Option>
                       ))}
                   </Select>
                 </SizeSelectionBox>
-            <MobileButton>Add to Cart</MobileButton>
-            <MobileButton>Wishlist it</MobileButton>
-          </MobileButtonBox>
+            
+                <MobileButton onClick={handleAddCartClick}>Add to Cart</MobileButton>
+                <MobileButton>Wishlist it</MobileButton>
+            </MobileButtonBox>
           <MobileReviewsBox>
+            
           <ProductReviews selectedProduct={selectedProduct} viewMobileReviews={viewMobileReviews} />
           </MobileReviewsBox>
           <MobileOptionButton $padding={'10px 15px'} onClick={handleReviewOptClick}>{conditionalButtonText}</MobileOptionButton>
@@ -454,7 +521,7 @@ const ProductView = () => {
                 <Price>${selectedProduct.price}</Price>
                 <QtySelectBox>
                   <form>
-                  <Select>
+                  <Select onChange={handleQtySelect}>
                     {[1,2,3,4,5].map((value)=>(
                       <Option key={value}>{value}</Option>
                     ))}
@@ -464,16 +531,16 @@ const ProductView = () => {
                 
 
                 <SizeSelectionBox>
-                  <Select>
-                    {selectedProduct &&
+                  <Select onChange={handleSizeSelect}>
+                    {selectedProduct.inventory &&
                       selectedProduct.inventory.map((item) => (
                         <Option key={item.inventory_id}>{item.product_size}</Option>
                       ))}
                   </Select>
                 </SizeSelectionBox>
                 
-                <Button>
-                  <ButtonIcon src={cartCream} />
+                <Button onClick={handleAddCartClick}>
+                  <ButtonIcon src={cartCream}/>
                   Cart
                 </Button>
                 <Button>

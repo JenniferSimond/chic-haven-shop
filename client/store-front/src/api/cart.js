@@ -15,6 +15,7 @@ const getCartAndItems = async (customerId) => {
 
 // Add Cart Item
 const addCartIem = async (
+  token,
   cartId,
   productId,
   inventoryId,
@@ -26,8 +27,9 @@ const addCartIem = async (
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(productId, inventoryId, productSize, quantity),
+      body: JSON.stringify({ productId, inventoryId, productSize, quantity }),
     });
     const addedItem = await response.json();
     console.log('Added Item -->', addedItem);
