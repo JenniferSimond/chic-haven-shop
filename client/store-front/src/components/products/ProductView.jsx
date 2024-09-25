@@ -462,6 +462,21 @@ const ProductView = () => {
     try {
       const newCartItem = await addCartIem(token, customerData.cart_id, selectedProduct.id, customerSelection.inventoryId, customerSelection.productSize, customerSelection.quantity )
       console.log('Added Item -->', newCartItem);
+      navigate('/products')
+    } catch (error) {
+      
+    }
+  }
+
+  const handleAddWishlistClick = async () => {
+    if (!customerData.id) {
+      alert('Please log in to add items to wishlist.')
+    }
+
+    try {
+      const newWishlistItem = await addWishlistItem(token, customerData.wishlist_id, selectedProduct.id);
+      console.log('New Wishlist Item ->',newWishlistItem)
+
     } catch (error) {
       
     }
@@ -498,7 +513,7 @@ const ProductView = () => {
                 </SizeSelectionBox>
             
                 <MobileButton onClick={handleAddCartClick}>Add to Cart</MobileButton>
-                <MobileButton>Wishlist it</MobileButton>
+                <MobileButton onClick={handleAddWishlistClick}>Wishlist it</MobileButton>
             </MobileButtonBox>
           <MobileReviewsBox>
             
@@ -543,7 +558,7 @@ const ProductView = () => {
                   <ButtonIcon src={cartCream}/>
                   Cart
                 </Button>
-                <Button>
+                <Button onClick={handleAddWishlistClick}>
                   <ButtonIcon src={wishlistLight} />
                   Wishlist
                 </Button>

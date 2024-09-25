@@ -16,14 +16,15 @@ const getWishlistAndItems = async (customerId) => {
 };
 
 // Add Cart Item
-const addWishlistItem = async (wishlistId, productId) => {
+const addWishlistItem = async (token, wishlistId, productId) => {
   try {
     const response = await fetch(`${API_URL}/wishlists/${wishlistId}/items`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(wishlistId),
+      body: JSON.stringify({ productId }),
     });
     const addedItem = await response.json();
     console.log('Added Item -->', addedItem);
