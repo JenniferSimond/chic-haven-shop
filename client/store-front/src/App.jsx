@@ -6,7 +6,7 @@ import NavBar from './components/menuBars/navBar/NavBar'
 import Footer from './components/menuBars/Footer';
 import Login from './components/customer/Login';
 import Register from './components/mainSite/Register';
-import Account from './components/customer/AccountPage';
+import Account from './components/customer/account-components/AccountPage';
 import About from './components/mainSite/About';
 import Wishlist from './components/customer/Wishlist';
 import Products from './components/products/Products';

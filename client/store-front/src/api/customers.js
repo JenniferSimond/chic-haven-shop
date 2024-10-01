@@ -67,4 +67,43 @@ const customerSignup = async (signupCredentials) => {
     console.error('Signup Error.', error);
   }
 };
-export { fetchAuthenticatedCustomer, customerLogin, customerSignup };
+
+const fetchCustomer = async (customerId, token) => {
+  try {
+    const response = await fetch(`${API_URL}/customers/${customerId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const customerData = await response.json();
+    console.log('Customer (API) -->', customerData);
+    return customerData;
+  } catch (error) {
+    console.error('Error fetching customer', error);
+  }
+};
+
+const updateCustomer = async (customerId, newCustomerData) => {
+  try {
+    const response = await fetch(`${API_URL}/customers/${customerId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ newCustomerData }),
+    });
+
+    const updatedCustomerData = await response.json();
+    console.log('Updated Customer (API) -->', result);
+  } catch (error) {}
+};
+
+export {
+  fetchAuthenticatedCustomer,
+  customerLogin,
+  customerSignup,
+  fetchCustomer,
+};

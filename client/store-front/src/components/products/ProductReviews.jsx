@@ -430,7 +430,7 @@ const ProductReviews = ({selectedProduct, viewMobileReviews}) => {
                                         <></>
                                        )
                                     }
-                                        <RatingWrapper $maxWidth={'100%'}>
+                                        <RatingWrapper $maxWidth={'80%'}>
                                           
                                         <InnerRatingWrapper>
                                         <DiamondWrapper $gap={'8%'}>
@@ -595,7 +595,7 @@ const ProductReviews = ({selectedProduct, viewMobileReviews}) => {
                 </ReviewWrapper>
                         
                 </WebView>
-            )}
+            )};
         </>
     )
 }

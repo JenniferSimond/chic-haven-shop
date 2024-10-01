@@ -423,7 +423,7 @@ const Login = () => {
       if (data && data.token) {
         setToken(data.token);
         setCustomerData(data.userDetails)
-        navigate('/account');
+        navigate('/products');
       } else {
         // If data doesn't contain a token but has a message, we handle it here.
         if (data.message === 'Account Not Found') {

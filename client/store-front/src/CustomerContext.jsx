@@ -8,39 +8,39 @@ export const CustomerContext = createContext({});
 
 export const CustomerProvider = ({ children }) => {
   const [customerData, setCustomerData] = useState({});
-  const [loading, setLoading] = useState(true); // Loading indicator to handle asynchronous actions
+  const [loading, setLoading] = useState(true); 
   const navigate = useNavigate();
 
   useEffect(() => {
     const loadCustomerData = async () => {
-      const token = getToken(); // Retrieve the token from localStorage
+      const token = getToken(); 
 
       if (token) {
         try {
-          const data = await fetchAuthenticatedCustomer(); // Fetch customer data using the token
+          const data = await fetchAuthenticatedCustomer(); 
           if (data) {
-            setCustomerData(data); // Set customer data in context
+            setCustomerData(data); 
           } else {
-            removeToken(); // Remove token if no data is returned
-            navigate('/login'); // Redirect to login if there's an issue
+            removeToken(); 
+            navigate('/login'); 
           }
         } catch (error) {
           console.error('Error fetching customer data:', error);
           setCustomerData({});
-          removeToken(); // Remove token if fetching data failed
-          navigate('/login'); // Redirect to login if token is invalid
+          removeToken(); 
+          navigate('/login'); 
         }
       } else {
-        setCustomerData({}); // Clear customer data if no token
+        setCustomerData({}); 
       }
 
-      setLoading(false); // Stop loading after data is fetched
+      setLoading(false);
     };
 
-    loadCustomerData(); // Fetch customer data on component mount
+    loadCustomerData(); 
   }, [navigate]);
 
-  // Display loading spinner while fetching customer data
+  
   if (loading) {
     return <div>Loading...</div>;
   }

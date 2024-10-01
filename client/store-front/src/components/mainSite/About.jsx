@@ -13,14 +13,25 @@ const OuterWrapper = styled.div`
 const ContentBox = styled.div`
   display-flex;
   flex-direction: column;
-  max-width: 700px;
-  width: 50%;
-  max-height: 800px;
+  align-content: center;
+  max-width: 550px;
+  width: 70%;
+  max-height: 950px;
   min-height: 200px;
   height: 90%;
   border: 5px solid rgb(var(--purple-light));
   border-radius: 3px;
   overflow-y: clip;
+
+
+  @media (max-width: 950px) {
+    widthL: 70%;
+  }
+  @media (max-width: 750px) {
+    width: 90%;
+    height: 80%;
+ 
+  }
 `;
 
 
@@ -28,11 +39,13 @@ const BottomTextWrapper = styled.div`
   padding: 0% 5%;
   display: flex;
   flex-direction: column;
-  max-width: 620px;
+  max-width: 600px;
   gap: 25px;
+  margin-bottom: 1%;
   max-height: 32vh;  /* Adjust this to control when the scrolling begins */
   overflow-y: auto;   /* This makes the content scrollable */
-}
+
+
 
 `;
 
@@ -49,8 +62,12 @@ const OwnerImage = styled.img`
   display: block;
   width: auto;
   height: auto;
-  max-width: 25%;
+  max-width: 30%;
   z-index: 4;
+
+  @media (max-width: 750px) {
+    max-width: 35%;
+  }
 `;
 
 const H1 = styled.h1`
@@ -64,16 +81,37 @@ const H1 = styled.h1`
   line-height: 1.5;
   letter-spacing: 1.32px;
   margin-bottom: 10px;
+
+  @media (max-width: 950px) {
+    font-size: 2.6rem;
+  }
+  @media (max-width: 600px) {
+    font-size: 2.4rem;
+  }
+  @media (max-width: 500px) {
+    font-size: 2rem;
+  }
+  @media (max-width: 400px) {
+    font-size: 1.5rem;
+  }
+  @media (max-width: 300px) {
+    font-size: 1.2rem;
+  }
 `;
 
 const P = styled.p`
-  text-align: start;
+  text-align: center;
   font-family: Montserrat;
   font-size: 15px;
   color: #4A4E69;
   font-weight: 500;
   line-height: 30px;
   letter-spacing: 0.4px;
+
+  @media (max-width: 450px) {
+    font-size: 13px;
+    line-height: 25px;
+  }
 `;
 
 

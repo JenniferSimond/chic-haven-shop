@@ -97,14 +97,18 @@ const fetchReviewsByUser = async (customerId) => {
   try {
     const SQL = `
       SELECT
-        r.*,
+        r.id as id,
+        r.product_id AS product_id,
+        r.customer_id AS customer_id,
+        r.rating,
+        r.comment,
+        r.created_at,
         c.first_name
         FROM reviews r
         LEFT JOIN customer c
         ON r.customer_id = c.id
       WHERE r.customer_id = $1
       ORDER BY r.rating DESC
-      RETURNING *
     `;
 
     const response = await client.query(SQL, [customerId]);

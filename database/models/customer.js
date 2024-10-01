@@ -64,7 +64,9 @@ const fetchCustomersByID = async (id) => {
         cu.email,
         cu.customer_status,
         cu.review_permissions,
+        cu.created_at,
         ca.id AS cart_id,
+        cu.created_at,
         wl.id AS wishlist_id
       FROM customers cu
       LEFT JOIN carts ca ON ca.customer_id = cu.id
