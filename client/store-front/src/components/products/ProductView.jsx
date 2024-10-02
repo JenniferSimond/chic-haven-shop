@@ -169,13 +169,13 @@ const RightWebWrapper = styled.div`
 const ProductName = styled.h1`
   color: rgb(var(--purple-mid));
   font-family: Cinzel;
-  font-size: ${props => props.$fontSize || '60px'};
+  font-size: ${props => props.$fontSize || '80px'};
   white-space: nowrap;
   text-align: center;
   font-style: normal;
   font-weight: 400;
   letter-spacing: 1.32px;
-  padding-top: 2%;
+  padding-top: 1.5%;
 
   @media (max-width: 950px) {
     padding-top: 0%;
