@@ -378,16 +378,12 @@ const P2 = styled.p`
 
   @media (max-width: 1300px) {
     font-size: 11px;
-    font-weight: 500;
-    top: 94.6%;
     left: 70%;
     transform: translate(-25%, -20%);
     }
     
     @media (max-width: 1050px) {
       font-size: 11px;
-      font-weight: 500;
-      top: 94.6%;
       left: 68%;
       transform: translate(-25%, -20%);
       }
@@ -456,7 +452,7 @@ const Login = () => {
   };
 
   const handleClick = () => {
-    navigate('/signup');
+    navigate('/sign-up');
     
   }
 
@@ -535,7 +531,7 @@ const Login = () => {
                 <Button>Login</Button>
               </InnerFormWrapper>
             </form>
-            <P2 onClick={handleClick}>Not a Member Yet, Sign Up Today!</P2>
+            <P2 onClick={handleClick}>Not a Member Yet, <span>Sign Up</span> Today!</P2>
           </FormWrapper>
           </WebContentBox>
         <P1>Gorgeous</P1>

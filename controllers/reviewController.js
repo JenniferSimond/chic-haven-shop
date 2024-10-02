@@ -73,8 +73,8 @@ router.get(
       const { customerId } = req.params;
       const userReviews = await fetchReviewsByUser(customerId);
 
-      if (!userReviews.length) {
-        return res.status(404).json({ message: 'This user has no reviews.' });
+      if (!userReviews) {
+        return res.status(404).json({ message: 'Userreviews not found' });
       }
       res.json(userReviews);
     } catch (error) {

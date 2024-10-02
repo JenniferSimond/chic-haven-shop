@@ -4,12 +4,13 @@ import styled from "styled-components";
 import { CustomerContext } from "../../../CustomerContext.jsx";
 import windowResize from "../../shared/hooks/windowResize.js";
 import { getToken } from "../../shared/auth.js";
-import { fetchReviewsByUser } from "../../../api/reviews.js";
+import { getReviewsByUser } from "../../../api/reviews.js";
 import { getWishlistAndItems } from "../../../api/wishlist.js";
 import { fetchCustomer } from "../../../api/customers.js";
 import SideBar from "../../menuBars/SideBar.jsx";
 import wishlistLP from "../../../assets/icons-svg/wishlist/wishlistLP.svg";
 import diamondFilled from '../../../assets/icons-svg/reviewDiamond/diamondFilled.svg';
+import Wishlist from "../Wishlist.jsx";
 
 
 const MobileView = styled.div`
@@ -17,9 +18,9 @@ const MobileView = styled.div`
     flex-direction: row;
     width: 100%;
     min-height: 80vh; 
+      font-family: Montserrat, sans-serif;
    
 `;
-
 
 const WebView = styled.div`
  display: flex;
@@ -27,6 +28,7 @@ const WebView = styled.div`
   width: 100%;
   height: 82vh;
   position: relative;
+    font-family: Montserrat, sans-serif;
 
 `;
 
@@ -48,8 +50,8 @@ const WebViewInnerWrapper = styled.div`
 
 
  const SvgIcon = styled.img`
-    max-height: ${props => props.$maxHeight || '25px'};
-    max-width: ${props => props.$maxWidth || '25px'};
+    max-height: ${props => props.$maxHeight || '30px'};
+    max-width: ${props => props.$maxWidth || '30px'};
     height: ${props => props.$height ||'100%'};
     width: ${props => props.$width ||'100%'};
     margin: 10% 0%;
@@ -66,12 +68,22 @@ const MainTitle = styled.p`
   text-align: center;
 `;
 
+const BottomTitle = styled.p`
+    color: rgb(var(--ras-pink));
+    font-family: Montserrat;
+    font-size: 30px;
+    font-weight: 400;
+    text-align: center;
+    font-style: italic;
+`
+
 const TileWrapper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   gap: 20px;
-  margin: 5% 5%;
+  margin: 5% 2%;
+
 `;
 
 const AccountDetailTile = styled.div`
@@ -83,8 +95,9 @@ const AccountDetailTile = styled.div`
     gap: 5%;
     border-radius: 3px;
     border: 2px solid rgb(var(--purple-mid));
-    width: 350px;
-    height: 298px;
+    max-width: 350px;
+    height: 300px;
+    width: 33%;
     border-radius: 3px;
 `;
 
@@ -99,10 +112,17 @@ const DetailsDiv = styled.div`
       border-radius: 3px;
 
       p{
-        font-family: Montserrat, sans-serif;
+       
         color: rgb(var(--purple-mid));
         font-size: 15px;
-        font-weight: 600;
+        font-weight: 500;
+    }
+
+    span {
+    font-family: Cinzel;
+    font-size: 15px;
+    font-weight: 600;
+    color: rgb(var(--ras-pink));
     }
 `;
 
@@ -112,26 +132,47 @@ const PurpleTile = styled.div`
     flex-direction: column;
     align-items: center;
     background-color: rgb(var(--purple-mid));
-    width: 252px;
-    height: 298px;
+    max-width: 350px;
+    height: 300px;
+    width: 33%;
     border-radius: 3px;
 
     h3 {
     color: rgb(var(--cream));
     font-family: Cinzel;
-    font-size: 20px;
+    font-size: 22px;
     font-style: normal;
     font-weight: 500;
+    letter-spacing: .6px;
     }
 
     p{
-        font-family: Montserrat, sans-serif;
         color: rgb(var(--cream));
-        font-size: 20px;
-        font-weight: 600;
+        font-size: 22px;
+        font-weight: 400;
+        // line-height: 20px;
+        letter-spacing: 1.6px;
+        // font-style: italic;
+        margin: 5% 0% 10% 0%;
     }
 `;
 
+const TileButton = styled.button`
+    background-color: rgb(var(--cream));
+    color: rgb(var(--purple-mid));
+    border: none;
+    border-radius: 3px;
+    // padding: 10px 15px;
+    width: 130px;
+    height: 35px;
+    font-size: 13px;
+    font-weight: 500;
+
+    &:hover {
+    background-color: rgb(var(--purple-light)) ;
+    color: rgb(var(--cream));
+    }
+`;
 
 const Account = () => {
 const {customerData} = useContext(CustomerContext);
@@ -139,9 +180,9 @@ const navigate = useNavigate()
 const token = getToken();
 const {width} = windowResize();
 
-const [customerReviews, setCustomerReviews] = useState([]);
+const [customerReviews, setCustomerReviews] = useState({});
 const [customerAccountInfo, setCustomerAccountInfo] = useState({});
-const [customerWishlist, setCustomerWishlist] = useState();
+const [customerWishlist, setCustomerWishlist] = useState({});
 
 
     useEffect(() => {
@@ -161,16 +202,41 @@ const [customerWishlist, setCustomerWishlist] = useState();
                 } else {
                     setCustomerAccountInfo({})
                 }
+
+                const fetchedReviews = await getReviewsByUser(customerData.id, token);
+                console.log('Fetched Reviews ->',fetchedReviews);
+                console.log('Fetched Reviews # ->',fetchedReviews.reviews.length);
+                    if (fetchedReviews) {
+                        setCustomerReviews(fetchedReviews);
+                    } else {
+                        setCustomerReviews({});
+                    }
+
+                const fetchedwishlist = await getWishlistAndItems(customerData.id, token);
+                console.log('Fetched Wishlist ->',fetchedwishlist);
+                    if (fetchedwishlist) {
+                        setCustomerWishlist(fetchedwishlist);
+                    } else {
+                        setCustomerWishlist({})
+                    }
+              
+
             } catch (error) {
                 console.error('Error fetching Customer info', error);
-                setCustomerAccountInfo({})
+                setCustomerAccountInfo({});
+                setCustomerReviews({});
+                setCustomerWishlist({});
             }
         }
         customerAccountInfo();
-    }, [ customerData.id])
+    }, [ customerData.id, navigate])
 
     const memberDate = new Date(customerAccountInfo.created_at);
-    
+    const formattedMemberDate = memberDate.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    });
    
     return (
         <>
@@ -185,29 +251,32 @@ const [customerWishlist, setCustomerWishlist] = useState();
                 <TileWrapper>
                     <AccountDetailTile>
                     <DetailsDiv>
-                            <p>{`Customer: ${customerAccountInfo.first_name} ${customerAccountInfo.last_name}`}</p>
+                            <p> <span>Customer:</span>{` ${customerAccountInfo.first_name} ${customerAccountInfo.last_name}`}</p>
                         </DetailsDiv>
                         <DetailsDiv>
-                            <p>{`Email: ${customerAccountInfo.email}`}</p>
+                            <p><span>Email:</span>{` ${customerAccountInfo.email}`}</p>
                         </DetailsDiv>
                         <DetailsDiv>
-                            <p>Review Status: {customerAccountInfo.review_permissions === 'allowed' ? 'Allowed' : 'Restricted'}</p>
+                            <p><span>Review Status:</span> {customerAccountInfo.review_permissions === 'allowed' ? ' Allowed' : ' Restricted'}</p>
                         </DetailsDiv>
                         <DetailsDiv>
-                            <p>{`Member Since: ${memberDate}`} </p>
+                            <p><span>Member Since:</span>{` ${formattedMemberDate}`} </p>
                         </DetailsDiv>
                     </AccountDetailTile>
                     <PurpleTile>
                         <SvgIcon src={diamondFilled} />
                         <h3>Reviews Posted</h3>
-                        <p>12</p>
+                        <p>{customerReviews.reviews.length}</p>
+                        <TileButton>Manage Reviews</TileButton>
                     </PurpleTile>
                     <PurpleTile>
                         <SvgIcon src={wishlistLP} />
-                        <h3>Reviews Posted</h3>
-                        <p>10</p>
+                        <h3>Items in Wishlist</h3>
+                        <p>{customerWishlist.items.length}</p>
+                        <TileButton>View Wishlist</TileButton>
                     </PurpleTile>
                 </TileWrapper>
+              
               </WebViewInnerWrapper>
               <SideBar />
             </WebView>

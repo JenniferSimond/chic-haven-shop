@@ -11,8 +11,17 @@ import homeHero from '../../assets/img-png/homeHero.png';
 
 const OuterWrapper = styled.div`
     display: flex;
-    height: 80vh;
+    height: 83vh;
     align-items: center;
+    font-family: Montserrat, sans-serif;
+
+    @media (max-width: 768px) {
+    height: 87vh;
+    }
+    
+     @media (max-width: 500px) {
+    height: 82vh;
+    }
 `;
 
 const InnerContentWrapper = styled.div`
@@ -74,14 +83,14 @@ const HeroImage = styled.img`
 
   @media (max-width: 950px) {
     max-width: 325px;
-    margin-right: 0; // Remove right margin for mobile
+    margin-right: 0; 
     justify-self: center; 
   }
 
   @media (max-width: 768px) {
        max-width: 300px;
      
-    margin-right: 0; // Remove right margin for mobile
+    margin-right: 0; 
   }
 
    @media (max-width: 359px) {
@@ -173,7 +182,6 @@ const P1 = styled.p`
 
 const P2 = styled.p`
     color: #D81159;
-    font-family: Montserrat;
     font-size: 43px;
     font-weight: 400;
     text-align: start;
@@ -216,7 +224,6 @@ const P2 = styled.p`
 
 const P3 = styled.p`
     color: #4A4E69;
-    font-family: Montserrat;
     font-size: 15px;
     font-style: italic;
     font-weight: 500;
@@ -224,7 +231,6 @@ const P3 = styled.p`
     letter-spacing: 0.4px;
     padding-top: 20px;
     padding-left: 5px;
-    // margin-right: 20%;
    
     span {
         color: #D81159;
@@ -252,7 +258,6 @@ const PromoBox2 = styled.div`
 `;
 
 const PromoText = styled.p`
-    font-family: Montserrat;
     font-size: 20px;
     font-weight: 600;
     color: #22223B;
@@ -275,7 +280,6 @@ const PromoText = styled.p`
 
 
 const PromoCode = styled.p`
-    font-family: Montserrat;
     color: #D81159;
     font-size: 15px;
     font-weight: 600;
@@ -311,7 +315,6 @@ const HeroButton = styled.button`
 
     p {
         color: #22223B;
-        font-family: Montserrat;
         font-size: 16px;
         font-weight: 400;
         letter-spacing: 0.32px;
@@ -383,7 +386,6 @@ const ProductImage = styled.img`
 
 const ProductText = styled.p`
     color: ${props => props.$highlight ? '#D81159' : '#4A4E69'};
-    font-family: Montserrat;
     font-size: 15px;
     font-weight: 550;
     text-align: center;
@@ -402,6 +404,33 @@ const ProductText = styled.p`
        font-size: 10px;
        font-weight: 600;
     }
+`;
+
+const MobileSignUpDiv = styled.div`
+    display: none;
+    text-align: center;
+    color: rgb(var(--purple-mid));
+    font-size: 12px;
+    font-style: italic;
+    font-weight: 500;
+    letter-spacing: 0.326px;
+    margin-top: 45px;
+
+    &:hover { 
+      color: rgb(var(--purple-dark));
+      font-weight: 600;
+    }
+
+    span {
+    font-weight: 600;
+     color: rgb(var(--ras-pink));
+    }
+
+    @media (max-width: 950px) {
+        display: block;
+    }
+
+    
 `;
 
 const LandingPage = () => {
@@ -448,6 +477,9 @@ const LandingPage = () => {
                         </Product>
                     ))}
                 </ProductWrapper>
+                <MobileSignUpDiv>
+                    <p onClick={handleClick}>Not a member yet, <span>sign up</span> today!</p>
+                </MobileSignUpDiv>
             </InnerContentWrapper>
         </OuterWrapper>
     );

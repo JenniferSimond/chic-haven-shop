@@ -55,10 +55,12 @@ const fetchReviewsByProduct = async (productId) => {
 };
 
 // Fetch Reviews by User
-const fetchReviewsByUser = async (token, customerId) => {
+const getReviewsByUser = async (customerId, token) => {
   try {
     const response = await fetch(`${API_URL}/reviews/customers/${customerId}`, {
+      method: 'GET',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
     });
@@ -113,7 +115,7 @@ export {
   createReview,
   fetchAllReviews,
   fetchReviewsByProduct,
-  fetchReviewsByUser,
+  getReviewsByUser,
   updateReview,
   deleteReview,
 };

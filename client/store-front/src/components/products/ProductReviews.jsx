@@ -91,8 +91,8 @@ const DiamondWrapper = styled.div`
 
 
 const SvgIcon = styled.img`
-    max-height: ${props => props.$maxHeight || '20px'};
-    max-width: ${props => props.$maxWidth || '20px'};
+    max-height: ${props => props.$maxHeight || '25px'};
+    max-width: ${props => props.$maxWidth || '25px'};
     height: ${props => props.$height ||'100%'};
     width: ${props => props.$width ||'100%'};
     

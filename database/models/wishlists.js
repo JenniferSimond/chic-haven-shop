@@ -22,12 +22,12 @@ const fetchWishlistAndItems = async (customerId) => {
       FROM wishlists w
       LEFT JOIN wishlist_items wi ON w.id = wi.wishlist_id
       LEFT JOIN products p ON wi.product_id = p.id
-      WHERE c.customer_id = $1
+      WHERE w.customer_id = $1
       ORDER BY p.name ASC;
     `;
     const response = await client.query(SQL, [customerId]);
 
-    if ((response.rows, length === 0)) {
+    if (response.rows.length === 0) {
       return null;
     }
 

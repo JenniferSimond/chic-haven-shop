@@ -11,7 +11,7 @@ const WebWrapper = styled.div`
     display: flex;
     flex-direction: row;
     width: 100%;
-    
+    font-family: Montserrat, sans-serif;
     min-height: 80vh; // Ensure it takes the full height of the viewport
     position: relative; // Ensure it positions children relative to this container
 
@@ -141,7 +141,6 @@ const Input = styled.input`
   background-color: #d81159;
   outline: none;
   color: #f9f5e3;
-  font-family: Montserrat;
   font-size: 15px;
   font-style: normal;
   font-weight: 700;
@@ -175,8 +174,7 @@ const Button = styled.button`
   border-radius: 50%;
   background-color: #4a4e69;
   color: rgb(var(--mustard));
-  font-family: Montserrat;
-  font-size: 13px;
+  font-size: 12px;
   font-style: normal;
   font-weight: 700;
   line-height: normal;
@@ -186,14 +184,14 @@ const Button = styled.button`
     
 
    @media (max-width: 1300px) {
-    width: 55px;
-    height: 55px;
-    font-size: 12px;
+    width: 56px;
+    height: 56px;
+    font-size: 11px;
   }
    @media (max-width: 1050px) {
     width: 50px;
     height: 50px;
-    font-size: 11px;
+    font-size: 10px;
   }
 
   &:hover {
@@ -234,7 +232,6 @@ const H1 = styled.h1`
 
 
 const P2 = styled.p`
-  font-family: Montserrat;
   color: rgb(var(--purple-mid));
   font-size: 15px;
   font-style: italic;
@@ -356,7 +353,7 @@ const RegisterWeb = () => {
                     placeholder="Password"
                   />
                 </InputDivs>
-                <Button>Login</Button>
+                <Button>Submit</Button>
               </InnerFormWrapper>
             </form>
           </FormWrapper>

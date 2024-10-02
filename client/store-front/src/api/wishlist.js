@@ -1,10 +1,17 @@
 import { API_URL } from './apiConfig';
 
-// Get Cart/Items
-const getWishlistAndItems = async (customerId) => {
+// get wishlist & Items
+const getWishlistAndItems = async (customerId, token) => {
   try {
     const response = await fetch(
-      `${API_URL}/wishlists/customers/:${customerId}`
+      `${API_URL}/wishlists/customers/${customerId}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
     const wishlist = await response.json();
 

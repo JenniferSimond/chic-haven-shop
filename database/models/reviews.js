@@ -103,18 +103,41 @@ const fetchReviewsByUser = async (customerId) => {
         r.rating,
         r.comment,
         r.created_at,
-        c.first_name
+        c.first_name,
+        p.name AS product_name
         FROM reviews r
-        LEFT JOIN customer c
-        ON r.customer_id = c.id
+        LEFT JOIN customers c ON r.customer_id = c.id
+        LEFT JOIN products p ON r.product_id = p.id
       WHERE r.customer_id = $1
       ORDER BY r.rating DESC
     `;
 
     const response = await client.query(SQL, [customerId]);
-    return response.rows;
+
+    if (response.rows.length === 0) {
+      return null;
+    }
+
+    const reviews = {
+      customer_id: response.rows[0].customer_id,
+      first_name: response.rows[0].first_name,
+      reviews: response.rows[0].id
+        ? response.rows.map((row) => ({
+            review_id: row.id,
+            product_id: row.product_id,
+            product_name: row.product_name,
+            rating: row.rating,
+            comment: row.comment,
+            created_at: row.created_at,
+            customer_id: row.customer_id,
+          }))
+        : [],
+    };
+
+    return reviews;
   } catch (error) {
     console.error('Error fetching reviews by user.', error);
+    throw error;
   } finally {
     client.release();
   }

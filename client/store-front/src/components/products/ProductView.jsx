@@ -47,10 +47,11 @@ const InnerWebWrapper = styled.div`
   flex-direction: row;
   align-items: center;
   width: 100%;
+  margin: 2% 5%;
+
 `;
 
 const MobileView = styled.div`
-  // background-color: pink;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -86,8 +87,6 @@ const MobileButtonBox = styled.div`
   
 `;
 
-
-
 const MobileButton = styled.button`
   background-color: rgb(var(--purple-light));
   color: rgb(var(--cream));
@@ -116,13 +115,6 @@ const MobileButton = styled.button`
    font-size: 9px;
   }
 
-  // &:disabled {
-  //   background-color: rgba(var(--purple-light), 1);
-  //   color: rgba(var(--cream), 0.7); // Lighter text color for disabled state
-  //   cursor: not-allowed; // Change cursor to indicate disabled state
-  //   box-shadow: none; // Remove any box-shadow if present
-  //   opacity: 0.7; // Reduce opacity to indicate disabled state
-  // }
 `;
 
 const MobileOptionButton = styled.button`
@@ -141,7 +133,6 @@ const MobileOptionButton = styled.button`
 `;
 
 const MobileReviewsBox = styled.div`
-    // background-color: lightblue;
     flex-direction: column;
     align-content: center;
     margin-top: 1%;
@@ -150,9 +141,8 @@ const MobileReviewsBox = styled.div`
     max-height: 120px;
     max-width: 350px;
     min-width: 120px;
-   padding: 1%;
+    padding: 1%;
     border-radius: 3px;
-    // margin-bottom: 2%;
     
 `;
 
@@ -173,7 +163,7 @@ const RightWebWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   height: 100%;
-
+  padding-right: 25px;
 `;
 
 const ProductName = styled.h1`
@@ -183,9 +173,9 @@ const ProductName = styled.h1`
   white-space: nowrap;
   text-align: center;
   font-style: normal;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: 1.32px;
-  padding-top: 1%;
+  padding-top: 2%;
 
   @media (max-width: 950px) {
     padding-top: 0%;
@@ -237,7 +227,7 @@ const ProductImage = styled.img`
   display: block;
   width: ${props => props.$width ||'100%'};
   height: auto;
-  max-width:  ${props => props.$maxWidth || '530px'};
+  max-width:  ${props => props.$maxWidth || '500px'};
   border-radius: 3px;
 
   @media (max-width: 659px) {
@@ -382,7 +372,6 @@ const Button = styled.button`
   justify-content: center;
   align-items: center;
   gap: 10px;
-  // cursor: pointer;
 
   &:hover {
     background-color: rgb(var(--purple-mid));

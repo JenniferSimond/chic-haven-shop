@@ -14,6 +14,7 @@ width: 100%;
 min-height: 85vh;
 justify-content: center;
 transition: all 0.3s ease;
+font-family: Montserrat, sans-serif;
 `;
 
 const ModelBox = styled.div`
@@ -85,7 +86,6 @@ const Input = styled.input`
   background-color: rgb(var(--ras-pink));
   outline: none;
   color: #f9f5e3;
-  font-family: Montserrat;
   font-size: 15px;
   font-style: normal;
   font-weight: 700;
@@ -117,16 +117,15 @@ const Input = styled.input`
 `;
 
 const Button = styled.button`
-  width: 50px;
-  height: 50px;
+  width: 52px;
+  height: 52px;
   border: none;
   border-radius: 50%;
   background-color: #4a4e69;
   color: rgb(var(--mustard));
-  font-family: Montserrat;
-  font-size: 11px;
+  font-size: 10px;
   font-style: normal;
-  font-weight: 700;
+  font-weight: 600;
   line-height: normal;
   letter-spacing: 0.263px;
   text-transform: capitalize;
@@ -300,7 +299,7 @@ const RegisterMobile = () => {
                     placeholder="Password"
                   />
                 </InputDivs>
-                <Button>Login</Button>
+                <Button>Submit</Button>
               </InnerFormWrapper>
             </form>
            
