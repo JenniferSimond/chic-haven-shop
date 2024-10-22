@@ -211,6 +211,8 @@ const validateCartOrWishlistAccess = async (req, res, next) => {
     console.log('User Cart ID:', req.user.cart_id); // Debugging
     console.log('Provided Cart ID:', cart_id); // Debugging
 
+    console.log('User Wish ID:', req.user.wishlist_id); // Debugging
+    console.log('Provided Wishlist ID:', wishlist_id);
     // Validate cart access
     if (cart_id && req.user.cart_id !== cart_id) {
       console.log('Cart ID mismatch'); // Debugging

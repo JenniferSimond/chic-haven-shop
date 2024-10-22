@@ -177,7 +177,8 @@ CREATE TABLE wishlist_items(
   wishlist_id UUID REFERENCES wishlists(id) ON DELETE CASCADE,
   product_id UUID REFERENCES products(id) ON DELETE CASCADE,
   created_at TIMESTAMP DEFAULT current_timestamp,
-  modified_at TIMESTAMP DEFAULT current_timestamp
+  modified_at TIMESTAMP DEFAULT current_timestamp,
+  CONSTRAINT unique_user_product UNIQUE (wishlist_id, product_id)
 );
     
 -- ORDERS

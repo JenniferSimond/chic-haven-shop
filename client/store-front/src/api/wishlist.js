@@ -41,4 +41,36 @@ const addWishlistItem = async (token, wishlistId, productId) => {
   }
 };
 
-export { getWishlistAndItems, addWishlistItem };
+const deleteWishlistItem = async (token, wishlistId, itemId) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/wishlists/${wishlistId}/items/${itemId}`,
+      {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      // Handle non-successful deletion
+      throw new Error('Failed to delete wishlist item');
+    }
+
+    // Handle cases where no content is returned
+    const result =
+      response.headers.get('content-length') && (await response.json());
+
+    console.log(
+      'Deleted Wish Item(API.js)-->',
+      result || { message: 'Item deleted successfully' }
+    );
+    return result || { message: 'Item deleted successfully' }; // Handle no body case
+  } catch (error) {
+    console.error('Error removing wishlist item:', error);
+    return { error: 'Failed to delete item' };
+  }
+};
+
+export { getWishlistAndItems, addWishlistItem, deleteWishlistItem };

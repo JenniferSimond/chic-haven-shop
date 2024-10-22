@@ -8,7 +8,7 @@ import Login from './components/customer/Login';
 import Register from './components/mainSite/Register';
 import Account from './components/customer/account-components/AccountPage';
 import About from './components/mainSite/About';
-import Wishlist from './components/customer/Wishlist';
+import Wishlist from './components/customer/wishlist/Wishlist';
 import Products from './components/products/Products';
 import ProductView from './components/products/ProductView'
 import Cart from './components/customer/Cart';

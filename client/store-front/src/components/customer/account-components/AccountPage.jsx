@@ -3,14 +3,14 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { CustomerContext } from "../../../CustomerContext.jsx";
 import windowResize from "../../shared/hooks/windowResize.js";
-import { getToken } from "../../shared/auth.js";
+import { getToken, removeToken } from "../../shared/auth.js";
 import { getReviewsByUser } from "../../../api/reviews.js";
 import { getWishlistAndItems } from "../../../api/wishlist.js";
 import { fetchCustomer } from "../../../api/customers.js";
 import SideBar from "../../menuBars/SideBar.jsx";
 import wishlistLP from "../../../assets/icons-svg/wishlist/wishlistLP.svg";
 import diamondFilled from '../../../assets/icons-svg/reviewDiamond/diamondFilled.svg';
-import Wishlist from "../Wishlist.jsx";
+import Wishlist from "../wishlist/Wishlist.jsx";
 
 
 const MobileView = styled.div`
@@ -18,12 +18,14 @@ const MobileView = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 50px;
+    gap: 40px;
     width: 100%;
-    min-height: 80vh; 
+    min-height: 82vh; 
     font-family: Montserrat, sans-serif;
-    // margin: 0% 2%;
-   
+
+   @media (max-width: 750px) {
+    min-height: 85vh;
+   }
 `;
 
 const WebView = styled.div`
@@ -63,7 +65,6 @@ const WebViewInnerWrapper = styled.div`
         margin: 0% 0%;
         max-height: 25px;
         max-width: 25px;
-        // margin-top: 3%;
     }
 `;
 
@@ -89,13 +90,23 @@ const MainTitle = styled.p`
     font-size: 35px
   }
   @media (max-width: 600px) {
-    font-size: 29px
+    font-size: 29px;
+    font-weight: 600;
   }
   @media (max-width: 520px) {
-    font-size: 27px
+    font-size: 25px;
+    
   }
   @media (max-width: 451px) {
     font-size: 20px
+  }
+  @media (max-width: 380px) {
+    font-size: 15px;
+    
+  }
+  @media (max-width: 320px) {
+    font-size: 14px;
+    
   }
 `;
 
@@ -135,16 +146,16 @@ const DetailsDiv = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-     border: 2px solid rgb(var(--purple-light));
-     max-width: 340px;
-     width: 90%;
-     height: 40px;
-      border-radius: 3px;
-      font-size: 15px;
+    border: 2px solid rgb(var(--purple-light));
+    max-width: 340px;
+    width: 90%;
+    height: 40px;
+    border-radius: 3px;
+    font-size: 15px;
 
       p{
        
-        color: rgb(var(--purple-mid));
+        color: rgb(var(--purple-deep));
         font-weight: 500;
         
     }
@@ -155,10 +166,25 @@ const DetailsDiv = styled.div`
     color: rgb(var(--ras-pink));
     }
 
+    @media (max-width: 1200px) {
+        font-size: 14px;
+    }
+
+    @media (max-width: 1100px) {
+        font-size: 12px;
+    }
+    @media (max-width: 1000px) {
+        font-size: 11px;
+    }
+
     @media (max-width: 950px) {
         max-width: 440px;
         height: 25px;
         font-size: 14px;
+    }
+
+    @media (max-width: 425px) {
+        font-size: 12px;
     }
 `;
 
@@ -180,46 +206,70 @@ const PurpleTile = styled.div`
     font-size: 22px;
     font-style: normal;
     font-weight: 500;
-    letter-spacing: .6px;
-
-    @media (max-width: 950px) {
-        font-size: 18px;
-    }
+    letter-spacing: 1px;
 
     }
 
-    p{
+    p {
         color: rgb(var(--cream));
         font-size: 22px;
         font-weight: 400;
         letter-spacing: 1.6px;
         margin: 5% 0% 10% 0%;
 
-        @media (max-width: 950px) {
-            margin: 0% 0%;
+    }
+
+    @media (max-width: 1100px) {
+
+        p {
+            font-size: 20px;
+        }
+    
+        h3 {
+            font-size: 20px;
+        }
+    }
+
+    @media (max-width: 1100px) {
+
+        p {
+            font-size: 18px;
+        }
+    
+        h3 {
             font-size: 18px;
         }
     }
 
+
     @media (max-width: 950px) {
+        font-size: 18px;
         max-width: 500px;
         height: 150px;
         width: 80%;
         gap: 4%;
          justify-content: center;
+
+         p {
+            margin: 0% 0%;
+            font-size: 18px;
+         }
     }
     
 `;
 
 const TileButton = styled.button`
     background-color: rgb(var(--cream));
-    color: rgb(var(--purple-mid));
+    color: rgb(var(--purple-deep));
     border: none;
     border-radius: 3px;
-    width: 130px;
+    max-width: 130px;
+    width: 40%;
     height: 35px;
     font-size: 13px;
     font-weight: 500;
+    letter-spacing: .1px;
+    padding: .5% 1%;
 
     &:hover {
     background-color: rgb(var(--purple-light)) ;
@@ -240,7 +290,6 @@ const MobileButtonWrapper = styled.div`
     justify-content: space-around;
     max-width: 350px;
     width: 80%;
-    // background-color: pink;
    padding: 0px 10px;
    gap: 20px;
 `;
@@ -254,17 +303,23 @@ const DarkButton = styled.button`
     height: 35px;
     font-size: 13px;
     font-weight: 500;
+    letter-spacing: 1px;
+    padding: 1%;
 
     &:hover {
     background-color: rgb(var(--purple-light)) ;
     color: rgb(var(--purple-deep));
     font-weight: 600;
     }
+
+    @media (max-width: 375px) {
+        font-size: 12px;
+    }
 `;
 
 const CircleButton = styled.button`
-  width: 85px;
-  height: 85px;
+  width: 90px;
+  height: 90px;
   border: none;
   border-radius: 50%;
   background-color: rgb(var(--ras-pink));
@@ -275,6 +330,13 @@ const CircleButton = styled.button`
   line-height: normal;
   letter-spacing: 0.263px;
   text-transform: capitalize;
+
+  display: none;
+
+  &: hover {
+    background-color: rgb(var(--mustard));
+    color: rgb(var(--purple-dark));
+  }
 
   @media (max-width: 850px) {
     width: 80px;
@@ -288,6 +350,7 @@ const CircleButton = styled.button`
     width: 65px;
     height: 65px;
     font-size: 12px;
+    display: block;
   }
   `;
 
@@ -310,7 +373,9 @@ const [customerWishlist, setCustomerWishlist] = useState({});
     useEffect(() => {
 
         const customerAccountInfo = async () => {
-
+            if (!customerData.id && !token) {
+                navigate('/login');
+            }
             
             try {
                 const fetchedInfo = await fetchCustomer(customerData.id, token);
@@ -347,14 +412,21 @@ const [customerWishlist, setCustomerWishlist] = useState({});
             }
         }
         customerAccountInfo();
-    }, [ customerData.id, token, navigate])
+    }, [ customerData.id, token, navigate]);
 
+
+    // Covert Data Format
     const memberDate = new Date(customerAccountInfo.created_at);
     const formattedMemberDate = memberDate.toLocaleDateString('en-US', {
         year: 'numeric',
         month: '2-digit',
         day: '2-digit'
     });
+
+    const handleLogOutClick = () => {
+        removeToken();
+        navigate('/home')
+    }
    
     return (
         <>
@@ -382,10 +454,10 @@ const [customerWishlist, setCustomerWishlist] = useState({});
                         <TileButton>See Reviews</TileButton>
                     </PurpleTile>
                     <MobileButtonWrapper>
-                        <DarkButton>Update Account</DarkButton>
+                        <DarkButton>Edit Account</DarkButton>
                         <DarkButton>Order History</DarkButton>
                     </MobileButtonWrapper>
-                    <CircleButton>Log Out</CircleButton>
+                    <CircleButton onClick={handleLogOutClick}>Log Out</CircleButton>
             </MobileView>
         ):(
             <WebView>
@@ -410,7 +482,7 @@ const [customerWishlist, setCustomerWishlist] = useState({});
                         <SvgIcon src={diamondFilled} />
                         <h3>Reviews Posted</h3>
                       <p>{!customerReviews.customer_id || customerReviews.reviews.length == 0 ? 0 : customerReviews.reviews.length}</p>
-                        <TileButton>Manage Reviews</TileButton>
+                        <TileButton>See Reviews</TileButton>
                     </PurpleTile>
                     <PurpleTile>
                         <SvgIcon src={wishlistLP} />

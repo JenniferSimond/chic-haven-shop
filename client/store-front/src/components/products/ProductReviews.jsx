@@ -11,7 +11,7 @@ import reviewAccount from '../../assets/icons-svg/account/reviewAccount.svg'
 const WebView = styled.div`
 
    display: flex;
-   flex-grow: 1;
+//    flex-grow: 1;
    justify-content: center;
    flex-direction: column;
    align-items: center;

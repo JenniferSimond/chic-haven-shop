@@ -1,11 +1,15 @@
-import React from "react";
+import React, {useState, useEffect, useContext} from "react";
+import {CustomerContext} from '../../CustomerContext'
 import styled from "styled-components";
 import { BASE_URL } from "../../api/apiConfig";
+import { useNavigate } from "react-router-dom";
+import { addWishlistItem } from "../../api/wishlist";
+import { getToken } from "../shared/auth";
 import viewEye from '../../assets/icons-svg/eye/viewEye.svg';
 import viewEye2 from '../../assets/icons-svg/eye/viewEye2.svg';
 import wishlist from '../../assets/icons-svg/wishlist/wishlist.svg'
 import wishlist2 from '../../assets/icons-svg/wishlist/wishlist2.svg'
-import { useNavigate } from "react-router-dom";
+import wishlistPink from "../../assets/icons-svg/wishlist/wishlistPink.svg"
 
 const CardWrapper = styled.div`
   width: 255px;
@@ -62,7 +66,7 @@ const SvgIcon = styled.img`
     }
 
     opacity: 0.9;
-`
+`;
 
 const Price = styled.p`
   color: #4a4e69;
@@ -74,16 +78,46 @@ const Price = styled.p`
   letter-spacing: 0.215px;
 `;
 
+const WishlistMesage = styled.p`
+  font-family: Montserrat;
+  font-size: 12px;
+  font-style: italic;
+  line-height: normal;
+  letter-spacing: 0.215px;
+  margin-top: 2px;
+  display: none;
+`;
 
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, refreshHandler, customerWishlist }) => {
+ 
   const navigate = useNavigate();
+  const { customerData } = useContext(CustomerContext);
+  const token = getToken();
   const imageUrl = `${BASE_URL}${product.image}`;
   // console.log("Product Image URL", imageUrl);
 
+  const isInWishlist = customerWishlist?.items?.some(item => item.product_id === product.id);
+
   const handleViewClick = () => {
     navigate(`/products/${product.id}`)
-  }
+  };
+
+  const handleAddWishlistClick = async () => {
+    if (!customerData.id) {
+      alert('Please log in to add items to wishlist.')
+    }
+
+    try {
+      const newWishlistItem = await addWishlistItem(token, customerData.wishlist_id, product.id);
+      refreshHandler();
+      console.log('Refresh->');
+      console.log('New Wishlist Item ->',newWishlistItem)
+
+    } catch (error) {
+      console.log(error)
+    }
+  };
 
   return (
     <CardWrapper>
@@ -99,13 +133,14 @@ const ProductCard = ({ product }) => {
         <SvgIcon 
         width={'21px'}
         height={'21px'}
-        src={wishlist} 
+        src={isInWishlist ? wishlistPink : wishlist} 
         $hoverIcon2={wishlist2}
-       
+        onClick={handleAddWishlistClick}
         />
       </PriceButtonWrapper>
+      <WishlistMesage>Added to Wishlist!</WishlistMesage>
     </CardWrapper>
   );
 };
 
-export { ProductCard };
+export default ProductCard;

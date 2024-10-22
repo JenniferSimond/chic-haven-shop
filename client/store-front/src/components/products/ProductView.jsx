@@ -4,7 +4,7 @@ import { fetchProduct } from '../../api/product';
 import { BASE_URL } from '../../api/apiConfig';
 import styled from 'styled-components';
 import { getToken } from '../shared/auth';
-import {CustomerContext} from '../../CustomerContext'
+import { CustomerContext } from '../../CustomerContext'
 import windowResize from '../shared/hooks/windowResize';
 import { addCartIem } from '../../api/cart';
 import  {addWishlistItem} from '../../api/wishlist';
@@ -148,28 +148,28 @@ const MobileReviewsBox = styled.div`
 
 const LeftWebWrapper = styled.div`
   display: flex;
-  flex-grow: 1;
+  // flex-grow: 1;
   flex-basis: 50%;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100%;
+  gap: 20px;
 `;
 
 const RightWebWrapper = styled.div`
   display: flex;
-  flex-grow: 1;
   flex-basis: 50%;
   flex-direction: column;
   justify-content: center;
   height: 100%;
-  padding-right: 25px;
+  gap: 40px;
 `;
 
 const ProductName = styled.h1`
   color: rgb(var(--purple-mid));
   font-family: Cinzel;
-  font-size: ${props => props.$fontSize || '80px'};
+  font-size: ${props => props.$fontSize || '75px'};
   white-space: nowrap;
   text-align: center;
   font-style: normal;
@@ -227,7 +227,7 @@ const ProductImage = styled.img`
   display: block;
   width: ${props => props.$width ||'100%'};
   height: auto;
-  max-width:  ${props => props.$maxWidth || '500px'};
+  max-width:  ${props => props.$maxWidth || '550px'};
   border-radius: 3px;
 
   @media (max-width: 659px) {
@@ -300,12 +300,17 @@ const QtySelectBox = styled.div`
 `;
 
 const DescriptionBox = styled.div`
-  margin: 2% 0% 1% 0%;
-  width: 100%;
-  max-width: 568px;
-
+  margin-top: 20px;
+  width: 85%;
+  align-self: center;
+  padding-left: 2%;
+ 
   @media (max-width: 950px) {
     max-width: 520px;
+    fonst-size: 15px;
+    width: 100%;
+    padding-left: 0%;
+    margin-top: 0%;
   }
 
   @media (max-width: 658px) {
@@ -316,13 +321,27 @@ const DescriptionBox = styled.div`
 const Description = styled.p`
   color: rgb(var(--purple-mid));
   font-family: Montserrat;
-  font-size: 15px;
+  font-size: 20px;
   text-align: center;
   font-style: normal;
-  font-weight: 500;
-  line-height: 22px;
+  font-weight: 400;
+  line-height: 32px;
+  // line-height: 35px;
   letter-spacing: 1px;
   opacity: 1;
+
+  @media (max-width: 1050px) {
+    font-size: 18px;
+  }
+
+  @media (max-width: 950px) {
+    margin: 2% 0% 1% 0%;
+   width: 100%;
+   font-size: 15px;
+   text-align: center;
+   font-weight: 500;
+   line-height: 22px;
+  }
 
   @media (max-width: 768px) {
     font-size: 14px;
@@ -404,7 +423,6 @@ const ProductView = () => {
         setSelectedProduct(fetchedProduct);
       } catch (error) {
         setSelectedProduct('');
-        setProductInventory([]);
       }
     };
     if (productId) {
@@ -449,7 +467,7 @@ const ProductView = () => {
       alert('Please log in to add items to cart.')
     }
     try {
-      const newCartItem = await addCartIem(token, customerData.cart_id, selectedProduct.id, customerSelection.inventoryId, customerSelection.productSize, customerSelection.quantity )
+      const newCartItem = await addCartIem(token, customerData.cart_id, selectedProduct.id, customerSelection.inventoryId, customerSelection.productSize, customerSelection.quantity)
       console.log('Added Item -->', newCartItem);
       navigate('/products')
     } catch (error) {
@@ -517,9 +535,9 @@ const ProductView = () => {
 
           <LeftWebWrapper>
             <ProductImage src={imageUrl} />
-            <DescriptionBox>
+            {/* <DescriptionBox>
                 <Description>{selectedProduct.description}</Description>
-              </DescriptionBox>
+              </DescriptionBox> */}
             <SelectionWrapper>
               
                 <Price>${selectedProduct.price}</Price>
@@ -555,7 +573,9 @@ const ProductView = () => {
               
           </LeftWebWrapper>
           <RightWebWrapper>
-
+          <DescriptionBox>
+                <Description>{selectedProduct.description}</Description>
+              </DescriptionBox>
             <ProductReviews selectedProduct={selectedProduct} />
           </RightWebWrapper>
           </InnerWebWrapper>

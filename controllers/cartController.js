@@ -89,7 +89,7 @@ router.patch(
 
 // delete Cart Item
 router.delete(
-  '/:cartId/items/:itemsId',
+  '/:cartId/items/:itemId',
   isAuthenticated,
   validateCartOrWishlistAccess,
   async (req, res, next) => {

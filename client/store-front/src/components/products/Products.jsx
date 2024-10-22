@@ -1,7 +1,10 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useContext} from "react";
+import { CustomerContext } from "../../CustomerContext";
+import { getToken } from "../shared/auth";
 import { useLocation } from "react-router-dom";
 import { fetchAllProducts } from "../../api/product";
-import { ProductCard } from "./productCard";
+import { getWishlistAndItems } from "../../api/wishlist";
+import ProductCard from "./productCard";
 import SideBar from "../menuBars/SideBar";
 import styled from "styled-components";
 
@@ -9,7 +12,7 @@ const ProductSection = styled.div`
 display: flex;
 
 margin-bottom: 2%;
-`
+`;
 const ProductWrapper = styled.div`
     
     flex-grow: 1;
@@ -34,8 +37,12 @@ const ProductWrapper = styled.div`
 `
 
 const Products = () => {
+    const { customerData } = useContext(CustomerContext);
+    const token = getToken();
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
+    const [customerWishlist, setCustomerWishlist] = useState({});
+    const [pageRefresh, setPageRefresh] = useState(false);
     const location = useLocation();
 
     useEffect(() => {
@@ -54,7 +61,27 @@ const Products = () => {
         getProducts()
         
     },[]); // dependency array --> controls when useEffect is called --> empty array means -> the side-effect runs once after the initial rendering.
-   
+
+    useEffect(() => {
+        
+        const getCustomerWishlist = async () => {
+            if (!customerData.id || !token) return;
+          try {
+            const updatedWishlist = await getWishlistAndItems(customerData.id, token);
+                console.log('Wishlist-(products)->', updatedWishlist)
+                updatedWishlist ? setCustomerWishlist(updatedWishlist) : setCustomerWishlist({})
+          } catch (error) {
+            console.error('Error fetching wishlist items', error);
+            setCustomerWishlist({})
+          }
+        };
+        getCustomerWishlist();
+      }, [ customerData.id, token, pageRefresh])
+
+      const refreshHandler = () => {
+        setPageRefresh(!pageRefresh);
+      };
+
     useEffect(() => {
         const params = new URLSearchParams(location.search);
         const searchTermQuery = params.get('search') || '';
@@ -69,7 +96,7 @@ return(
 
     <ProductWrapper>
         {filteredProducts.map(product => (
-            <ProductCard key={product.id} product={product}/>
+            <ProductCard key={product.id} product={product} refreshHandler={refreshHandler} customerWishlist={customerWishlist}/>
         ))}
     </ProductWrapper>
         <SideBar></SideBar>

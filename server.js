@@ -59,10 +59,10 @@ app.use('/api/reviews', reviews);
 const init = async () => {
   try {
     console.log('Initializing database and server...');
-    await createTables();
-    console.log('Tables created (if not already present). Starting server...');
-    await seedDatabase();
-    console.log('Database seeded');
+    // await createTables();
+    // console.log('Tables created (if not already present). Starting server...');
+    // await seedDatabase();
+    // console.log('Database seeded');
 
     app.listen(port, () => {
       console.log(`Listening on ${port}`);

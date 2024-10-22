@@ -31,7 +31,11 @@ router.post(
       });
       res.status(201).json(newWishlistItem);
     } catch (error) {
-      next(error);
+      if (error.message === 'This item is already in your wishlist') {
+        res.status(409).json({ error: error.message });
+      } else {
+        next(error);
+      }
     }
   }
 );
@@ -77,14 +81,13 @@ router.post(
 
 // DELETE WISHLIST ITEM
 router.delete(
-  '/items/:id',
+  '/:wishlistId/items/:itemId',
   isAuthenticated,
   validateCartOrWishlistAccess,
   async (req, res, next) => {
     try {
-      const { id } = req.params;
-      const { cartId } = req.body;
-      const deletedCartItem = await deleteWishlistItem({ id, cartId });
+      const { wishlistId, itemId } = req.params;
+      const deletedCartItem = await deleteWishlistItem({ wishlistId, itemId });
       if (!deletedCartItem) {
         return res.status(404).json({ message: 'Cart item not found' });
       }

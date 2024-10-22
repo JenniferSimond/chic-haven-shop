@@ -6,7 +6,7 @@ const getCartAndItems = async (customerId) => {
     const response = await fetch(`${API_URL}/carts/customers/:${customerId}`);
     const cart = await response.json();
 
-    console.log('Cart/Items -->', cart);
+    console.log('Cart/Items (API.js) -->', cart);
     return cart;
   } catch (error) {
     console.error('Error fetching cart', error);

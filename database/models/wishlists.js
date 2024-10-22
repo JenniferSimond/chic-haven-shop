@@ -9,7 +9,7 @@ const fetchWishlistAndItems = async (customerId) => {
       SELECT
         w.id AS wishlist_id,
         w.customer_id,
-        w.created_at AS wishlist_created,
+        w.created_at AS wishlist_created_at,
         w.modified_at AS wishlist_modified_at,
         wi.id AS wishlist_item_id,
         wi.product_id,
@@ -34,19 +34,18 @@ const fetchWishlistAndItems = async (customerId) => {
     const wishlist = {
       id: response.rows[0].wishlist_id,
       customer_id: response.rows[0].customer_id,
-      created_at: response.rows[0].cart_created_at,
-      modified_at: response.rows[0].cart_modified_at,
+      created_at: response.rows[0].wishlist_created_at,
+      modified_at: response.rows[0].wislist_modified_at,
       items: response.rows[0].wishlist_item_id
         ? response.rows.map((row) => ({
-            cart_item_id: row.cart_item_id,
+            wishlist_item_id: row.wishlist_item_id,
             product_id: row.product_id,
             product_name: row.product_name,
             product_description: row.product_description,
             product_price: row.product_price,
             product_image: row.product_image,
-            quantity: row.cart_item_quantity,
-            created_at: row.cart_item_created_at,
-            modified_at: row.cart_item_modified_at,
+            created_at: row.wish_item_created_at,
+            modified_at: row.wishlist_item_modified_at,
           }))
         : [],
     };
@@ -61,19 +60,43 @@ const fetchWishlistAndItems = async (customerId) => {
 };
 
 // Add item to wishlist
+// const addItemToWishlist = async ({ wishlistId, productId }) => {
+//   const client = await pool.connect();
+//   try {
+//     const SQL = `
+//       INSERT INTO wishlist_items (id, wishlist_id, product_id, created_at, modified_at)
+//       VALUES ($1, $2, $3, current_timestamp, current_timestamp)
+//       RETURNING *
+//     `;
+//     const response = await client.query(SQL, [uuidv4(), wishlistId, productId]);
+//     return response.rows[0];
+//   } catch (error) {
+//     console.error('Error adding item to wishlist', error);
+//     throw error;
+//   } finally {
+//     client.release();
+//   }
+// };
+
 const addItemToWishlist = async ({ wishlistId, productId }) => {
   const client = await pool.connect();
   try {
     const SQL = `
       INSERT INTO wishlist_items (id, wishlist_id, product_id, created_at, modified_at)
       VALUES ($1, $2, $3, current_timestamp, current_timestamp)
-      RETURNING *
+      RETURNING *;
     `;
     const response = await client.query(SQL, [uuidv4(), wishlistId, productId]);
     return response.rows[0];
   } catch (error) {
-    console.error('Error adding item to wishlist', error);
-    throw error;
+    if (error.code === '23505') {
+      // PostgreSQL error code for unique constraint violation
+      console.error('Duplicate item detected in the wishlist');
+      throw new Error('This item is already in the wishlist');
+    } else {
+      console.error('Error adding item to wishlist', error);
+      throw error;
+    }
   } finally {
     client.release();
   }
@@ -122,14 +145,21 @@ const moveWishlistItemToCart = async ({
 };
 
 // Delete wishlist item
-const deleteWishlistItem = async ({ id, wishlistId }) => {
+const deleteWishlistItem = async ({ wishlistId, itemId }) => {
   const client = await pool.connect();
   try {
     const SQL = `
       DELETE FROM wishlist_items
-      WHERE id = $1 AND wishlist_id = $2
+      WHERE id = $2 AND wishlist_id = $1
+      RETURNING *; 
     `;
-    await client.query(SQL, [id, wishlistId]);
+    const result = await client.query(SQL, [wishlistId, itemId]);
+
+    // Check if any rows were deleted
+    if (result.rowCount === 0) {
+      return { error: 'Wishlist item not found' };
+    }
+
     return { message: 'Wishlist item deleted successfully' };
   } catch (error) {
     console.error('Error deleting wishlist item', error);
