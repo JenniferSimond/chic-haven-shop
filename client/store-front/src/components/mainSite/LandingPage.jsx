@@ -9,28 +9,31 @@ import product3 from '../../assets/img-png/product3.png';
 import newCollection from '../../assets/img-png/newCollection.png';
 import homeHero from '../../assets/img-png/homeHero.png';
 
+
 const OuterWrapper = styled.div`
     display: flex;
-    height: 83vh;
-    align-items: center;
-    font-family: Montserrat, sans-serif;
+    flex-direction: column;
+    height: calc(100vh - 7rem - 3rem);  // For larger screens: subtract NavBar and Footer heights
 
     @media (max-width: 768px) {
-    height: 87vh;
+        height: calc(100vh - 5rem - 3rem);  // For tablets: adjust for smaller NavBar height
     }
-    
-     @media (max-width: 500px) {
-    height: 82vh;
+
+    @media (max-width: 500px) {
+        height: calc(100vh - 4rem - 7rem);  // For mobile: subtract NavBar and MobileTabBar only (no Footer)
     }
 `;
 
-const InnerContentWrapper = styled.div`
 
+const InnerContentWrapper = styled.div`
+    box-sizing: border-box;
     flex-grow: 1;
-    max-width: 1300px;
+    max-width: 1400px;
+    height: 90%;
+    justify-content: center;
     display: flex;
     flex-direction: column;
-    padding: 5% 4% 3% 4%;
+    // padding: 0% 4% 0% 4%;
     margin-right: 250px; // Ensuring space for the sidebar
 
     @media (max-width: 1300px) {
@@ -47,11 +50,11 @@ const InnerContentWrapper = styled.div`
 
 const HeroWrapper = styled.div`
     display: grid;
+    box-sizing: border-box;
     margin: 0 5% 3% 5%;
     grid-template-columns: 40% 61%; // Two equal columns for web layout
     column-gap: 6%;
     grid-template-areas: "image text";  // Order for larger screens
-
     @media (max-width: 1300px) {
           margin: 0 5% 6% 5%;
     }
@@ -77,12 +80,12 @@ const HeroImage = styled.img`
   grid-area: image; // Position in the grid
   width: 100%;
   max-width: 495px;
-  min-width: 250px;
+  min-width: 260px;
   height: auto;
   border-radius: 3px;
 
   @media (max-width: 950px) {
-    max-width: 325px;
+    max-width: 350px;
     margin-right: 0; 
     justify-self: center; 
   }
@@ -94,7 +97,7 @@ const HeroImage = styled.img`
   }
 
    @media (max-width: 359px) {
-       max-width: 250px;
+       max-width: 260px;
      
   }
 
@@ -106,7 +109,7 @@ const HeroTextWrapper = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
-    
+    // background-color: blue;
 
     @media (max-width: 1368px) {
         max-width: 500px;
@@ -224,20 +227,21 @@ const P2 = styled.p`
 
 const P3 = styled.p`
     color: #4A4E69;
-    font-size: 15px;
+    font-size: 18px;
     font-style: italic;
     font-weight: 500;
     line-height: 24px;
     letter-spacing: 0.4px;
     padding-top: 20px;
     padding-left: 5px;
+    margin-right: 60px;
    
     span {
         color: #D81159;
     }
 
     @media (max-width: 1148px) {
-        font-size: 12px;
+        font-size: 14px;
         line-height: 20px;
     }
 
@@ -338,11 +342,11 @@ const HeroButton = styled.button`
 `;
 
 const ProductWrapper = styled.div`
-    max-width: 1170px;
+    max-width: 1300px;
     display: inline-grid;
     grid-template-columns: 25% 25% 25% 25%;
     margin: 0% 5% 0% 5%;
-   
+    background-color: pink;
 
      @media (max-width: 950) {
      justify-conent: center;
@@ -360,16 +364,16 @@ const ProductWrapper = styled.div`
 `;
 
 const Product = styled.div`
-
-  text-align: center;
-  max-width: 200px;
-  min-width: 90px;
-  padding: 0;
-  margin-right: 40%;
-  border-radius: 3px;
+    box-sizing: border-box;
+    text-align: center;
+    max-width: 300px;
+    min-width: 95px;
+    padding: 0;
+    margin-right: 40%;
+    border-radius: 3px;
 
     @media (max-width: 950) {
-        max-width: 170px;
+        max-width: 190px;
          margin-right: 0%;
     }
 
@@ -410,11 +414,11 @@ const MobileSignUpDiv = styled.div`
     display: none;
     text-align: center;
     color: rgb(var(--purple-mid));
-    font-size: 12px;
+    font-size: 15px;
     font-style: italic;
     font-weight: 500;
     letter-spacing: 0.326px;
-    margin-top: 45px;
+    margin-top: 30px;
 
     &:hover { 
       color: rgb(var(--purple-dark));

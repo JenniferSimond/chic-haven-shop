@@ -54,7 +54,6 @@ const PriceButtonWrapper = styled.div`
   gap: 15px;
   width: 199px;
   opacity: 1;
-  background-color: white;
 `;
 
 const SvgIcon = styled.img`
@@ -218,21 +217,30 @@ const WishlistCard = ({ wishItem, refresh }) => {
       );
       console.log('Item added to cart:', newCartItem);
 
-      // Step 2: Remove from wishlist
       const deletedWishlistItem = await deleteWishlistItem(token, customerData.wishlist_id, wishItem.wishlist_item_id);
       console.log('Item removed from wishlist:', deletedWishlistItem);
 
-      // Step 3: Trigger the refresh AFTER both operations complete
       refresh();
 
-      // Step 4: Reset the order box and processing state
       setShowOrderBox(false);
     } catch (error) {
-      console.error('Error adding to cart or removing wishlist item:', error);
+      console.error('Error adding item to cart:', error);
     } finally {
-      setIsProcessing(false);  // End processing
+      setIsProcessing(false); 
     }
   };
+
+  const handleRemoveClick = async () => {
+
+    try {
+      const deletedWishlistItem = await deleteWishlistItem(token, customerData.wishlist_id, wishItem.wishlist_item_id);
+      console.log('Item removed from wishlist:', deletedWishlistItem);
+
+      refresh();
+    } catch (error) {
+      console.error('Error removing wishlist item.')
+    }
+  }
 
   return (
     <CardWrapper>
@@ -247,6 +255,7 @@ const WishlistCard = ({ wishItem, refresh }) => {
           height={'21px'}
           src={removePurpleMid}
           $hoverIcon2={removePink}
+          onClick={handleRemoveClick}
         />
       </PriceButtonWrapper>
 

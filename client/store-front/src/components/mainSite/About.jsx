@@ -19,7 +19,7 @@ const ContentBox = styled.div`
   max-height: 950px;
   min-height: 200px;
   height: 90%;
-  border: 5px solid rgb(var(--purple-light));
+  // border: 5px solid rgb(var(--purple-light));
   border-radius: 3px;
   overflow-y: clip;
 

@@ -34,20 +34,36 @@ const NavWrapper = styled.div`
     z-index: 100; 
     position: fixed;
 `;
+// const ContentWindow = styled.div`
+//   flex-grow: 1;
+//   padding-top: 7rem;
+//   padding-bottom: 3rem;
+//   overflow-y auto;
+
+//    @media (max-width: 768px) {
+//         padding-top: 5rem;
+//         // padding-bottom: 3rem;
+//   }
+
+//   @media (max-width: 500px) {
+//         padding-top: 4rem;
+//         // padding-bottom: 3rem;
+//   }
+// `;
+
 const ContentWindow = styled.div`
   flex-grow: 1;
-  padding-top: 7rem;
-  padding-bottom: 3rem;
-  overflow-y auto;
+  padding-top: 7rem;  // Accounts for the height of NavBar
+  padding-bottom: 3rem;  // Accounts for the height of Footer (on larger screens)
+  overflow-y: auto;
 
-   @media (max-width: 768px) {
-        padding-top: 5rem;
-        // padding-bottom: 3rem;
+  @media (max-width: 768px) {
+      padding-top: 5rem;  // Adjust for smaller NavBar height on tablets
   }
 
   @media (max-width: 500px) {
-        padding-top: 4rem;
-        // padding-bottom: 3rem;
+      padding-top: 4rem;  // Adjust for mobile NavBar height
+      padding-bottom: 7rem;  // Account for MobileTabBar only (since Footer is hidden)
   }
 `;
 
