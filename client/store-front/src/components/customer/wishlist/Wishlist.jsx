@@ -11,25 +11,11 @@ import removeDark from '../../../assets/icons-svg/removeIcon/removeDark.svg';
 import removePink from '../../../assets/icons-svg/removeIcon/removePink.svg';
 
 
-// const OuterWrapper = styled.div`
-//     display: flex;
-//     flex-direction: column;
-//     height: calc(100vh - 7rem - 3.5rem);  // Full height minus NavBar and Footer heights
-//     align-items: center;
-//     font-family: Montserrat, sans-serif;
-
-//     @media (max-width: 768px) {
-//         height: calc(100vh - 5rem - 3.5rem);  // Adjust for smaller screens
-//     }
-    
-//     @media (max-width: 500px) {
-//         height: calc(100vh - 4rem - 3rem);  // Adjust for even smaller screens
-//     }
-// `;
 
 const OuterWrapper = styled.div`
     display: flex;
     flex-direction: column;
+
     height: calc(100vh - 7rem - 3rem);  // For larger screens: subtract NavBar and Footer heights
 
     @media (max-width: 768px) {
@@ -42,13 +28,15 @@ const OuterWrapper = styled.div`
 `;
 
 const InnerContentWrapper = styled.div`
-    flex-grow: 1;  // Allow the inner content to grow and fill the remaining space
     display: flex;
+    flex-direction: column;
+    flex-grow: 1;  // Allow the inner content to grow and fill the remaining space
     justify-content: center;
     align-items: center;
-    flex-direction: column;
     margin-right: 250px;
-    background-color: pink;
+    padding: 1rem;
+    
+
     overflow-y: auto;  // Enable scrolling if content overflows
 
     @media (max-width: 1300px) {
@@ -65,13 +53,15 @@ const HeaderBox = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    box-sizing: border-box;
+    // box-sizing: border-box;
     height: 110px;
+    min-heignt: 100px;
     border: 3px solid rgb(var(--ras-pink));
     width: 95%;
+    background-color: rgb(var(--cream));
     position: sticky;
     top: 0;  // Keep the header at the top
-    // background-color: white;  // Ensure background is set
+    z-index: 1;
 
     h1 {
        font-family: Cinzel; 
@@ -81,29 +71,76 @@ const HeaderBox = styled.div`
        line-height: normal;
        letter-spacing: 0.34px;
        text-align: center;
+
+       @media (max-width: 800px) {
+         font-size: 35px;
+       }
+
+       @media (max-width: 700px) {
+         font-size: 30px;
+       }
+       @media (max-width: 600px) {
+         font-size: 28px;
+       }
+       @media (max-width: 550px) {
+         font-size: 23px;
+         font-weight: 600;
+       }
     }
+
+
+`;
+
+const WishlistScrollWrapper = styled.div`
+    flex-grow: 1;  // Takes up remaining vertical space
+    display: flex;
+    flex-direction: column;
+    margin-top: 2%;
+    overflow-y: auto;  // Allow scrolling only for wishlist items
+    width: 95%;  // Ensures content fits inside the parent wrapper
+
 `;
 
 const WishlistItems = styled.div`
-    box-sizing: border-box;
-    flex-grow: 1;  // Ensure it grows to take up remaining space
+    
+    // box-sizing: border-box;
     display: flex;
-    flex-direction: row;
     flex-wrap: wrap;
     row-gap: 40px;
     column-gap: 15px;
-    justify-content: center;  
-    align-content: center;
-    margin-bottom: 2%;
-    margin-top: 3%;
+    justify-content: ${({ isempty }) => (isempty ? 'center' : 'flex-start')}; // Dynamically set based on cart status
+    align-items: ${({ isempty }) => (isempty ? 'center' : 'flex-start')}; // Center the empty message vertically
     width: 95%;
-    padding: 5% 0% 2% 0%;
-    height: 62%;
-    max-height: 60vh; 
-    overflow-y: auto; 
-    background-color: white; 
-    
+    padding: 2% 0;
+    margin: 0 auto;  // Center the entire grid area within the available space
+    max-width: 1300px;  // Optional: To limit the max width of the grid if needed
+    // background-color: pink;
+
+    @media (max-width: 950px) {
+      justify-content: center;
+      width: 85%;
+    }
+
+   
+   
 `;
+
+const EmptyWishlistMessage = styled.p`
+    font-family: Montserrat;
+    font-size: 20px;
+    font-weight: 500;
+    font-style: italic;
+    letter-spacing: normal;
+    color: rgb(var(--purple-mid));
+    text-align: center; // Optional: Center the message
+    align-self: center; // Center the element within its parent container
+    padding: 20px; // Optional: Add padding if you want some space around the text
+
+     @media (max-width: 800px) {
+      font-size: 15px;
+     }
+`;
+
 
 
 const Wishlist = () => {
@@ -158,24 +195,25 @@ const Wishlist = () => {
           <HeaderBox>
             <h1>A Place For The Things You Love</h1>
           </HeaderBox>
-  
-          <WishlistItems>
-            {wishlistItems.length > 0 ? (
-              wishlistItems.map((wishItem) => (
-                <WishlistCard
-                  key={wishItem.wishlist_item_id}
+          <WishlistScrollWrapper>
+           <WishlistItems isempty={wishlistItems.length <= 3}>
+             {wishlistItems.length > 0 ? (
+               wishlistItems.map((wishItem) => (
+                 <WishlistCard
+                 key={wishItem.wishlist_item_id}
                   wishItem={wishItem}
-                  refresh={refreshHandlerWish}
-                />
-              ))
-            ) : (
-              <p>
-                {customerData.id && token
-                  ? "Your wishlist is empty. Check out our inventory and add some things you love!"
-                  : "Log in to save the things you love!"}
-              </p>
-            )}
-          </WishlistItems>
+                 refresh={refreshHandlerWish}
+                 />
+               ))
+             ) : (
+              <EmptyWishlistMessage>
+              {customerData.id && token
+                ? "Your wishlist is empty. Check out our inventory to add the chic styles you love!"
+                : "Log in or sign up to add chic styles you love!"}
+            </EmptyWishlistMessage>
+              )}
+            </WishlistItems>
+          </WishlistScrollWrapper>
         </InnerContentWrapper>
         <SideBar />
       </OuterWrapper>

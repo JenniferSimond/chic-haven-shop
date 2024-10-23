@@ -346,7 +346,6 @@ const ProductWrapper = styled.div`
     display: inline-grid;
     grid-template-columns: 25% 25% 25% 25%;
     margin: 0% 5% 0% 5%;
-    background-color: pink;
 
      @media (max-width: 950) {
      justify-conent: center;

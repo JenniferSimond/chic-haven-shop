@@ -10,11 +10,18 @@ import loginModImg from '../../assets/img-png/loginModImg.png';
 import { CustomerContext } from '../../CustomerContext.jsx';
 
 const WebLoginWrapper = styled.div`
+
     display: flex;
-    flex-direction: row;
-    width: 100%;
-    min-height: 80vh; 
-    position: relative; // position children relative to the wrapper div
+    flex-direction: column;
+    height: calc(100vh - 7rem - 3rem);  // For larger screens: subtract NavBar and Footer heights
+
+    @media (max-width: 768px) {
+        height: calc(100vh - 5rem - 3rem);  // For tablets: adjust for smaller NavBar height
+    }
+
+    @media (max-width: 500px) {
+        height: calc(100vh - 4rem - 7rem);  // For mobile: subtract NavBar and MobileTabBar only (no Footer)
+    }
 
 `;
 
@@ -81,7 +88,7 @@ const MobileLoginWrapper = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 83vh;
+  height: 82vh;
   // margin-top: 3%;
   // background-color: pink;
 

@@ -29,12 +29,12 @@ const ProductWrapper = styled.div`
     margin-bottom: 2%;
     margin-top: 2%;
     
-@media (max-width: 950px) {
-    margin-right: 0px;
-    justify-content: center;
-    margin-bottom: 12%;
-}
-`
+    @media (max-width: 950px) {
+        margin-right: 0px;
+        justify-content: center;
+        margin-bottom: 12%;
+    }
+`;
 
 const Products = () => {
     const { customerData } = useContext(CustomerContext);

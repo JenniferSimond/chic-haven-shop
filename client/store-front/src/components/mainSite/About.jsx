@@ -3,29 +3,40 @@ import owner from '../../assets/img-png/owner.png';
 
 const OuterWrapper = styled.div`
 
+
     display: flex;
-    height: 80vh;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin:  0% 2%;
+
+    height: calc(100vh - 7rem - 3rem);  // For larger screens: subtract NavBar and Footer heights
+
+    @media (max-width: 768px) {
+        height: calc(100vh - 5rem - 3rem);  // For tablets: adjust for smaller NavBar height
+    }
+
+    @media (max-width: 500px) {
+        height: calc(100vh - 4rem - 7rem);  // For mobile: subtract NavBar and MobileTabBar only (no Footer)
+    }
+
 `;
 
 const ContentBox = styled.div`
   display-flex;
   flex-direction: column;
   align-content: center;
-  max-width: 550px;
+  justify-content: center;
+  max-width: 700px;
   width: 70%;
-  max-height: 950px;
-  min-height: 200px;
-  height: 90%;
+  height: 100%;
+  margin-bottom: 2%;
   // border: 5px solid rgb(var(--purple-light));
   border-radius: 3px;
   overflow-y: clip;
 
 
   @media (max-width: 950px) {
-    widthL: 70%;
+    width: 70%;
   }
   @media (max-width: 750px) {
     width: 90%;
@@ -39,13 +50,11 @@ const BottomTextWrapper = styled.div`
   padding: 0% 5%;
   display: flex;
   flex-direction: column;
-  max-width: 600px;
+  max-width: 700px;
   gap: 25px;
   margin-bottom: 1%;
-  max-height: 32vh;  /* Adjust this to control when the scrolling begins */
-  overflow-y: auto;   /* This makes the content scrollable */
-
-
+  max-height: 32vh;  
+  overflow-y: auto;   
 
 `;
 
@@ -82,9 +91,6 @@ const H1 = styled.h1`
   letter-spacing: 1.32px;
   margin-bottom: 10px;
 
-  @media (max-width: 950px) {
-    font-size: 2.6rem;
-  }
   @media (max-width: 600px) {
     font-size: 2.4rem;
   }
@@ -102,7 +108,7 @@ const H1 = styled.h1`
 const P = styled.p`
   text-align: center;
   font-family: Montserrat;
-  font-size: 15px;
+  font-size: 18px;
   color: #4A4E69;
   font-weight: 500;
   line-height: 30px;
@@ -112,6 +118,11 @@ const P = styled.p`
     font-size: 13px;
     line-height: 25px;
   }
+
+  @media (max-width: 500px){
+    font-size: 15px;
+  }
+
 `;
 
 

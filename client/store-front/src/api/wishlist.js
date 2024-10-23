@@ -58,7 +58,6 @@ const deleteWishlistItem = async (token, wishlistId, itemId) => {
       throw new Error('Failed to delete wishlist item');
     }
 
-    // Handle cases where no content is returned
     const result =
       response.headers.get('content-length') && (await response.json());
 
@@ -66,7 +65,7 @@ const deleteWishlistItem = async (token, wishlistId, itemId) => {
       'Deleted Wish Item(API.js)-->',
       result || { message: 'Item deleted successfully' }
     );
-    return result || { message: 'Item deleted successfully' }; // Handle no body case
+    return result || { message: 'Item deleted successfully' };
   } catch (error) {
     console.error('Error removing wishlist item:', error);
     return { error: 'Failed to delete item' };

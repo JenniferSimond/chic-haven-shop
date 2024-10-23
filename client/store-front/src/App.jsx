@@ -11,7 +11,7 @@ import About from './components/mainSite/About';
 import Wishlist from './components/customer/wishlist/Wishlist';
 import Products from './components/products/Products';
 import ProductView from './components/products/ProductView'
-import Cart from './components/customer/Cart';
+import Cart from './components/customer/cart/Cart';
 import MobileTabBar from './components/menuBars/MobileTabBar';
 
 import { CustomerContext, CustomerProvider } from './CustomerContext';
@@ -63,7 +63,7 @@ const ContentWindow = styled.div`
 
   @media (max-width: 500px) {
       padding-top: 4rem;  // Adjust for mobile NavBar height
-      padding-bottom: 7rem;  // Account for MobileTabBar only (since Footer is hidden)
+      padding-bottom: 7rem;  
   }
 `;
 
