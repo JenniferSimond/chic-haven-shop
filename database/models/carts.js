@@ -81,21 +81,51 @@ const addCartItem = async ({
 }) => {
   const client = await pool.connect();
   try {
-    // Fetch the product to validate its existence and get the price
-    const productSQL = `SELECT price FROM products WHERE id = $1`;
-    const productResponse = await client.query(productSQL, [productId]);
+    const existingItemSQL = `
+      SELECT id, quantity
+      FROM cart_items
+      WHERE cart_id = $1 AND product_id = $2 AND inventory_id = $3 AND product_size = $4
+    `;
 
-    if (productResponse.rows.length === 0) {
-      throw new Error('Product not found!');
-    }
+    const existingItemResponse = await client.query(existingItemSQL, [
+      cartId,
+      productId,
+      inventoryId,
+      productSize,
+    ]);
 
-    // Get the product price
-    const productPrice = productResponse.rows[0].price;
+    if (existingItemResponse.rows.length > 0) {
+      const existingItemId = existingItemResponse.rows[0].id;
+      const newQuantity = existingItemResponse.rows[0].quantity + quantity;
 
-    // Calculate total price (quantity * product price)
-    const totalPrice = productPrice * quantity;
+      const updateItemSQL = `
+        UPDATE cart_items 
+        SET quantity = $1, modified_at = CURRENT_TIMESTAMP 
+        WHERE id = $2
+        RETURNING *;
+      `;
 
-    const SQL = `
+      const updatedItemResponse = await client.query(updateItemSQL, [
+        newQuantity,
+        existingItemId,
+      ]);
+
+      return updatedItemResponse.rows[0];
+    } else {
+      const productSQL = `SELECT price FROM products WHERE id = $1`;
+      const productResponse = await client.query(productSQL, [productId]);
+
+      if (productResponse.rows.length === 0) {
+        throw new Error('Product not found!');
+      }
+
+      // Get the product price
+      const productPrice = productResponse.rows[0].price;
+
+      // Calculate total price (quantity * product price)
+      const totalPrice = productPrice * quantity;
+
+      const SQL = `
       INSERT INTO cart_items (
         id,
         cart_id,
@@ -112,7 +142,7 @@ const addCartItem = async ({
         $2,
         $3,
         $4,
-        $5,  -- size goes here
+        $5,  
         $6,
         $7,
         CURRENT_TIMESTAMP, 
@@ -121,17 +151,18 @@ const addCartItem = async ({
       RETURNING *
     `;
 
-    const response = await client.query(SQL, [
-      uuidv4(), // Generate a new unique ID for the cart item
-      cartId, // Use the provided cart ID
-      productId, // Use the provided product ID
-      inventoryId,
-      productSize, // Include the provided size
-      quantity, // Use the provided quantity
-      totalPrice, // Use the calculated total price (product price * quantity)
-    ]);
+      const newItemResponse = await client.query(SQL, [
+        uuidv4(),
+        cartId,
+        productId,
+        inventoryId,
+        productSize,
+        quantity,
+        totalPrice,
+      ]);
 
-    return response.rows[0]; // Return the added cart item
+      return newItemResponse.rows[0];
+    }
   } catch (error) {
     console.error('Error adding cart item', error);
     throw error;

@@ -135,7 +135,7 @@ const MobileOptionButton = styled.button`
 const MobileReviewsBox = styled.div`
     flex-direction: column;
     align-content: center;
-    margin-top: 1%;
+    margin-top: 0%;
     width: 90%;
     min-height: 90px;
     max-height: 120px;
@@ -301,12 +301,13 @@ const QtySelectBox = styled.div`
 
 const DescriptionBox = styled.div`
   margin-top: 20px;
-  width: 85%;
+  width: 75%;
   align-self: center;
   padding-left: 2%;
+  background-color: pink;
  
   @media (max-width: 950px) {
-    max-width: 520px;
+    max-width: 450px;
     fonst-size: 15px;
     width: 100%;
     padding-left: 0%;
@@ -314,7 +315,7 @@ const DescriptionBox = styled.div`
   }
 
   @media (max-width: 658px) {
-    max-width: 480px;
+    max-width: 400px;
   }
 `;
 
@@ -397,6 +398,24 @@ const Button = styled.button`
   }
 `;
 
+const AddedCartText = styled.p`
+  color: rgb(var(--purple-dark));
+  font-family: Montserrat;
+  font-size: ${props => props.$fontSize || '15px'};
+  font-style: italic;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: 0.215px;
+
+  @media (max-width: 425px) {
+    font-size: 10px;
+  }
+
+  ::first-letter {
+    text-transform: uppercase;
+  }
+`;
+
 const ProductView = () => {
   const navigate = useNavigate();
   const { width } = windowResize();
@@ -404,6 +423,7 @@ const ProductView = () => {
   const { productId } = useParams();
   const { customerData } = useContext(CustomerContext);
 
+  const [cartAddMessage, setCartAddMessage] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState('');
   const [viewMobileReviews, setVewMobileReviews] = useState(false);
   const [customerSelection, setCustomerSelection] = useState({
@@ -466,12 +486,33 @@ const ProductView = () => {
     if (!customerData.id) {
       alert('Please log in to add items to cart.')
     }
+
+    if (!customerSelection.quantity || customerSelection.quantity === 'Qty.') {
+      alert('Please select a valid quantity.');
+      return;
+    }
+
+    if (!customerSelection.productSize || customerSelection.productSize === '--Size--') {
+      alert('Please select a valid size.');
+      return;
+    }
+    
+    
     try {
       const newCartItem = await addCartIem(token, customerData.cart_id, selectedProduct.id, customerSelection.inventoryId, customerSelection.productSize, customerSelection.quantity)
       console.log('Added Item -->', newCartItem);
-      navigate('/products')
-    } catch (error) {
+
+      if (newCartItem) {
+        setCartAddMessage(!cartAddMessage);
+      }
+      setTimeout(() => {
+        setCartAddMessage(!cartAddMessage);
+        navigate('/products');
+      }, 2000);
       
+      
+    } catch (error) {
+      console.error('Error adding cart item: ', error);
     }
   }
 
@@ -485,7 +526,7 @@ const ProductView = () => {
       console.log('New Wishlist Item ->',newWishlistItem)
 
     } catch (error) {
-      
+      console.error('Error adding wishlist item: ', error)
     }
   }
 
@@ -503,7 +544,7 @@ const ProductView = () => {
               <QtySelectBox>
                   
                   <Select $fontSize={'11px'} $fontWeight={'600'} $padding={'5px 5px '} onChange={handleQtySelect}>
-                    {[1,2,3,4,5].map((value)=>(
+                    {[0,1,2,3,4,5].map((value)=>(
                       <Option key={value}>{value}</Option>
                     ))}
                   </Select>
@@ -522,6 +563,11 @@ const ProductView = () => {
                 <MobileButton onClick={handleAddCartClick}>Add to Cart</MobileButton>
                 <MobileButton onClick={handleAddWishlistClick}>Wishlist it</MobileButton>
             </MobileButtonBox>
+            <AddedCartText>{cartAddMessage ? (
+              `${selectedProduct.name} added to cart`
+             ):('')
+              
+              }</AddedCartText>
           <MobileReviewsBox>
             
           <ProductReviews selectedProduct={selectedProduct} viewMobileReviews={viewMobileReviews} />
@@ -544,6 +590,7 @@ const ProductView = () => {
                 <QtySelectBox>
                   <form>
                   <Select onChange={handleQtySelect}>
+                    <Option>Qty.</Option>
                     {[1,2,3,4,5].map((value)=>(
                       <Option key={value}>{value}</Option>
                     ))}
@@ -554,6 +601,7 @@ const ProductView = () => {
 
                 <SizeSelectionBox>
                   <Select onChange={handleSizeSelect}>
+                    <Option>--Size--</Option>
                     {selectedProduct.inventory &&
                       selectedProduct.inventory.map((item) => (
                         <Option key={item.inventory_id}>{item.product_size}</Option>
@@ -570,6 +618,11 @@ const ProductView = () => {
                   Wishlist
                 </Button>
               </SelectionWrapper>
+             <AddedCartText>{cartAddMessage ? (
+              `${selectedProduct.name} added to cart`
+             ):('')
+              
+              }</AddedCartText>
               
           </LeftWebWrapper>
           <RightWebWrapper>

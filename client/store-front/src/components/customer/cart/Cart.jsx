@@ -18,15 +18,15 @@ const CartItemSection = styled.div`
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    row-gap: 40px;
-    column-gap: 50px;
+    row-gap: 35px;
+    column-gap: 35px;
     justify-content: center;  
     align-content: flex-start;
     width: 100%;  
     max-height: 100%;
     margin-right: 250px; 
     margin-bottom: 2%;
-    margin-top: 2%;
+    margin-top: 3%;
     
     @media (max-width: 950px) {
         margin-right: 0px;

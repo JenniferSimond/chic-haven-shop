@@ -23,7 +23,7 @@ const CardWrapper = styled.div`
 `;
 
 const ProductName = styled.p`
-  color: #4A4E69;
+  color: rgb(var(--purple-mid));
   font-family: Cinzel;
   font-size: 20px;
   white-space: nowrap;
