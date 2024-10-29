@@ -58,7 +58,7 @@ const updateCartItem = async (token, cartId, itemId, quantity) => {
     });
     const updatedCartItem = await response.json();
     console.log('Updated Cart Item (API) -->', updatedCartItem);
-    return updateCartItem;
+    return updatedCartItem;
   } catch (error) {
     console.error('Error updating cart item.', error);
   }
@@ -81,4 +81,30 @@ const deleteCartItem = async (token, cartId, itemId) => {
   }
 };
 
-export { getCartAndItems, addCartIem, updateCartItem, deleteCartItem };
+const cartCheckout = async (token, cartId, customerId) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/carts/${cartId}/items/${itemId}/checkout`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const checkout = await response.json();
+    console.log('Checkout (API)-->', checkout);
+    return checkout;
+  } catch (error) {
+    console.error('Cart checkout error.', error);
+  }
+};
+
+export {
+  getCartAndItems,
+  addCartIem,
+  updateCartItem,
+  deleteCartItem,
+  cartCheckout,
+};

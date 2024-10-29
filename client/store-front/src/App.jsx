@@ -6,13 +6,14 @@ import NavBar from './components/menuBars/navBar/NavBar'
 import Footer from './components/menuBars/Footer';
 import Login from './components/customer/Login';
 import Register from './components/mainSite/Register';
-import Account from './components/customer/account-components/AccountPage';
+import Account from './components/customer/account/AccountPage';
 import About from './components/mainSite/About';
 import Wishlist from './components/customer/wishlist/Wishlist';
 import Products from './components/products/Products';
 import ProductView from './components/products/ProductView'
 import Cart from './components/customer/cart/Cart';
 import MobileTabBar from './components/menuBars/MobileTabBar';
+import CartCheckout from './components/customer/cart/CartChekout';
 
 import { CustomerContext, CustomerProvider } from './CustomerContext';
 
@@ -34,35 +35,19 @@ const NavWrapper = styled.div`
     z-index: 100; 
     position: fixed;
 `;
-// const ContentWindow = styled.div`
-//   flex-grow: 1;
-//   padding-top: 7rem;
-//   padding-bottom: 3rem;
-//   overflow-y auto;
-
-//    @media (max-width: 768px) {
-//         padding-top: 5rem;
-//         // padding-bottom: 3rem;
-//   }
-
-//   @media (max-width: 500px) {
-//         padding-top: 4rem;
-//         // padding-bottom: 3rem;
-//   }
-// `;
 
 const ContentWindow = styled.div`
   flex-grow: 1;
-  padding-top: 7rem;  // Accounts for the height of NavBar
-  padding-bottom: 3rem;  // Accounts for the height of Footer (on larger screens)
+  padding-top: 7rem;  
+  padding-bottom: 3rem;  
   overflow-y: auto;
 
   @media (max-width: 768px) {
-      padding-top: 5rem;  // Adjust for smaller NavBar height on tablets
+      padding-top: 5rem;  
   }
 
-  @media (max-width: 500px) {
-      padding-top: 4rem;  // Adjust for mobile NavBar height
+  @media (max-width: 600px) {
+      padding-top: 4rem;  
       padding-bottom: 7rem;  
   }
 `;
@@ -100,6 +85,7 @@ function App() {
           <Route path='/account' element={<Account />}/>
           <Route path='/cart' element={<Cart />}/>
           <Route path='/wishlist' element={<Wishlist />}/>
+          <Route path='/checkout' element={<CartCheckout />}/>
         </Routes>
       </ContentWindow>
       <FootWrapper>

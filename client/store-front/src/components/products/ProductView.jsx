@@ -18,7 +18,7 @@ const NullProductView = styled.div`
   align-content: center;
   align-items: center;
   justify-content: space-evenly;
-  height: 82vh;
+  height: 83vh;
   padding: 0% 3%;
 
   p {
@@ -304,7 +304,7 @@ const DescriptionBox = styled.div`
   width: 75%;
   align-self: center;
   padding-left: 2%;
-  background-color: pink;
+  //background-color: pink;
  
   @media (max-width: 950px) {
     max-width: 450px;
@@ -475,7 +475,7 @@ const ProductView = () => {
   };
 
   const handleQtySelect = (event) => {
-    const selectedQty = event.target.value;
+    const selectedQty = parseInt(event.target.value, 10);
     setCustomerSelection(prevState => ({
       ...prevState,
       quantity: selectedQty
@@ -508,7 +508,7 @@ const ProductView = () => {
       setTimeout(() => {
         setCartAddMessage(!cartAddMessage);
         navigate('/products');
-      }, 2000);
+      }, 600);
       
       
     } catch (error) {

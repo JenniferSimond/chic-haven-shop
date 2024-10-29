@@ -11,7 +11,7 @@ display: flex;
 flex-direction: column;
 align-items: center;
 width: 100%;
-min-height: 85vh;
+min-height: 82vh;
 justify-content: center;
 transition: all 0.3s ease;
 font-family: Montserrat, sans-serif;

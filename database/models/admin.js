@@ -3,7 +3,6 @@
 const pool = require('../databaseConfig');
 const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 
 // CREATE ADMIN ROLE
 

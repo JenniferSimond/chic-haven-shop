@@ -18,7 +18,7 @@ DROP TABLE IF EXISTS carts CASCADE;
 DROP TABLE IF EXISTS cart_items CASCADE;
 DROP TABLE IF EXISTS wishlists CASCADE;
 DROP TABLE IF EXISTS wishlist_items CASCADE;
-DROP TABLE IF EXISTS orders CASCADE;
+DROP TABLE IF EXISTS customer_orders CASCADE;
 DROP TABLE IF EXISTS ordered_items CASCADE;
 DROP TABLE IF EXISTS payments CASCADE;
 DROP TABLE IF EXISTS reviews CASCADE;
@@ -111,7 +111,7 @@ CREATE TABLE products(
   id UUID PRIMARY KEY,
   name VARCHAR(100) UNIQUE NOT NULL,
   description VARCHAR(255),
-  price DECIMAL CHECK (price > 0),
+  price DECIMAL(10, 2) CHECK (price > 0),
   image VARCHAR(100),
   sku VARCHAR(255),
   category_id UUID REFERENCES product_categories(id) ON DELETE CASCADE,
@@ -147,6 +147,8 @@ CREATE TABLE reviews (
 CREATE TABLE carts(
   id UUID PRIMARY KEY,
   customer_id UUID REFERENCES customers(id) ON DELETE CASCADE,
+  items_in_cart INTEGER DEFAULT 0,
+  cart_total DECIMAL(10, 2) DEFAULT 0.00,
   created_at TIMESTAMP DEFAULT current_timestamp,
   modified_at TIMESTAMP DEFAULT current_timestamp,
   CONSTRAINT unique_customer UNIQUE (customer_id, id)
@@ -159,10 +161,12 @@ CREATE TABLE cart_items(
   inventory_id UUID REFERENCES product_inventory(id) ON DELETE CASCADE,
   product_size VARCHAR(25),
   quantity INTEGER CHECK (quantity > 0),
-  total_price DECIMAL CHECK (total_price > 0),
+  total_price DECIMAL(10, 2) CHECK (total_price > 0), 
   created_at TIMESTAMP DEFAULT current_timestamp,
-  modified_at TIMESTAMP DEFAULT current_timestamp
+  modified_at TIMESTAMP DEFAULT current_timestamp,
+  CONSTRAINT unique_cart_item UNIQUE (cart_id, product_id, inventory_id, product_size)
 );
+
 
 -- WISHLIST
 CREATE TABLE wishlists(
@@ -182,13 +186,13 @@ CREATE TABLE wishlist_items(
 );
     
 -- ORDERS
-CREATE TABLE orders(
+CREATE TABLE customer_orders(
   id UUID PRIMARY KEY,
   customer_id UUID REFERENCES customers(id) ON DELETE CASCADE,
   address_id UUID REFERENCES customer_addresses(id) ON DELETE CASCADE,
   quantity INTEGER,
   price DECIMAL CHECK (price > 0),
-  total_price DECIMAL CHECK (total_price > 0),
+  order_total DECIMAL CHECK (order_total > 0),
   status VARCHAR(50),
   created_at TIMESTAMP DEFAULT current_timestamp,
   modified_at TIMESTAMP DEFAULT current_timestamp
@@ -196,19 +200,19 @@ CREATE TABLE orders(
 
 CREATE TABLE ordered_items(
   id UUID PRIMARY KEY,
-  order_id UUID REFERENCES orders(id) ON DELETE CASCADE,
+  order_id UUID REFERENCES customer_orders(id) ON DELETE CASCADE,
   product_id UUID REFERENCES products(id) ON DELETE CASCADE,
   inventory_id UUID REFERENCES product_inventory(id) ON DELETE CASCADE,
-  product_size VARCHAR(25),
+  item_size VARCHAR(25),
   quantity INTEGER,
-  order_total DECIMAL CHECK (order_total > 0),
+  total_price DECIMAL(10, 2) CHECK (total_price > 0),
   created_at TIMESTAMP DEFAULT current_timestamp,
   modified_at TIMESTAMP DEFAULT current_timestamp
 );
 
 CREATE TABLE payments(
   id UUID PRIMARY KEY,
-  order_id UUID REFERENCES orders(id) ON DELETE CASCADE,
+  order_id UUID REFERENCES customer_orders(id) ON DELETE CASCADE,
   stripe_payment_id VARCHAR(255),
   amount DECIMAL CHECK (amount > 0),
   currency VARCHAR(20),
@@ -218,12 +222,12 @@ CREATE TABLE payments(
 );
 
 
-
 -- CHANGE TRACKING TRIGGER
 CREATE OR REPLACE FUNCTION track_table_changes()
 RETURNS TRIGGER
 AS $$
 BEGIN
+  
   IF (TG_OP = 'INSERT') THEN
     INSERT INTO change_log (table_name, operation, record_id, new_values, changed_at, changed_by)
     VALUES (TG_TABLE_NAME, TG_OP, NEW.id, row_to_json(NEW), CURRENT_TIMESTAMP,
@@ -279,6 +283,9 @@ BEGIN
   INSERT INTO wishlists (id, customer_id, created_at, modified_at)
   VALUES (uuid_generate_v4(), NEW.id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
+  INSERT INTO customer_addresses (id, customer_id, created_at, modified_at)
+  VALUES (uuid_generate_v4(), NEW.id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
@@ -309,6 +316,88 @@ BEFORE INSERT OR UPDATE ON product_inventory
 FOR EACH ROW
 EXECUTE FUNCTION update_stock_status();
 
+-- UPDATE INVENTORY TRIGGER FUNCTION
+CREATE OR REPLACE FUNCTION update_inventory()
+RETURNS TRIGGER AS $$
+BEGIN
+  -- Update the quantity in product_inventory for the specific item being ordered
+  UPDATE product_inventory
+  SET 
+    quantity = quantity - NEW.quantity
+  WHERE 
+    id = NEW.inventory_id;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- CREATE TRIGGER ON ordered_items TO EXECUTE update_inventory FUNCTION
+CREATE TRIGGER update_inventory_trigger
+AFTER INSERT ON ordered_items
+FOR EACH ROW
+EXECUTE FUNCTION update_inventory();
+
+-- CART TRIGGER
+CREATE OR REPLACE FUNCTION update_cart_total()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE carts
+  SET 
+    cart_total = (SELECT COALESCE(SUM(total_price), 0.00) FROM cart_items WHERE cart_id = NEW.cart_id),
+    items_in_cart = (SELECT COALESCE(SUM(quantity), 0) FROM cart_items WHERE cart_id = NEW.cart_id)
+  WHERE id = NEW.cart_id;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_cart_total_trigger
+AFTER INSERT OR UPDATE OR DELETE ON cart_items
+FOR EACH ROW
+EXECUTE FUNCTION update_cart_total();
+
+-- CART ITEMS TRIGGER
+
+CREATE OR REPLACE FUNCTION set_cart_item_total()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.total_price := (
+    SELECT p.price * NEW.quantity
+    FROM products p
+    WHERE p.id = NEW.product_id
+  );
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER set_cart_item_total_trigger
+BEFORE INSERT OR UPDATE ON cart_items
+FOR EACH ROW
+EXECUTE FUNCTION set_cart_item_total();
+
+
+-- FUNCTION TO AUTO-POPULATE address_id IN customer_orders
+CREATE OR REPLACE FUNCTION set_default_customer_address_id()
+RETURNS TRIGGER AS $$
+BEGIN
+  -- Assign the customer address ID to the order if it exists
+  NEW.address_id := (
+    SELECT id 
+    FROM customer_addresses 
+    WHERE customer_id = NEW.customer_id
+    LIMIT 1
+  );
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- TRIGGER TO EXECUTE THE FUNCTION BEFORE INSERT ON customer_orders
+CREATE TRIGGER set_address_id_on_order
+BEFORE INSERT ON customer_orders
+FOR EACH ROW
+EXECUTE FUNCTION set_default_customer_address_id();
 
   `;
 

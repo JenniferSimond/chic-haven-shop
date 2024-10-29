@@ -11,10 +11,10 @@ const FooterSection = styled.footer`
     min-height: 3.5rem;
 
     @media (max-width: 768px) {
-        min-height: 3rem;
+        min-height: 3.5rem;
   }
 
-  @media (max-width: 500px) {
+  @media (max-width: 599px) {
         display: none;
   }
 `;

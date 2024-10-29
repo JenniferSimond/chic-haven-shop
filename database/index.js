@@ -59,6 +59,7 @@ const {
   addCartItem,
   updateCartItem,
   deleteCartItem,
+  checkoutCart,
 } = require('./models/carts');
 
 //WISHLISTS
@@ -114,6 +115,7 @@ module.exports = {
   addCartItem,
   updateCartItem,
   deleteCartItem,
+  checkoutCart,
   //PRODUCT INVENTORY
   createInventory,
   fetchAllInventory,

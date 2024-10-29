@@ -6,6 +6,7 @@ const {
   addCartItem,
   updateCartItem,
   deleteCartItem,
+  checkoutCart,
 } = require('../database/index');
 
 const {
@@ -101,6 +102,25 @@ router.delete(
         return res.status(404).json({ message: 'Cart item not found' });
       }
       res.json(deletedCartItem);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+router.post(
+  '/:cartId/customers/:customerId/checkout',
+  isAuthenticated,
+  customerDataAuthorization,
+  async (req, res, next) => {
+    try {
+      const { cartId, customerId } = req.params;
+
+      // Process checkout
+      const order = await checkoutCart({ cartId, customerId });
+
+      // If successful, return order details
+      res.status(201).json(order);
     } catch (error) {
       next(error);
     }

@@ -23,7 +23,7 @@ const TabBarWrapper = styled.div`
     width: 100%;
     min-height: 7rem;
     
-    @media (min-width: 501px) {
+    @media (min-width: 600px) {
         display: none;
     }
 `;

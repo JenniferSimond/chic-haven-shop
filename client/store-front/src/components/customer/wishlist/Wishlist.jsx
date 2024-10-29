@@ -1,14 +1,12 @@
 
-import React, {useContext, useState, useEffect} from "react";
+import {useContext, useState, useEffect} from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
 import { CustomerContext } from "../../../CustomerContext";
 import { getWishlistAndItems } from "../../../api/wishlist";
 import SideBar from "../../menuBars/SideBar";
 import WishlistCard from "./WishlistCard";
 import { getToken } from "../../shared/auth";
-import removeDark from '../../../assets/icons-svg/removeIcon/removeDark.svg';
-import removePink from '../../../assets/icons-svg/removeIcon/removePink.svg';
+
 
 
 
@@ -16,35 +14,35 @@ const OuterWrapper = styled.div`
     display: flex;
     flex-direction: column;
 
-    height: calc(100vh - 7rem - 3rem);  // For larger screens: subtract NavBar and Footer heights
+    height: calc(100vh - 7rem - 3rem);  
 
     @media (max-width: 768px) {
-        height: calc(100vh - 5rem - 3rem);  // For tablets: adjust for smaller NavBar height
+        height: calc(100vh - 5rem - 3rem);  
     }
 
-    @media (max-width: 500px) {
-        height: calc(100vh - 4rem - 7rem);  // For mobile: subtract NavBar and MobileTabBar only (no Footer)
+    @media (max-width: 600px) {
+        height: calc(100vh - 4rem - 7rem);  
     }
 `;
 
 const InnerContentWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    flex-grow: 1;  // Allow the inner content to grow and fill the remaining space
+    flex-grow: 1;  
     justify-content: center;
     align-items: center;
     margin-right: 250px;
     padding: 1rem;
-    
+   // background-color: white;
 
-    overflow-y: auto;  // Enable scrolling if content overflows
+    overflow-y: auto;  
 
     @media (max-width: 1300px) {
-        margin-right: 200px;  // Adjust margin for smaller sidebar
+        margin-right: 200px;  
     }
 
     @media (max-width: 950px) {
-        margin-right: 0px;  // No sidebar on smaller screens
+        margin-right: 0px;  
     }
 `;
 
@@ -55,13 +53,14 @@ const HeaderBox = styled.div`
     align-items: center;
     // box-sizing: border-box;
     height: 110px;
-    min-heignt: 100px;
+    min-height: 100px;
     border: 3px solid rgb(var(--ras-pink));
     width: 95%;
     background-color: rgb(var(--cream));
     position: sticky;
     top: 0;  // Keep the header at the top
     z-index: 1;
+    margin-top: 2%;
 
     h1 {
        font-family: Cinzel; 
@@ -108,13 +107,12 @@ const WishlistItems = styled.div`
     flex-wrap: wrap;
     row-gap: 40px;
     column-gap: 15px;
-    justify-content: ${({ isempty }) => (isempty ? 'center' : 'flex-start')}; // Dynamically set based on cart status
-    align-items: ${({ isempty }) => (isempty ? 'center' : 'flex-start')}; // Center the empty message vertically
+    justify-content: center; 
+    align-items: center; 
     width: 95%;
     padding: 2% 0;
-    margin: 0 auto;  // Center the entire grid area within the available space
-    max-width: 1300px;  // Optional: To limit the max width of the grid if needed
-    // background-color: pink;
+    margin: 0 auto;  
+    max-width: 1300px;  
 
     @media (max-width: 950px) {
       justify-content: center;
@@ -148,6 +146,47 @@ const Wishlist = () => {
     const token = getToken();
     const [wishlistItems, setWishlistItems] = useState([]);
     const [pageRefresh, setPageRefresh] = useState(false);
+
+    const sidebarConfig = {
+      firstContainer: {
+        display: 'none',
+        backgroundColor: 'rgb(var(--mustard))',
+        text: '',
+      },
+      secondContainer: {
+        display: 'none',
+        backgroundColor: 'rgb(var(--mustard))',
+        text: '',
+      },
+      thirdContainer: {
+        display: 'none',
+        backgroundColor: 'rgb(var(--mustard))',
+        text: '',
+      },
+      buttonContainer: {
+        display: 'none',
+        backgroundColor: 'rgb(var(--mustard))',
+        leftText: '',
+        rightText: '',
+        buttonColor: '',
+
+      },
+      socialContainer: {
+        display: 'none',
+      }
+    }
+
+    const info = {
+    leftButtonText: '',
+    rightButtonText: '', 
+    firstContainerText: '', 
+    secondContainerText: '', 
+    thirdContainerText: '', 
+    firstContainerDisplay: 'none', 
+    secondContainerDisplay: 'none', 
+    displaySocial: 'none', 
+    displayButton: 'none'
+    }
   
     // Fetch wishlist when the component mounts or when dependencies change
     useEffect(() => {
@@ -196,7 +235,7 @@ const Wishlist = () => {
             <h1>A Place For The Things You Love</h1>
           </HeaderBox>
           <WishlistScrollWrapper>
-           <WishlistItems isempty={wishlistItems.length <= 3}>
+           <WishlistItems >
              {wishlistItems.length > 0 ? (
                wishlistItems.map((wishItem) => (
                  <WishlistCard
@@ -215,7 +254,7 @@ const Wishlist = () => {
             </WishlistItems>
           </WishlistScrollWrapper>
         </InnerContentWrapper>
-        <SideBar />
+        <SideBar sidebarConfig={sidebarConfig} />
       </OuterWrapper>
     );
   };

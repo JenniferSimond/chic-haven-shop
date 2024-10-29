@@ -1,5 +1,5 @@
 
-import React from "react";
+
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import SideBar from "../menuBars/SideBar";
@@ -8,6 +8,7 @@ import product2 from '../../assets/img-png/product2.png';
 import product3 from '../../assets/img-png/product3.png';
 import newCollection from '../../assets/img-png/newCollection.png';
 import homeHero from '../../assets/img-png/homeHero.png';
+import PromoSidebar from "../menuBars/PromoSidebar";
 
 
 const OuterWrapper = styled.div`
@@ -19,7 +20,7 @@ const OuterWrapper = styled.div`
         height: calc(100vh - 5rem - 3rem);  // For tablets: adjust for smaller NavBar height
     }
 
-    @media (max-width: 500px) {
+    @media (max-width: 600px) {
         height: calc(100vh - 4rem - 7rem);  // For mobile: subtract NavBar and MobileTabBar only (no Footer)
     }
 `;
@@ -230,11 +231,12 @@ const P3 = styled.p`
     font-size: 18px;
     font-style: italic;
     font-weight: 500;
-    line-height: 24px;
-    letter-spacing: 0.4px;
+    line-height: 25px;
+    letter-spacing: 1px;
     padding-top: 20px;
     padding-left: 5px;
     margin-right: 60px;
+    font-family: Montserrat, sans-serif;
    
     span {
         color: #D81159;
@@ -348,7 +350,7 @@ const ProductWrapper = styled.div`
     margin: 0% 5% 0% 5%;
 
      @media (max-width: 950) {
-     justify-conent: center;
+     justify-content: center;
     
 
         margin: 0% 0% 0% 0%;
@@ -445,13 +447,42 @@ const LandingPage = () => {
         { id: 4, image: newCollection, text: 'New Collection!', highlight: 'false' }
     ];
 
+    const sidebarConfig = {
+        firstContainer: {
+          display: 'none',
+          backgroundColor: 'rgb(var(--mustard))',
+          text: '',
+        },
+        secondContainer: {
+          display: 'none',
+          backgroundColor: 'rgb(var(--mustard))',
+          text: '',
+        },
+        thirdContainer: {
+          display: 'none',
+          backgroundColor: 'rgb(var(--mustard))',
+          text: '',
+        },
+        buttonContainer: {
+          display: 'none',
+          backgroundColor: 'rgb(var(--mustard))',
+          leftText: '',
+          rightText: '',
+          buttonColor: '',
+  
+        },
+        socialContainer: {
+          display: 'none',
+        }
+      }
+
     const handleClick = () => {
         navigate('/sign-up')
     }
 
     return (
         <OuterWrapper>
-            <SideBar />
+            <PromoSidebar />
             <InnerContentWrapper>
                 <HeroWrapper>
                     <HeroImage src={homeHero} alt="Hero" />

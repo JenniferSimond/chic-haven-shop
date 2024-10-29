@@ -15,7 +15,7 @@ const OuterWrapper = styled.div`
         height: calc(100vh - 5rem - 3rem);  // For tablets: adjust for smaller NavBar height
     }
 
-    @media (max-width: 500px) {
+    @media (max-width: 600px) {
         height: calc(100vh - 4rem - 7rem);  // For mobile: subtract NavBar and MobileTabBar only (no Footer)
     }
 
@@ -26,7 +26,7 @@ const ContentBox = styled.div`
   flex-direction: column;
   align-content: center;
   justify-content: center;
-  max-width: 700px;
+  max-width: 750px;
   width: 70%;
   height: 100%;
   margin-bottom: 2%;
@@ -54,7 +54,9 @@ const BottomTextWrapper = styled.div`
   gap: 25px;
   margin-bottom: 1%;
   max-height: 32vh;  
-  overflow-y: auto;   
+  overflow-y: auto;  
+  
+  
 
 `;
 
@@ -90,6 +92,7 @@ const H1 = styled.h1`
   line-height: 1.5;
   letter-spacing: 1.32px;
   margin-bottom: 10px;
+  
 
   @media (max-width: 600px) {
     font-size: 2.4rem;
@@ -113,6 +116,11 @@ const P = styled.p`
   font-weight: 500;
   line-height: 30px;
   letter-spacing: 0.4px;
+  text-align: start;
+
+  @media (max-width: 900px) {
+    font-size: 15px;
+  }
 
   @media (max-width: 450px) {
     font-size: 13px;

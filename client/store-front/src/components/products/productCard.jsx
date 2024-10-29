@@ -78,7 +78,7 @@ const Price = styled.p`
   letter-spacing: 0.215px;
 `;
 
-const WishlistMesage = styled.p`
+const WishlistMessage = styled.p`
   font-family: Montserrat;
   font-size: 12px;
   font-style: italic;
@@ -138,7 +138,7 @@ const ProductCard = ({ product, refreshHandler, customerWishlist }) => {
         onClick={handleAddWishlistClick}
         />
       </PriceButtonWrapper>
-      <WishlistMesage>Added to Wishlist!</WishlistMesage>
+      <WishlistMessage>Added to Wishlist!</WishlistMessage>
     </CardWrapper>
   );
 };

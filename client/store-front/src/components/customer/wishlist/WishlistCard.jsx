@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useState, useContext } from "react";
 import styled from "styled-components";
 import { BASE_URL } from "../../../api/apiConfig";
 import { getToken } from "../../shared/auth";
@@ -71,7 +71,7 @@ const SvgIcon = styled.img`
 
 
 const Button = styled.button`
-  background-color: ${props => props.$backGrounColor || 'rgb(var(--purple-mid))'};
+  background-color: ${props => props.$backgroundColor || 'rgb(var(--purple-mid))'};
   color: rgb(var(--cream));
   font-family: Montserrat;
   font-size: ${props => props.$fontSize || '12px'};
@@ -85,7 +85,7 @@ const Button = styled.button`
   align-items: center;
 
   &:hover {
-    background-color: ${props => props.$hoverbackGrounColor || 'rgb(var(--purple-dark))'};
+    background-color: ${props => props.$hoverBackgroundColor || 'rgb(var(--purple-dark))'};
   }
 `;
 

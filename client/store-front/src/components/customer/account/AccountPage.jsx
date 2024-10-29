@@ -24,7 +24,7 @@ const MobileView = styled.div`
     font-family: Montserrat, sans-serif;
 
    @media (max-width: 750px) {
-    min-height: 85vh;
+    min-height: 80vh;
    }
 `;
 
@@ -47,7 +47,7 @@ const WebViewInnerWrapper = styled.div`
     padding: 5% 4% 3% 4%;
     margin-right: 250px;
     justify-content: center;
-
+    
     @media (max-width: 1300px) {
         margin-right: 200px; // Adjust margin for smaller sidebar
     }
@@ -365,6 +365,35 @@ const [customerReviews, setCustomerReviews] = useState({});
 const [customerAccountInfo, setCustomerAccountInfo] = useState({});
 const [customerWishlist, setCustomerWishlist] = useState({});
 
+const sidebarConfig = {
+    firstContainer: {
+      display: 'none',
+      backgroundColor: 'rgb(var(--mustard))',
+      text: '',
+    },
+    secondContainer: {
+      display: 'none',
+      backgroundColor: 'rgb(var(--mustard))',
+      text: '',
+    },
+    thirdContainer: {
+      display: 'none',
+      backgroundColor: 'rgb(var(--mustard))',
+      text: '',
+    },
+    buttonContainer: {
+      display: 'none',
+      backgroundColor: 'rgb(var(--mustard))',
+      leftText: '',
+      rightText: '',
+      buttonColor: '',
+
+    },
+    socialContainer: {
+      display: 'none',
+    }
+  }
+
     if (!customerData.id) {
         navigate('/login');
          return;
@@ -395,10 +424,10 @@ const [customerWishlist, setCustomerWishlist] = useState({});
                         setCustomerReviews({});
                     }
 
-                const fetchedwishlist = await getWishlistAndItems(customerData.id, token);
-                console.log('Fetched Wishlist ->',fetchedwishlist);
-                    if (fetchedwishlist) {
-                        setCustomerWishlist(fetchedwishlist);
+                const fetchedWishlist = await getWishlistAndItems(customerData.id, token);
+                console.log('Fetched Wishlist ->',fetchedWishlist);
+                    if (fetchedWishlist) {
+                        setCustomerWishlist(fetchedWishlist);
                     } else {
                         setCustomerWishlist({})
                     }
@@ -493,7 +522,7 @@ const [customerWishlist, setCustomerWishlist] = useState({});
                 </TileWrapper>
               
               </WebViewInnerWrapper>
-              <SideBar />
+              <SideBar sidebarConfig={sidebarConfig}/>
             </WebView>
         )};
         </>

@@ -496,7 +496,7 @@ const seedDatabase = async () => {
     { product_size: 'X-Small', quantity: 20 },
     { product_size: 'Small', quantity: 50 },
     { product_size: 'Medium', quantity: 100 },
-    { product_size: 'large', quantity: 100 },
+    { product_size: 'Large', quantity: 100 },
     { product_size: 'X-Large', quantity: 70 },
     { product_size: 'XX-Large', quantity: 26 },
   ];

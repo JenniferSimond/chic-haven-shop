@@ -29,12 +29,12 @@ const MobileView = styled.div`
 
 const LoginMessageText = styled.p`
     font-family: Montserrat, sans-serif;
-        font-size: ${props => props.$fontSize || '14px'};
-        font-style: italic;
-        font-weight: 600;
-        color: rgb(var(--purple-mid));
-        letter-spacing: 0.5px;
-        margin-bottom: 2px;
+    font-size: ${props => props.$fontSize || '14px'};
+    font-style: italic;
+    font-weight: 600;
+    color: rgb(var(--purple-mid));
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
 
 `;
 

@@ -1,4 +1,7 @@
-import React, {useEffect, useState, useContext} from "react";
+
+
+
+import  {useState, useContext} from "react";
 import styled from "styled-components";
 import { getToken } from "../../shared/auth";
 import { BASE_URL } from "../../../api/apiConfig";
@@ -9,73 +12,92 @@ import { CustomerContext } from "../../../CustomerContext";
 
 const CardWrapper = styled.div`
     width: 315px;
-    height: 225px;
-    border: 2px solid rgba(var(--purple-light), 1); 
-    border-radius: 5px;
+    height: 230px;
+    border: 2.5px solid rgba(var(--purple-mid), 1); 
+    border-radius: 4px;
+`;
+
+const InsideWrapper = styled.div`
+    display: flex;
+    flex-direction: column; 
+    height: 100%;
+    justify-content: center;
+    gap: 10px;
+    padding: 4%
 `;
 
 const InnerCardWrapper = styled.div`
     display: flex;
     flex-direction: row;
-    // box-sizing: border-box;
     width: 100%;
     gap: 10px;
-    
+   
 `;
 
 const ItemImage = styled.div`
     background-image: url(${props => props.$imageUrl});
-    width: 114.69px;
-    height: 150px;
+    width: 110px;
+    height: 140px;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     border-radius: 3px;
 `;
 
-const InnderDiv = styled.div`
+const InnerDiv = styled.div`
+    border: ${props => props.$border || ''}; 
     display: flex;
+    border-radius: 3px;
+    box-sizing: border-box;
     flex-direction: column;
+    padding: ${props => props.$padding || ''};
     justify-content: ${props => props.$justifyContent || 'center'};
-    // background-color: pink;
+    width: ${props => props.$width || ''};
+    height: ${props => props.$height || ''};
     gap: 7px;
 
 `;
 
-const BottomLeftWrapper = styled.div`
+const BottomWrapper = styled.div`
     display: flex;
     flex-direction: row;
-    // background-color: white;
+      width: 100%;
+     justify-content: center;
+    gap: 10px;
+`
+
+const BottomLeftWrapper = styled.div`
+    display: flex;
+    box-sizing: border-box;
+    flex-direction: row;
+    border: 2.5px solid rgba(var(--purple-light));
     justify-content: space-around;
     border-radius: 3px;
     align-items: center;
-    width: 40%;
-    height: 30px;
+    width: 110px;
+    height: ${props => props.$height || '50px'}
     margin-top: 10px;
 `;
 
-const InsideWrapper = styled.div`
-    padding: 5%;
-`;
+
 const BottomRightWrapper = styled.div`
     display: flex;
+    flex-grow: 1;
     flex-direction: row;
     box-sizing: border-box;
     justify-content: space-around;
     border-radius: 3px;
     background-color: rgba(var(--purple-mid), 1);
-    // width: ${props => props.$width || '148px'};
-    height: ${props => props.$height || '53px'};
-    // padding: 0% 2$;
+    width: ${props => props.$width || '155px'};
+    height: ${props => props.$height || '50px'};
+    // padding: 0% 2;
 
 `;
 
 const BottomInnerDiv = styled.div`
     display: flex;
     flex-direction: column;
-    // background-color: blue;
     justify-content: ${props => props.$justifyContent || 'center'};
-    // align-content: center;
     // text-align: ${props => props.$textAlign || 'center'};
     gap: 5px;
    
@@ -87,7 +109,9 @@ const SvgIcon = styled.img`
     cursor: pointer;
 
     &:hover {
-    content: url(${props => props.$hoverIcon2})
+    content: url(${props => props.$hoverIcon2});
+    width: ${props => props.$width || '22px'};
+    height: ${props => props.$height || '22px'};
 
     }
 
@@ -95,16 +119,13 @@ const SvgIcon = styled.img`
     `;
 
     const Header = styled.h3`
-        color: rgb(var(--purple-mid));
+        color: rgb(var(--purple-dark));
         font-family: Cinzel;
-        font-size: 13px;
+        font-size: 14px;
         white-space: nowrap;
         text-align: center;
         font-style: normal;
         font-weight: 600;
-        // line-height: 1.5;
-        // letter-spacing: 1.2px;
-        // margin-bottom: 10px;
     `;
 
     const Text = styled.p`
@@ -114,7 +135,7 @@ const SvgIcon = styled.img`
         font-style: ${props => props.$fontStyle || 'normal'};
         font-weight: ${props => props.$fontWeight || '400'};
         text-align: ${props => props.$textAlign || 'center'};
-        letter-spacing: 1.2px;
+        letter-spacing: 1.3px;
         opacity: 1;
     `;
 
@@ -153,9 +174,11 @@ const SvgIcon = styled.img`
 
 `;
 
-const Option = styled.option`
+    const Option = styled.option`
   
 `;
+
+
 
 const SelectBox = styled.div`
 //    display: flex;
@@ -164,42 +187,66 @@ const SelectBox = styled.div`
 //   height: 17px;
 `;
 
-const CartCard = ({cartItem, refreshHandler}) => {
+const CartCard = ({cartItem, refresh}) => {
     const { customerData } = useContext(CustomerContext);
     const token = getToken();
     const imageUrl = `${BASE_URL}${cartItem.product_image}`;
+    const [cartQuantity, setCartQuantity] = useState(cartItem.quantity)
+    const sizeDictionary = {
+        'X-Small': 'XS',
+        'Small': 'S',
+        'Medium': 'M',
+        'Large': 'L',
+        'X-Large': 'X-l',
+        'XX-Large': 'XXL'
+    }
+
+    const handleQuantitySelect = async (event) => {
+        const newQuantity = parseInt(event.target.value, 10);
+    
+        setCartQuantity(newQuantity);
+    
+        try {
+            const updatedCartItem = await updateCartItem(token, customerData.cart_id, cartItem.cart_item_id, newQuantity);
+            console.log('Updated cartItem -(CartCard)-->', updatedCartItem);
+    
+            refresh();
+        } catch (error) {
+            console.error('Error updating cart item.');
+        }
+    };
+    
+    
+    const handleRemoveClick = async () => {
+        try {
+            const removedCartItem = await deleteCartItem(token, customerData.cart_id, cartItem.cart_item_id);
+            console.log('Removed cartItem -(cartCard)-->', removedCartItem);
+
+           
+                refresh()
+            
+        } catch (error) {
+            console.error('Error deleting item from cart.')
+        }
+    };
 
     return (
         <CardWrapper>
             <InsideWrapper>
 
             <InnerCardWrapper>
-                <InnderDiv $justifyContent={'start'}>
+                <InnerDiv $justifyContent={'start'} >
                     <ItemImage $imageUrl={imageUrl}/>
                     
-                </InnderDiv>
+                </InnerDiv>
                 
-                <InnderDiv $justifyContent={'space-between'}>
+                <InnerDiv $justifyContent={'center'} $border={'2.5px solid rgba(var(--purple-light), 1)'} $padding={'0% 2%'} $width={'175px'}>
                     <Header>{cartItem.product_name}</Header>
-                    <Text $color={'rgba(var(--purple-mid), 1)'} $fontWeight={'500'} $fontSize={'10px'}>{cartItem.product_description}</Text>
-                    <BottomRightWrapper>
-                        <BottomInnerDiv>
-                            <Text $fontWeight={'600'} $fontSize={'12px'}>Qty.</Text>
-                            <SelectBox>
-                                <Select $fontSize={'11px'} $fontWeight={'600'} $padding={'0px 0px '} >
-                                {[1, 2, 3, 4, 5].map((value) => (
-                                    <Option key={value}>{value}</Option>
-                                ))}
-                            </Select>
-                            </SelectBox>
-                        </BottomInnerDiv>
-                        <BottomInnerDiv>
-                            <Text $fontWeight={'600'} $fontSize={'11px'}>Total Price</Text>
-                            <Text $fontWeight={'500'} $textAlign={'start'} $fontStyle={'italic'}>{`$${cartItem.product_price * cartItem.quantity}`}</Text>
-                        </BottomInnerDiv>
-                    </BottomRightWrapper>
-                </InnderDiv>
+                    <Text $color={'rgba(var(--purple-mid), 1)'} $fontWeight={'500'} $fontSize={'11px'}>{cartItem.product_description}</Text>
+                   
+                </InnerDiv>
             </InnerCardWrapper>
+            <BottomWrapper>
             <BottomLeftWrapper>
                 <Text $color={'rgba(var(--purple-mid), 1)'} $fontWeight={'600'} $fontSize={'13px'} >{`$${cartItem.product_price}`}</Text>
                 <SvgIcon
@@ -207,8 +254,36 @@ const CartCard = ({cartItem, refreshHandler}) => {
                  $height={'21px'}
                  src={removePurpleMid}
                  $hoverIcon2={removePink}
+                 onClick={handleRemoveClick}
                 />
             </BottomLeftWrapper>
+            <BottomRightWrapper>
+                        <BottomInnerDiv>
+                            <Text $fontWeight={'600'} $fontSize={'11px'}>Qty.</Text>
+                            <SelectBox>
+                               
+                                <Select 
+                                $fontSize={'11px'} 
+                                $fontWeight={'700'} 
+                                $padding={'0px 0px '}
+                                defaultValue={cartItem.quantity} 
+                                onChange={handleQuantitySelect}>
+                                    <Option key={cartItem.cart_item_id} value={cartItem.quantity} disabled >{`-${cartItem.quantity}-`}</Option>
+
+                                {[1, 2, 3, 4, 5].map((value) => (
+                                    <Option 
+                                    key={value}value={value}>{value}</Option>
+                                ))}
+                            </Select>
+                            </SelectBox>
+                        </BottomInnerDiv>
+                        <BottomInnerDiv>
+                            <Text $fontWeight={'600'} $fontSize={'12px'} $textAlign={'center'}>Size:</Text>
+                            <Text $fontWeight={'600'} $textAlign={'center'} $fontSize={'12px'}>{`${sizeDictionary[cartItem.product_size]}`}</Text>
+                        </BottomInnerDiv>
+                    </BottomRightWrapper>
+            </BottomWrapper>
+            
         </InsideWrapper>
         </CardWrapper>
     )

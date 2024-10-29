@@ -3,6 +3,7 @@
 const pool = require('../databaseConfig');
 const { v4: uuidv4 } = require('uuid');
 
+// Get Cart & Items
 const fetchCartAndItems = async (customerId) => {
   const client = await pool.connect();
 
@@ -11,13 +12,16 @@ const fetchCartAndItems = async (customerId) => {
       SELECT 
         c.id AS cart_id,
         c.customer_id,
+        c.items_in_cart,
+        c.cart_total,
         c.created_at AS cart_created_at,
         c.modified_at AS cart_modified_at,
         ci.id AS cart_item_id,
         ci.product_id,
         ci.inventory_id,
-        ci.product_size AS cart_item_size,  -- Include the size here
+        ci.product_size AS cart_item_size,
         ci.quantity AS cart_item_quantity,
+        ci.total_price AS cart_item_total_price,
         ci.created_at AS cart_item_created_at,
         ci.modified_at AS cart_item_modified_at,
         p.name AS product_name,
@@ -35,13 +39,14 @@ const fetchCartAndItems = async (customerId) => {
     const response = await client.query(SQL, [customerId]);
 
     if (response.rows.length === 0) {
-      // If no rows returned, it means the cart does not exist, return null
       return null;
     }
 
     const cart = {
       id: response.rows[0].cart_id,
       customer_id: response.rows[0].customer_id,
+      items_in_cart: response.rows[0].items_in_cart,
+      cart_total: response.rows[0].cart_total,
       created_at: response.rows[0].cart_created_at,
       modified_at: response.rows[0].cart_modified_at,
       items: response.rows[0].cart_item_id
@@ -56,10 +61,11 @@ const fetchCartAndItems = async (customerId) => {
             product_image: row.product_image,
             product_sku: row.product_sku,
             quantity: row.cart_item_quantity,
+            total_price: row.cart_item_total_price,
             created_at: row.cart_item_created_at,
             modified_at: row.cart_item_modified_at,
           }))
-        : [], // Return an empty array if no items are present
+        : [],
     };
 
     return cart;
@@ -81,59 +87,14 @@ const addCartItem = async ({
 }) => {
   const client = await pool.connect();
   try {
-    const existingItemSQL = `
-      SELECT id, quantity
-      FROM cart_items
-      WHERE cart_id = $1 AND product_id = $2 AND inventory_id = $3 AND product_size = $4
-    `;
-
-    const existingItemResponse = await client.query(existingItemSQL, [
-      cartId,
-      productId,
-      inventoryId,
-      productSize,
-    ]);
-
-    if (existingItemResponse.rows.length > 0) {
-      const existingItemId = existingItemResponse.rows[0].id;
-      const newQuantity = existingItemResponse.rows[0].quantity + quantity;
-
-      const updateItemSQL = `
-        UPDATE cart_items 
-        SET quantity = $1, modified_at = CURRENT_TIMESTAMP 
-        WHERE id = $2
-        RETURNING *;
-      `;
-
-      const updatedItemResponse = await client.query(updateItemSQL, [
-        newQuantity,
-        existingItemId,
-      ]);
-
-      return updatedItemResponse.rows[0];
-    } else {
-      const productSQL = `SELECT price FROM products WHERE id = $1`;
-      const productResponse = await client.query(productSQL, [productId]);
-
-      if (productResponse.rows.length === 0) {
-        throw new Error('Product not found!');
-      }
-
-      // Get the product price
-      const productPrice = productResponse.rows[0].price;
-
-      // Calculate total price (quantity * product price)
-      const totalPrice = productPrice * quantity;
-
-      const SQL = `
+    const SQL = `
       INSERT INTO cart_items (
         id,
         cart_id,
         product_id,
         inventory_id,
-        product_size,  -- Include the size in the insert
+        product_size,
         quantity,
-        total_price,
         created_at,
         modified_at
       )
@@ -142,29 +103,30 @@ const addCartItem = async ({
         $2,
         $3,
         $4,
-        $5,  
+        $5,
         $6,
-        $7,
-        CURRENT_TIMESTAMP, 
+        CURRENT_TIMESTAMP,
         CURRENT_TIMESTAMP
       )
-      RETURNING *
+      ON CONFLICT (cart_id, product_id, inventory_id, product_size)
+      DO UPDATE SET 
+        quantity = cart_items.quantity + $6,
+        modified_at = CURRENT_TIMESTAMP
+      RETURNING *;
     `;
 
-      const newItemResponse = await client.query(SQL, [
-        uuidv4(),
-        cartId,
-        productId,
-        inventoryId,
-        productSize,
-        quantity,
-        totalPrice,
-      ]);
+    const response = await client.query(SQL, [
+      uuidv4(), // Unique ID for the new row if it’s an insert
+      cartId,
+      productId,
+      inventoryId,
+      productSize,
+      quantity,
+    ]);
 
-      return newItemResponse.rows[0];
-    }
+    return response.rows[0];
   } catch (error) {
-    console.error('Error adding cart item', error);
+    console.error('Error adding or updating cart item', error);
     throw error;
   } finally {
     client.release();
@@ -176,10 +138,12 @@ const updateCartItem = async ({ cartId, itemId, quantity }) => {
   const client = await pool.connect();
   try {
     const SQL = `
-        UPDATE cart_items
-        SET quantity = $3, modified_at = current_timestamp
-        WHERE id = $2 AND cart_id = $1
-        RETURNING *;
+      UPDATE cart_items
+      SET 
+        quantity = $3, 
+        modified_at = CURRENT_TIMESTAMP
+      WHERE cart_id = $1 AND id = $2
+      RETURNING *;
       `;
 
     const response = await client.query(SQL, [cartId, itemId, quantity]);
@@ -212,9 +176,99 @@ const deleteCartItem = async ({ cartId, itemId }) => {
   }
 };
 
+// CHECKOUT
+const checkoutCart = async ({ cartId, customerId }) => {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    const orderId = uuidv4();
+    const orderSQL = `
+      INSERT INTO customer_orders (
+        id,
+        customer_id,
+        order_total,
+        status,
+        created_at,
+        modified_at
+      )
+      VALUES (
+        $1,
+        $2,
+        (SELECT cart_total FROM carts WHERE id = $3), 
+        'Pending',
+        CURRENT_TIMESTAMP,
+        CURRENT_TIMESTAMP
+      )
+      RETURNING *;
+    `;
+    const orderResponse = await client.query(orderSQL, [
+      orderId,
+      customerId,
+      cartId,
+    ]);
+
+    const fetchCartItemsSQL = `
+      SELECT product_id, inventory_id, product_size, quantity, total_price
+      FROM cart_items
+      WHERE cart_id = $1;
+    `;
+    const cartItems = await client.query(fetchCartItemsSQL, [cartId]);
+
+    const orderItemsPromises = cartItems.rows.map((item) => {
+      const orderItemId = uuidv4();
+      const orderItemsSQL = `
+        INSERT INTO ordered_items (
+          id,
+          order_id,
+          product_id,
+          inventory_id,
+          item_size,
+          quantity,
+          total_price,
+          created_at,
+          modified_at
+        )
+        VALUES ($1, $2, $3, $4, $5, $6, $7, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+      `;
+      return client.query(orderItemsSQL, [
+        orderItemId,
+        orderId,
+        item.product_id,
+        item.inventory_id,
+        item.product_size,
+        item.quantity,
+        item.total_price,
+      ]);
+    });
+
+    await Promise.all(orderItemsPromises);
+
+    // Step 3: Clear the cart by deleting items from `cart_items`
+    const clearCartSQL = `
+      DELETE FROM cart_items WHERE cart_id = $1;
+    `;
+    await client.query(clearCartSQL, [cartId]);
+
+    // Commit transaction
+    await client.query('COMMIT');
+
+    // Return the created order details
+    return orderResponse.rows[0];
+  } catch (error) {
+    // Rollback transaction in case of an error
+    await client.query('ROLLBACK');
+    console.error('Error during checkout', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+};
+
 module.exports = {
   fetchCartAndItems,
   addCartItem,
   updateCartItem,
   deleteCartItem,
+  checkoutCart,
 };

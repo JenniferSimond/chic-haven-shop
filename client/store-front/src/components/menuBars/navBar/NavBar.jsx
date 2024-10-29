@@ -20,8 +20,8 @@ const Header = styled.header`
     @media (max-width: 768px) {
         height: 5rem;
   }
-    @media (max-width: 500px) {
-        height: 4rem;
+    @media (max-width: 600px) {
+        height: 5rem;
   }
  `;
 
@@ -30,6 +30,7 @@ const DesktopBar = styled.div`
     flex-direction: row;
     width: 100%;
     justify-content: space-between;
+    align-items: center;
     // margin: 0% 2%;
 `;
 
@@ -40,11 +41,19 @@ const NavbarLeft = styled.div`
 
 const NavbarCenter = styled.div`
     display: flex;
+    justify-content: center;
     align-items: center;
     height: auto;
     flex-direction: column;
-    gap: 20%;
-    // background-color: red;
+    height: 70px;
+    gap: 10%;
+   // background-color: red;
+
+    @media (600px) {
+    height: 80px;
+    justify-content: center;
+    gap: 0%;
+    }
 
     @media (max-width: 768px) {
         gap: 8%;
@@ -88,7 +97,7 @@ const Logo = styled.img`
     // margin-left: 10%;
     
      @media (max-width: 768px) {
-        width: 90px;
+        width: 100px;
         height: auto;
   }
 

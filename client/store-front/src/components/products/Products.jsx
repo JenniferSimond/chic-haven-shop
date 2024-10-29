@@ -1,11 +1,11 @@
-import React, {useState, useEffect, useContext} from "react";
+import {useState, useEffect, useContext} from "react";
 import { CustomerContext } from "../../CustomerContext";
 import { getToken } from "../shared/auth";
 import { useLocation } from "react-router-dom";
 import { fetchAllProducts } from "../../api/product";
 import { getWishlistAndItems } from "../../api/wishlist";
 import ProductCard from "./productCard";
-import SideBar from "../menuBars/SideBar";
+import PromoSidebar from "../menuBars/PromoSidebar";
 import styled from "styled-components";
 
 const ProductSection = styled.div`
@@ -14,7 +14,7 @@ display: flex;
 margin-bottom: 2%;
 `;
 const ProductWrapper = styled.div`
-    
+    // background-color:pink;
     flex-grow: 1;
     display: flex;
     flex-direction: row;
@@ -27,12 +27,13 @@ const ProductWrapper = styled.div`
     max-height: 100%;
     margin-right: 250px; 
     margin-bottom: 2%;
-    margin-top: 2%;
+    margin-top: 3%;
     
     @media (max-width: 950px) {
         margin-right: 0px;
         justify-content: center;
-        margin-bottom: 12%;
+        margin-bottom: 5%;
+        margin-bottom: 5%;
     }
 `;
 
@@ -44,6 +45,7 @@ const Products = () => {
     const [customerWishlist, setCustomerWishlist] = useState({});
     const [pageRefresh, setPageRefresh] = useState(false);
     const location = useLocation();
+
 
     useEffect(() => {
         const getProducts = async () => {
@@ -99,7 +101,7 @@ return(
             <ProductCard key={product.id} product={product} refreshHandler={refreshHandler} customerWishlist={customerWishlist}/>
         ))}
     </ProductWrapper>
-        <SideBar></SideBar>
+        <PromoSidebar />
     </ProductSection>
     
 )

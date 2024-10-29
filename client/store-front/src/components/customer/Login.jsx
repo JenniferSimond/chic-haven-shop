@@ -1,11 +1,11 @@
 
-import React, {useContext, useState, useEffect} from 'react';
+import {useContext, useState,} from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import windowResize from '../shared/hooks/windowResize';
 import { customerLogin } from '../../api/customers.js';
 import { setToken } from '../shared/auth.js';
-import SideBar from '../menuBars/SideBar.jsx';
+import PromoSidebar from '../menuBars/PromoSidebar.jsx';
 import loginModImg from '../../assets/img-png/loginModImg.png';
 import { CustomerContext } from '../../CustomerContext.jsx';
 
@@ -19,7 +19,7 @@ const WebLoginWrapper = styled.div`
         height: calc(100vh - 5rem - 3rem);  // For tablets: adjust for smaller NavBar height
     }
 
-    @media (max-width: 500px) {
+    @media (max-width: 599px) {
         height: calc(100vh - 4rem - 7rem);  // For mobile: subtract NavBar and MobileTabBar only (no Footer)
     }
 
@@ -84,23 +84,18 @@ const WebYellowBox = styled.div`
 
 const MobileLoginWrapper = styled.div`
   display: flex;
-  flex-direction: column;   
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 82vh;
-  // margin-top: 3%;
-  // background-color: pink;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 7rem - 3rem);  // For larger screens: subtract NavBar and Footer heights
 
-  @media (max-width: 768px) {
-    // margin-top: 10%;
-  }
-  @media (max-width: 500px) {
-    // margin-top: 8%;
-  }
-  @media (max-width: 375px) {
-    // margin-top: 15%;
-  }
+    @media (max-width: 768px) {
+        height: calc(100vh - 5rem - 3rem);  // For tablets: adjust for smaller NavBar height
+    }
+
+    @media (max-width: 599px) {
+        height: calc(100vh - 4rem - 7rem);  // For mobile: subtract NavBar and MobileTabBar only (no Footer)
+    }
 `
 const MobileModelBox = styled.div`
     height: 290px;
@@ -409,7 +404,7 @@ const P2 = styled.p`
 const Login = () => {
   const navigate = useNavigate();
   const { width } = windowResize();
-  const {customerData, setCustomerData} = useContext(CustomerContext);
+  const { setCustomerData} = useContext(CustomerContext);
   const [loginFormData, setLoginFormData] = useState({
     email: '',
     password: ''
@@ -462,8 +457,6 @@ const Login = () => {
     navigate('/sign-up');
     
   }
-
-
 
   return (
     <>
@@ -543,7 +536,7 @@ const Login = () => {
           </WebContentBox>
         <P1>Gorgeous</P1>
         </WebViewInnerWrapper>
-        <SideBar />
+        <PromoSidebar />
        </WebLoginWrapper>
     )}
     
