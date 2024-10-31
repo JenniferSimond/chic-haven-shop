@@ -122,7 +122,7 @@ const updateProductById = async ({
               price = COALESCE($7, price)
               
           WHERE id = $1
-          REtURNING *
+          RETURNING *
       `;
 
     const response = await client.query(SQL, [

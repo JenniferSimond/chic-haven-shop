@@ -80,6 +80,12 @@ const {
   deleteProductReview,
 } = require('./models/reviews');
 
+const {
+  fetchCustomerAddressById,
+  fetchCustomerAddresses,
+  updateCustomerAddress,
+} = require('./models/addresses');
+
 module.exports = {
   //AUTH
   authenticateAdmin,
@@ -134,4 +140,8 @@ module.exports = {
   fetchReviewsByUser,
   updateProductReview,
   deleteProductReview,
+  //ADDRESSES
+  fetchCustomerAddressById,
+  fetchCustomerAddresses,
+  updateCustomerAddress,
 };

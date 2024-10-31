@@ -13,8 +13,6 @@ const {
 const {
   isAuthenticated,
   isAnyAdmin,
-  isSiteAdmin,
-  isSuperAdmin,
   customerDataAuthorization,
   canPostReviews,
 } = require('../middleware/userAuth');

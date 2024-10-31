@@ -20,6 +20,7 @@ const CardWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+ 
 `;
 
 const ProductName = styled.p`
@@ -53,6 +54,7 @@ const PriceButtonWrapper = styled.div`
   justify-content: center;
   gap: 15px;
   width: 199px;
+  cursor: pointer;
   opacity: 1;
 `;
 
@@ -82,6 +84,7 @@ const Button = styled.button`
   border-radius: 3px;
   display: flex;
   justify-content: center;
+  cursor: pointer;
   align-items: center;
 
   &:hover {

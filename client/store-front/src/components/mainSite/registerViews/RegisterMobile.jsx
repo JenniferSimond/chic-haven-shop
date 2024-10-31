@@ -129,6 +129,7 @@ const Button = styled.button`
   line-height: normal;
   letter-spacing: 0.263px;
   text-transform: capitalize;
+  cursor: pointer;
   margin-top: 2%;
     
 

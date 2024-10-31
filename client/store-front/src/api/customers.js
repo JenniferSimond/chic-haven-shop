@@ -85,7 +85,7 @@ const fetchCustomer = async (customerId, token) => {
   }
 };
 
-const updateCustomer = async (customerId, newCustomerData) => {
+const updateCustomer = async (customerId, newCustomerData, token) => {
   try {
     const response = await fetch(`${API_URL}/customers/${customerId}`, {
       method: 'PATCH',
@@ -101,9 +101,75 @@ const updateCustomer = async (customerId, newCustomerData) => {
   } catch (error) {}
 };
 
+// Fetch specific customer address by customer ID
+const fetchCustomerAddress = async (customerId) => {
+  try {
+    const token = getToken();
+
+    if (!token) {
+      throw new Error('No token found');
+    }
+
+    const response = await fetch(`${API_URL}/customers/${customerId}/address`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch customer address');
+    }
+
+    const address = await response.json();
+
+    console.log(`Customer ${customerId} Address (API) -->`, address);
+    return address;
+  } catch (error) {
+    console.error('Fetch Customer Address Error:', error);
+    return null;
+  }
+};
+
+// Update customer address by customer ID
+const updateCustomerAddress = async (customerId, newAddressData, token) => {
+  try {
+    const testData = newAddressData;
+    // const token = getToken();
+
+    if (!token) {
+      throw new Error('No token found');
+    }
+
+    const response = await fetch(`${API_URL}/customers/${customerId}/address`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(newAddressData),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to update address');
+    }
+
+    const updatedAddress = await response.json();
+    console.log('original Address -->', newAddressData);
+    console.log('Updated Address (API) -->', updatedAddress);
+    return updatedAddress;
+  } catch (error) {
+    console.error('Update Address Error:', error);
+    return null;
+  }
+};
+
 export {
   fetchAuthenticatedCustomer,
   customerLogin,
   customerSignup,
   fetchCustomer,
+  fetchCustomerAddress,
+  updateCustomerAddress,
 };

@@ -257,6 +257,7 @@ const Button = styled.button`
   line-height: normal;
   letter-spacing: 0.263px;
   text-transform: capitalize;
+  cursor: pointer;
   margin-top: 2%;
     
 
@@ -367,7 +368,7 @@ const P2 = styled.p`
   left: 66.5%;
   transform: translate(-23%, -75%);
   transition: all 0.5s ease;
-
+cursor: pointer;
     &:hover { 
       color: rgb(var(--purple-dark));
       font-weight: 600;

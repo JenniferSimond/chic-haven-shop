@@ -170,7 +170,7 @@ const LogInOut = styled.button`
     color: rgba(var(--cream), 1);
     font-family:  Cinzel;
     font-weight: 500;
-
+    cursor: pointer;
      &:hover {
       background-color: rgba(var(--purple-deep), 1);
       

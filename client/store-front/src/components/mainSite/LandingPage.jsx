@@ -420,7 +420,7 @@ const MobileSignUpDiv = styled.div`
     font-weight: 500;
     letter-spacing: 0.326px;
     margin-top: 30px;
-
+    cursor: pointer;
     &:hover { 
       color: rgb(var(--purple-dark));
       font-weight: 600;

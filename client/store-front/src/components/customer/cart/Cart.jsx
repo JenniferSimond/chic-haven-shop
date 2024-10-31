@@ -61,7 +61,7 @@ const CheckoutBox = styled.div`
     z-index: 1;
     margin-top: 2%;
 
-    @media (max-width: 900px) {
+    @media (max-width: 950px) {
       flex-direction: column;
        height: 125px;
     }
@@ -95,7 +95,7 @@ const InnerCheckout = styled.div`
   font-weight: 600;
   color: rgb(var(--purple-dark));
 
-  @media (max-width: 900px) {
+  @media (max-width: 950px) {
   display: flex;
   }
 `;

@@ -19,6 +19,9 @@ const {
   deleteCustomerById,
   authenticateCustomer,
   findUserByToken,
+  fetchCustomerAddressById,
+  fetchCustomerAddresses,
+  updateCustomerAddress,
 } = require('../database/index');
 
 // GET CUSTOMER DATA BY TOKEN
@@ -145,6 +148,66 @@ router.delete(
       const { id } = req.params;
       await deleteCustomerById(id);
       res.sendStatus(204);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// Get Addresses
+router.get(
+  '/addresses',
+  isAuthenticated,
+  isAnyAdmin,
+  async (req, res, next) => {
+    try {
+      const customerAddresses = await fetchCustomerAddresses();
+      if (!customerAddresses) {
+        return res.json({ message: 'No addresses found.' });
+      }
+      res.json(customerAddresses);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// Get Address by ID
+router.get(
+  '/:customerId/address',
+  isAuthenticated,
+  customerDataAuthorization,
+  async (req, res, next) => {
+    try {
+      const { customerId } = req.params;
+      const customerAddress = await fetchCustomerAddressById(customerId);
+      if (!customerAddress) {
+        return res.json({ message: 'No customer address found.' });
+      }
+      res.json(customerAddress);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// updateAddress
+router.patch(
+  '/:customerId/address',
+  isAuthenticated,
+  customerDataAuthorization,
+  async (req, res, next) => {
+    try {
+      const { customerId } = req.params;
+      const updatedAddressData = req.body;
+      const updatedAddressDetails = await updateCustomerAddress(
+        customerId,
+        updatedAddressData
+      );
+      if (!updatedAddressDetails) {
+        return res.status(404).json({ message: 'Customer Not Found' });
+      }
+      res.json(updatedAddressDetails);
     } catch (error) {
       next(error);
     }

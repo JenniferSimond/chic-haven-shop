@@ -15,6 +15,10 @@ const CardWrapper = styled.div`
     height: 230px;
     border: 2.5px solid rgba(var(--purple-mid), 1); 
     border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-sizing: border-box;
 `;
 
 const InsideWrapper = styled.div`

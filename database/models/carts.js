@@ -12,7 +12,7 @@ const fetchCartAndItems = async (customerId) => {
       SELECT 
         c.id AS cart_id,
         c.customer_id,
-        c.items_in_cart,
+        c.items_in_cart, -- Fetch items_in_cart directly from database
         c.cart_total,
         c.created_at AS cart_created_at,
         c.modified_at AS cart_modified_at,
@@ -22,8 +22,6 @@ const fetchCartAndItems = async (customerId) => {
         ci.product_size AS cart_item_size,
         ci.quantity AS cart_item_quantity,
         ci.total_price AS cart_item_total_price,
-        ci.created_at AS cart_item_created_at,
-        ci.modified_at AS cart_item_modified_at,
         p.name AS product_name,
         p.description AS product_description,
         p.price AS product_price,
@@ -116,7 +114,7 @@ const addCartItem = async ({
     `;
 
     const response = await client.query(SQL, [
-      uuidv4(), // Unique ID for the new row if it’s an insert
+      uuidv4(),
       cartId,
       productId,
       inventoryId,
@@ -244,19 +242,15 @@ const checkoutCart = async ({ cartId, customerId }) => {
 
     await Promise.all(orderItemsPromises);
 
-    // Step 3: Clear the cart by deleting items from `cart_items`
     const clearCartSQL = `
       DELETE FROM cart_items WHERE cart_id = $1;
     `;
     await client.query(clearCartSQL, [cartId]);
 
-    // Commit transaction
     await client.query('COMMIT');
 
-    // Return the created order details
     return orderResponse.rows[0];
   } catch (error) {
-    // Rollback transaction in case of an error
     await client.query('ROLLBACK');
     console.error('Error during checkout', error);
     throw error;

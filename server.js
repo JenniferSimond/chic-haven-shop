@@ -47,6 +47,7 @@ const inventory = require('./controllers/inventoryController');
 const carts = require('./controllers/cartController');
 const wishlists = require('./controllers/wishlistController');
 const reviews = require('./controllers/reviewController');
+const stripe = require('./controllers/stripeController');
 
 app.use('/api/admins', admins);
 app.use('/api/customers', customers);
@@ -55,10 +56,11 @@ app.use('/api/inventory', inventory);
 app.use('/api/carts', carts);
 app.use('/api/wishlists', wishlists);
 app.use('/api/reviews', reviews);
+app.use('/api/stripe', stripe);
 
 const init = async () => {
   try {
-    console.log('Initializing database and server...');
+    // console.log('Initializing database and server...');
     // await createTables();
     // console.log('Tables created (if not already present). Starting server...');
     // await seedDatabase();

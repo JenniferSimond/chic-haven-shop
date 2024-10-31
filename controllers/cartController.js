@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const env = require('dotenv');
 
 const {
   fetchCartAndItems,
@@ -108,23 +109,22 @@ router.delete(
   }
 );
 
-router.post(
-  '/:cartId/customers/:customerId/checkout',
-  isAuthenticated,
-  customerDataAuthorization,
-  async (req, res, next) => {
-    try {
-      const { cartId, customerId } = req.params;
+// router.post(
+//   '/:cartId/customers/:customerId/checkout',
+//   isAuthenticated,
+//   customerDataAuthorization,
+//   async (req, res, next) => {
+//     try {
+//       const { cartId, customerId } = req.params;
 
-      // Process checkout
-      const order = await checkoutCart({ cartId, customerId });
+//       const order = await checkoutCart({ cartId, customerId });
 
-      // If successful, return order details
-      res.status(201).json(order);
-    } catch (error) {
-      next(error);
-    }
-  }
-);
+//       // If successful, return order details
+//       res.status(201).json(order);
+//     } catch (error) {
+//       next(error);
+//     }
+//   }
+// );
 
 module.exports = router;

@@ -1,4 +1,12 @@
+import React, {useState, useEffect, useContext} from "react";
 import styled from "styled-components";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements, CardNumberElement, CardExpiryElement, CardCvcElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { CustomerContext } from "../../../CustomerContext";
+import { getToken } from "../../shared/auth";
+import { getStripeConfig, createPaymentIntent } from "../../../api/stripe";
+import AddressCheckbox from "./AddressCheckBox";
+import { fetchCustomerAddress, updateCustomerAddress } from "../../../api/customers";
 
 const CheckoutWrapper = styled.div`
     display: flex;
@@ -32,7 +40,7 @@ const CheckoutContainer = styled.div`
   //grid-template-columns: 1fr 1fr; 
   grid-template-rows: auto auto auto; 
   gap: 20px;
-  max-width: 100%;
+  max-length: 100%;
   max-height: 100%
   
 `;
@@ -119,6 +127,16 @@ const Address = styled.div`
 
 `;
 
+const BottomAddressWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  // background-color: pink;
+  justify-content: space-between;
+  align-items: center;
+  width: 95%;
+  align-self: center;
+`;
+
 const OrderDetails = styled.div`
   grid-column: 2 / 3; // Right column
   grid-row: 2 / 3; // Second row
@@ -196,7 +214,7 @@ const Input = styled.input`
   &:-webkit-autofill {
     box-shadow: 0 0 0 30px rgb(var(--cream)) inset !important;
     -webkit-box-shadow: 0 0 0 30px rgb(var(--cream)) inset !important;
-    -webkit-text-fill-color: rgb(var(--cream)) !important;
+    -webkit-text-fill-color: rgb(var(--purple-mid)) !important;
     font-family: Montserrat;
     font-style: normal;
     font-weight: 600;
@@ -255,50 +273,168 @@ const Button = styled.button`
 `;
 
 const CartCheckout = () => {
-    return (
-        <CheckoutWrapper>
+  const token = getToken();
+  const { customerData } = useContext(CustomerContext);
+  const [pageRefresh, setPageRefresh] = useState(false);
+  const [clientSecret, setClientSecret] = useState(null);
+  const [stripePromise, setStripePromise] = useState(null);
 
-        <CheckoutContainer>
-          <Title><h1>Checkout Your Chic!</h1></Title>
-          
-          <Address>
-            <H2>Address</H2>
-            <Input placeholder="Street Address" />
-            <Input placeholder="City" />
-            <Input placeholder="State" />
-            <Input placeholder="Zip Code" />
-            <Button $alignSelf={'flex-end'}/>
-          </Address>
-          
-          <OrderDetails>
-            <H2>Order Info</H2>
-            {/* Add order detail items here */}
-          </OrderDetails>
-          
-          <PaymentDetails>
-            <H2 $color ={'rgb(var(--purple-mid))'}>Payment Info</H2>
-            <Input placeholder="Card Number" />
-            <InnerPaymentDetails>
-              <Input $textAlign={'center'} $maxWidth={'35%'} placeholder="MM/YYYY" maxlength="7" />
-              <Input $textAlign={'center'} $maxWidth={'35%'} placeholder="ZIP Code" />
-              <Input $textAlign={'center'} $maxWidth={'20%'} placeholder="CVV" maxlength="3"/>
-            </InnerPaymentDetails>
+  const [originalAddress, setOriginalAddress] = useState(null);
+  const [address, setAddress] = useState({
+    address_line1: '',
+    address_line2: '',
+    city: '',
+    state: '',
+    zip_code: '',
+    country: 'US',
+  });
 
-            <InnerPaymentDetailsMobile>
+
+  
+  // Fetch customer address from database and initialize form fields
+  useEffect(() => {
+    if (customerData.id) {
+      const getCustomerAddress = async () => {
+        try {
+          const addressInDataBase = await fetchCustomerAddress(customerData.id);
+         
+            setOriginalAddress(addressInDataBase);
+            setAddress(addressInDataBase);
+          
+        } catch (error) {
+          console.error("Failed to fetch customer address:", error);
+        }
+      };
+      getCustomerAddress();
+    }
+  }, [pageRefresh]);
+
+  const handleAddressChange = (event) => {
+    const { name, value } = event.target;
+    setAddress((prevAddress) => ({
+      ...prevAddress,
+      [name]: value,
+    }));
+  };
+
+  const handleSaveAddress = async (resetCheckbox) => {
+    if (JSON.stringify(address) !== JSON.stringify(originalAddress)) {
+      try {
+        const updatedAddress = await updateCustomerAddress(customerData.id, address, token);
+        if (updatedAddress) {
+          console.log("Address updated successfully.");
+         // setOriginalAddress(updatedAddress);
+         
+          setAddress(updatedAddress);
+          setPageRefresh(!pageRefresh);
+          resetCheckbox(); // Reset the checkbox after saving
+        }
+      } catch (error) {
+        console.error("Error updating address:", error);
+      }
+    } else {
+      console.log("No changes detected in the address.");
+    }
+  };
+
+  useEffect(() => {
+    const initializeStripe = async () => {
+      const publishableKey = await getStripeConfig();
+      setStripePromise(loadStripe(publishableKey));
+    };
+    initializeStripe();
+  }, []);
+
+  useEffect(() => {
+    // Fetch client secret for payment after fetching customer data and address
+    const fetchClientSecret = async () => {
+      if (customerData.cartId && customerData.customerId && address) {
+        const getClientSecret = await createPaymentIntent(token, customerData.cartId, customerData.customerId, address);
+        console.log('Secret-->', getClientSecret)
+        setClientSecret(getClientSecret);
+        console.log(clientSecret)
+      }
+    };
+    fetchClientSecret();
+   
+  }, [customerData.id, originalAddress]);
+  
+  return (
+    <CheckoutWrapper>
+      <CheckoutContainer>
+        <Title><h1>Checkout Your Chic!</h1></Title>
+        
+        <Address>
+          <H2>Address</H2>
+          <Input
+            placeholder="Address Line 1"
+            name="address_line1"
+            value={address.address_line1}
+            onChange={handleAddressChange}
+          />
+          <Input
+            placeholder="Apt, Suite, etc."
+            name="address_line2"
+            value={address.address_line2}
+            onChange={handleAddressChange}
+          />
+          <Input
+            placeholder="City"
+            name="city"
+            value={address.city}
+            onChange={handleAddressChange}
+          />
+          <Input
+            placeholder="State"
+            name="state"
+            value={address.state}
+            onChange={handleAddressChange}
+          />
+          <Input
+            placeholder="Zip Code"
+            name="zip_code"
+            value={address.zip_code}
+            onChange={handleAddressChange}
+          />
+          <Input
+            placeholder="Country"
+            name="country"
+            value={address.country}
+            onChange={handleAddressChange}
+          />
+          <BottomAddressWrapper>
+            <AddressCheckbox onSave={(resetCheckbox) => handleSaveAddress(resetCheckbox)} />
+            <Button $alignSelf={'flex-end'} />
+          </BottomAddressWrapper>
+        </Address>
+        
+        <OrderDetails>
+          <H2>Order Info</H2>
+          {/* Add order detail items here */}
+        </OrderDetails>
+        
+        <PaymentDetails>
+          <H2 $color={'rgb(var(--purple-mid))'}>Payment Info</H2>
+          <Input placeholder="Card Number" />
+          <InnerPaymentDetails>
+            <Input $textAlign="center" $maxWidth="35%" placeholder="MM/YYYY" maxLength="7" />
+            <Input $textAlign="center" $maxWidth="35%" placeholder="ZIP Code" />
+            <Input $textAlign="center" $maxWidth="20%" placeholder="CVV" maxLength="3" />
+          </InnerPaymentDetails>
+
+          <InnerPaymentDetailsMobile>
             <TopInnerMobile>
-              <Input $textAlign={'center'} $maxWidth={'65%'} $padding={'4px 10px'} placeholder="MM/YYYY" maxlength="7" />
-              <Input $textAlign={'center'} $maxWidth={'30%'} placeholder="CVV" maxlength="3"/>
+              <Input $textAlign="center" $maxWidth="65%" $padding="4px 10px" placeholder="MM/YYYY" maxLength="7" />
+              <Input $textAlign="center" $maxWidth="30%" placeholder="CVV" maxLength="3" />
             </TopInnerMobile>
-            <Input $textAlign={'center'} $maxWidth={'65%'} placeholder="ZIP Code" />
-            </InnerPaymentDetailsMobile>
+            <Input $textAlign="center" $maxWidth="65%" placeholder="ZIP Code" />
+          </InnerPaymentDetailsMobile>
                 
-            <Button $alignSelf={'center'} />
-          </PaymentDetails>
-        </CheckoutContainer>
-        <div></div>
-        </CheckoutWrapper>
-      );
-
+          <Button $alignSelf="center" />
+        </PaymentDetails>
+      </CheckoutContainer>
+    </CheckoutWrapper>
+  );
 };
 
 export default CartCheckout
