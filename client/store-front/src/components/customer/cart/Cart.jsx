@@ -31,7 +31,6 @@ const InnerContentWrapper = styled.div`
     align-items: center;
     margin-right: 250px;
     padding: 1rem;
-   // background-color: white;
 
     overflow-y: auto;  
 
@@ -48,16 +47,13 @@ const CheckoutBox = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    // box-sizing: border-box;
-    height: 100px;
+    height: 110px;
     min-height: 110px;
-   
-    
     border: 3px solid rgb(var(--ras-pink));
     width: 95%;
     background-color: rgb(var(--cream));
     position: sticky;
-    top: 0;  // Keep the header at the top
+    top: 0;  
     z-index: 1;
     margin-top: 2%;
 
@@ -88,7 +84,6 @@ const CheckoutBox = styled.div`
 
 const InnerCheckout = styled.div`
   flex-direction: column;
-  //background-color: pink;
   display: none;
   font-family: Montserrat, sans-serif;
   font-size: 15px;
@@ -101,28 +96,29 @@ const InnerCheckout = styled.div`
 `;
 
 const CartScrollWrapper = styled.div`
-    flex-grow: 1;  // Takes up remaining vertical space
+    flex-grow: 1;  
     display: flex;
     flex-direction: column;
     margin-top: 2%;
-    overflow-y: auto;  // Allow scrolling only for wishlist items
-    width: 95%;  // Ensures content fits inside the parent wrapper
-    
+    overflow-y: auto;  
+    width: 95%;  
+    box-sizing: border-box;
 `;
 
 const Button = styled.button`
-    width: 95px;
-    height: 29px;
+
+    width: 85px;
+    height: 20px;
     background: #FFBC42;
     border-radius: 3px;
     border: none;
     margin-top: 5px;
 
-    
-        color: #22223B;
-        font-size: 14px;
-        font-weight: 550;
-        letter-spacing: 0.32px;
+    font-family: Montserrat, sans-serif;
+    color: #22223B;
+    font-size: 12px;
+    font-weight: 550;
+    letter-spacing: 0.25px;
        
 
 
@@ -134,27 +130,23 @@ const Button = styled.button`
 
 
 const CartItemSection = styled.div`
-    // box-sizing: border-box;
-    display: flex;
-    flex-wrap: wrap;
-    row-gap: 40px;
-    column-gap: 50px;
-    justify-content: center; 
-    align-items: center; 
-    width: 95%;
-    padding: 2% 0;
-    margin: 0 auto;  
-    max-width: 1300px;  
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 0 auto;
+  row-gap: 40px;
+  column-gap: 40px;
+  margin: 0 auto;  
+  max-width: 1300px;  
 
-    @media (max-width: 950px) {
-      justify-content: center;
-      width: 85%;
-    }
+  @media (max-width: 950px) {
+    justify-content: center;
+  }
 
 `;
 
 const EmptyCartMessage = styled.p`
-font-family: Montserrat;
+font-family: Montserrat, sans-serif;
 font-size: 20px;
 font-weight: 500;
 font-style: italic;
@@ -209,14 +201,16 @@ const Cart = () => {
         }
       }
 
-   
-      
-
-    useEffect(() => {
       if (!customerData.id) {
         navigate('/login');
     }
  
+      
+
+    useEffect(() => {
+    //   if (!customerData.id) {
+    //     navigate('/login');
+    // }
         const getCustomerCart = async () => {
             if (!customerData.id) {
                 navigate('/login');

@@ -6,10 +6,12 @@ import windowResize from "../../shared/hooks/windowResize.js";
 import { getToken, removeToken } from "../../shared/auth.js";
 import { getReviewsByUser } from "../../../api/reviews.js";
 import { getWishlistAndItems } from "../../../api/wishlist.js";
+import { getOrderAndItems } from "../../../api/orders.js";
 import { fetchCustomer } from "../../../api/customers.js";
 import SideBar from "../../menuBars/SideBar.jsx";
 import wishlistLP from "../../../assets/icons-svg/wishlist/wishlistLP.svg";
 import diamondFilled from '../../../assets/icons-svg/reviewDiamond/diamondFilled.svg';
+import orderBagPink from '../../../assets/icons-svg/orderBag/orderBagPink.svg';
 import Wishlist from "../wishlist/Wishlist.jsx";
 
 
@@ -78,14 +80,21 @@ const MainTitle = styled.p`
   letter-spacing: 4.38px;
   text-align: center;
 
-  @media (max-width: 950px) {
+  @media (max-width: 1154px) {
+    font-size: 48px;
+    font-wight: 500;
+    letter-spacing: 3.5px;
+  }
+  @media (max-width: 1051px) {
     font-size: 45px;
+    font-wight: 500;
+     letter-spacing: 3px;
+  }
+  @media (max-width: 969px) {
+    font-size: 40px;
     font-wight: 500;
   }
 
-  @media (max-width: 850px) {
-    font-size: 40px
-  }
   @media (max-width: 700px) {
     font-size: 35px
   }
@@ -364,7 +373,7 @@ const {width} = windowResize();
 
 const [customerReviews, setCustomerReviews] = useState({});
 const [customerAccountInfo, setCustomerAccountInfo] = useState({});
-const [customerWishlist, setCustomerWishlist] = useState({});
+const [customerOrders, setCustomerOrders] = useState([]);
 
 const sidebarConfig = {
     firstContainer: {
@@ -426,12 +435,12 @@ const sidebarConfig = {
                         setCustomerReviews({});
                     }
 
-                const fetchedWishlist = await getWishlistAndItems(customerData.id, token);
-                console.log('Fetched Wishlist ->',fetchedWishlist);
-                    if (fetchedWishlist) {
-                        setCustomerWishlist(fetchedWishlist);
+                const fetchedOrders = await getOrderAndItems(customerData.id, token);
+                console.log('Fetched Wishlist ->',fetchedOrders);
+                    if (fetchedOrders) {
+                        setCustomerOrders(fetchedOrders);
                     } else {
-                        setCustomerWishlist({})
+                        setCustomerOrders([]);
                     }
               
 
@@ -456,7 +465,11 @@ const sidebarConfig = {
 
     const handleLogOutClick = () => {
         removeToken();
-        navigate('/home')
+        navigate('/home');
+    }
+
+    const handleOrderHistoryClick = () => {
+        navigate('/orders');
     }
    
     return (
@@ -486,7 +499,7 @@ const sidebarConfig = {
                     </PurpleTile>
                     <MobileButtonWrapper>
                         <DarkButton>Edit Account</DarkButton>
-                        <DarkButton>Order History</DarkButton>
+                        <DarkButton onClick={handleOrderHistoryClick}>Order History</DarkButton>
                     </MobileButtonWrapper>
                     <CircleButton onClick={handleLogOutClick}>Log Out</CircleButton>
             </MobileView>
@@ -516,10 +529,10 @@ const sidebarConfig = {
                         <TileButton>See Reviews</TileButton>
                     </PurpleTile>
                     <PurpleTile>
-                        <SvgIcon src={wishlistLP} />
+                        <SvgIcon $maxHeight={'32px'} $maxWidth={'32px'} src={orderBagPink} />
                         <h3>Total Orders</h3>
-                        <p>{!customerWishlist.customer_id || customerWishlist.items.length == 0 ? 0 : customerWishlist.items.length}</p>
-                        <TileButton>View Orders</TileButton>
+                        <p>{customerOrders.length == 0 ? 0 : customerOrders.length}</p>
+                        <TileButton onClick={handleOrderHistoryClick}>View Orders</TileButton>
                     </PurpleTile>
                 </TileWrapper>
               

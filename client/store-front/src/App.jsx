@@ -14,6 +14,7 @@ import ProductView from './components/products/ProductView'
 import Cart from './components/customer/cart/Cart';
 import MobileTabBar from './components/menuBars/MobileTabBar';
 import CheckoutPage from './components/customer/cart/checkout/CheckoutPage';
+import OrderHistory from './components/customer/account/OrderHistory';
 
 import { CustomerContext, CustomerProvider } from './CustomerContext';
 
@@ -86,6 +87,7 @@ function App() {
           <Route path='/cart' element={<Cart />}/>
           <Route path='/wishlist' element={<Wishlist />}/>
           <Route path='/checkout' element={<CheckoutPage />}/>
+          <Route path='/orders' element={<OrderHistory />}/>
         </Routes>
       </ContentWindow>
       <FootWrapper>

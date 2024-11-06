@@ -1,4 +1,4 @@
-import React, {useContext} from "react"
+import React, {useContext, useEffect, useState} from "react"
 import {useNavigate} from 'react-router-dom'
 import styled from "styled-components"
 import account from '../../../assets/icons-svg/account/account.svg'
@@ -181,6 +181,7 @@ const NavBar = () => {
     const {setCustomerData} = useContext(CustomerContext);
     const token = getToken()
     const { customerData } = useContext(CustomerContext);
+    const [loginState, setLoginState] = useState(false)
 
     const customerId = customerData.id;
     
@@ -208,6 +209,14 @@ const NavBar = () => {
         navigate('/home')
     }
 
+    useEffect(() => {
+        if (token && customerData.id) {
+            setLoginState(true)
+        } else {
+            setLoginState(false)
+        }
+    }, [token, customerData.id])
+
     return(
        <Header>
         <DesktopBar>
@@ -223,7 +232,7 @@ const NavBar = () => {
                 <Account  src={account} alt='Account' $hoverIcon={accountLight} onClick={accountClickHandler}/>
                 <Cart src={cart} alt='Cart' $hoverIcon={cartLight} onClick={cartClickHandler}/>
             </IconContainer>
-            {token && customerId ? <LogInOut onClick={logoutClickHandler}>Logout</LogInOut> : <LogInOut onClick={loginClickHandler} >Login</LogInOut>}
+            {loginState === true ? <LogInOut onClick={logoutClickHandler}>Logout</LogInOut> : <LogInOut onClick={loginClickHandler} >Login</LogInOut>}
         </NavbarRight>
 
         <NavBarRightMobile>

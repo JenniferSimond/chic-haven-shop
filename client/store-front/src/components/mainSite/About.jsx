@@ -9,14 +9,14 @@ const OuterWrapper = styled.div`
     justify-content: center;
     align-items: center;
 
-    height: calc(100vh - 7rem - 3rem);  // For larger screens: subtract NavBar and Footer heights
+    height: calc(100vh - 7rem - 3rem); 
 
     @media (max-width: 768px) {
-        height: calc(100vh - 5rem - 3rem);  // For tablets: adjust for smaller NavBar height
+        height: calc(100vh - 5rem - 3rem);  
     }
 
     @media (max-width: 600px) {
-        height: calc(100vh - 4rem - 7rem);  // For mobile: subtract NavBar and MobileTabBar only (no Footer)
+        height: calc(100vh - 4rem - 7rem);  
     }
 
 `;
