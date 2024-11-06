@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { updateCustomerAddress } from "../../../api/customers";
+
 
 const CheckboxWrapper = styled.div`
   display: inline-block;

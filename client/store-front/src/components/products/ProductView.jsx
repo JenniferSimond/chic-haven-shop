@@ -105,8 +105,8 @@ const MobileButton = styled.button`
     padding: 7px 10px;
   }
 
-  @media (max-width: 370px) {
-   padding: 7px 5px;
+  @media (max-width: 397px) {
+   padding: 7px 7px;
    font-size: 10px;
   }
 
@@ -553,6 +553,7 @@ const ProductView = () => {
 
                 <SizeSelectionBox>
                   <Select $fontSize={'11px'} $fontWeight={'600'} onChange={handleSizeSelect}>
+                    <Option value={''} selected disabled hidden>Size</Option>
                     {selectedProduct.inventory && 
                       selectedProduct.inventory.map((item) => (
                         <Option key={item.inventory_id} value={item.product_size}>{item.product_size}</Option>
@@ -600,8 +601,8 @@ const ProductView = () => {
                 
 
                 <SizeSelectionBox>
-                  <Select onChange={handleSizeSelect}>
-                    <Option>--Size--</Option>
+                  <Select onChange={handleSizeSelect} defaultValue='size'>
+                  <Option value='size' selected disabled hidden>--Size--</Option>
                     {selectedProduct.inventory &&
                       selectedProduct.inventory.map((item) => (
                         <Option key={item.inventory_id}>{item.product_size}</Option>

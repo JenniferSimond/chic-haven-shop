@@ -15,23 +15,35 @@ const getStripeConfig = async () => {
   }
 };
 
-const createPaymentIntent = async (token, cartId, customerId, address) => {
+const createPaymentIntent = async (
+  token,
+  customerId,
+  address,
+  customerName
+) => {
   try {
     const response = await fetch(
-      `${API_URL}/stripe/process-payment/carts/${cartId}/customers/${customerId}`,
+      `${API_URL}/stripe/process-payment/customers/${customerId}`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ customerAddress: address }),
+        body: JSON.stringify({ customerAddress: address, customerName }),
       }
     );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Error creating payment intent:', errorText);
+      throw new Error(`Failed to create payment intent: ${errorText}`);
+    }
+
     const { clientSecret } = await response.json();
     return clientSecret;
   } catch (error) {
-    console.error('Error creating payment intent.', error);
+    console.error('Error creating payment intent:', error);
   }
 };
 

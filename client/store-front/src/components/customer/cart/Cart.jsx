@@ -175,6 +175,7 @@ const Cart = () => {
     const [cartTotal, setCartTotal] = useState('')
     const [cartItems, setCartItems] = useState([]);
     const [pageRefresh, setPageRefresh] = useState(false);
+    const [checkoutButton, setCheckoutButton] = useState('hidden');
     const navigate = useNavigate();
 
     const sidebarConfig = {
@@ -195,7 +196,7 @@ const Cart = () => {
         },
         buttonContainer: {
           topVisibility: 'hidden',
-          bottomVisibility: 'visible',
+          bottomVisibility: checkoutButton,
           backgroundColor: 'rgb(var(--cream))',
           topButtonText: 'Test',
           bottomButtonText: 'Checkout',
@@ -208,17 +209,16 @@ const Cart = () => {
         }
       }
 
-   const handleCheckout = () => {
-    navigate('/checkout')
-   }
-
-
- 
+   
+      
 
     useEffect(() => {
-        
+      if (!customerData.id) {
+        navigate('/login');
+    }
+ 
         const getCustomerCart = async () => {
-            if (!customerData.id && !token) {
+            if (!customerData.id) {
                 navigate('/login');
             }
     
@@ -226,21 +226,34 @@ const Cart = () => {
                 const fetchedCartInfo = await getCartAndItems(token, customerData.id);
                 console.log('Fetched Cart (cart) -->',fetchedCartInfo)
               
+
                     setCartItems(fetchedCartInfo.items)
                     setCartTotal(fetchedCartInfo.cart_total)
+
+                    if (fetchedCartInfo.items.length > 0) {
+                      setCheckoutButton('visible')
+                    } else {
+                      setCheckoutButton('hidden')
+                    }
                 
             } catch (error) {
                 console.error('Error fetching cart items:', error);
                 setCartItems([]);
+                setCheckoutButton('hidden')
             }
         };
         getCustomerCart();
-    },[customerData.id, token, pageRefresh, navigate])
+    },[customerData.id, token, pageRefresh, navigate, checkoutButton])
 
     const refreshHandler = () => {
         console.log("Triggering page refresh.");
         setPageRefresh(!pageRefresh); 
       };
+
+      const handleCheckout = () => {
+        navigate('/checkout')
+       }
+    
 
    return(
     <OuterWrapper>
@@ -260,6 +273,7 @@ const Cart = () => {
                     key={cartItem.cart_item_id}
                     cartItem={cartItem}
                     refresh={refreshHandler}
+                    
                 />
             ))
          ):(
@@ -271,7 +285,11 @@ const Cart = () => {
           </CartItemSection>
         </CartScrollWrapper>
       </InnerContentWrapper>
-        <SideBar sidebarConfig={sidebarConfig} bottomHandleFunction={handleCheckout} />
+      <SideBar
+        sidebarConfig={sidebarConfig}
+        bottomHandleFunction={handleCheckout}
+    
+      />
     </OuterWrapper>
    )
 };

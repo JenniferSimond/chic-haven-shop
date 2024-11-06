@@ -79,12 +79,15 @@ const {
   updateProductReview,
   deleteProductReview,
 } = require('./models/reviews');
-
+//ADDRESSES
 const {
   fetchCustomerAddressById,
   fetchCustomerAddresses,
   updateCustomerAddress,
 } = require('./models/addresses');
+
+//ORDERS
+const { fetchOrdersAndItems } = require('./models/orders');
 
 module.exports = {
   //AUTH
@@ -144,4 +147,6 @@ module.exports = {
   fetchCustomerAddressById,
   fetchCustomerAddresses,
   updateCustomerAddress,
+  //ORDERS
+  fetchOrdersAndItems,
 };

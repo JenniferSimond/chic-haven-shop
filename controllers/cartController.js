@@ -98,7 +98,7 @@ router.delete(
     try {
       const { cartId, itemId } = req.params;
 
-      const deletedCartItem = await deleteCartItem({ cartId, itemId });
+      const deletedCartItem = await deleteCartItem(cartId, itemId);
       if (!deletedCartItem) {
         return res.status(404).json({ message: 'Cart item not found' });
       }
@@ -109,22 +109,25 @@ router.delete(
   }
 );
 
-// router.post(
-//   '/:cartId/customers/:customerId/checkout',
-//   isAuthenticated,
-//   customerDataAuthorization,
-//   async (req, res, next) => {
-//     try {
-//       const { cartId, customerId } = req.params;
+router.post(
+  '/:cartId/customers/:customerId/checkout',
+  isAuthenticated,
+  customerDataAuthorization,
+  async (req, res, next) => {
+    try {
+      const { cartId, customerId } = req.params;
 
-//       const order = await checkoutCart({ cartId, customerId });
+      console.log('cartId:', cartId); // Should output a UUID string
+      console.log('customerId:', customerId); // Should output a UUID string
 
-//       // If successful, return order details
-//       res.status(201).json(order);
-//     } catch (error) {
-//       next(error);
-//     }
-//   }
-// );
+      const order = await checkoutCart({ cartId, customerId });
+
+      // If successful, return order details
+      res.status(201).json(order);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 module.exports = router;

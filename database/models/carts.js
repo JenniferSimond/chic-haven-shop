@@ -43,8 +43,8 @@ const fetchCartAndItems = async (customerId) => {
     const cart = {
       id: response.rows[0].cart_id,
       customer_id: response.rows[0].customer_id,
-      items_in_cart: response.rows[0].items_in_cart,
-      cart_total: response.rows[0].cart_total,
+      items_in_cart: parseInt(response.rows[0].items_in_cart),
+      cart_total: parseFloat(response.rows[0].cart_total),
       created_at: response.rows[0].cart_created_at,
       modified_at: response.rows[0].cart_modified_at,
       items: response.rows[0].cart_item_id
@@ -55,11 +55,11 @@ const fetchCartAndItems = async (customerId) => {
             product_size: row.cart_item_size,
             product_name: row.product_name,
             product_description: row.product_description,
-            product_price: row.product_price,
+            product_price: parseFloat(row.product_price),
             product_image: row.product_image,
             product_sku: row.product_sku,
-            quantity: row.cart_item_quantity,
-            total_price: row.cart_item_total_price,
+            quantity: parseInt(row.cart_item_quantity),
+            total_price: parseFloat(row.cart_item_total_price),
             created_at: row.cart_item_created_at,
             modified_at: row.cart_item_modified_at,
           }))
@@ -155,7 +155,7 @@ const updateCartItem = async ({ cartId, itemId, quantity }) => {
 };
 
 // DELETE CART ITEM
-const deleteCartItem = async ({ cartId, itemId }) => {
+const deleteCartItem = async (cartId, itemId) => {
   const client = await pool.connect();
   try {
     const SQL = `
@@ -174,7 +174,6 @@ const deleteCartItem = async ({ cartId, itemId }) => {
   }
 };
 
-// CHECKOUT
 const checkoutCart = async ({ cartId, customerId }) => {
   const client = await pool.connect();
   try {
@@ -193,7 +192,7 @@ const checkoutCart = async ({ cartId, customerId }) => {
       VALUES (
         $1,
         $2,
-        (SELECT cart_total FROM carts WHERE id = $3), 
+        (SELECT CAST(cart_total AS FLOAT) FROM carts WHERE id = $3), 
         'Pending',
         CURRENT_TIMESTAMP,
         CURRENT_TIMESTAMP
@@ -205,6 +204,9 @@ const checkoutCart = async ({ cartId, customerId }) => {
       customerId,
       cartId,
     ]);
+
+    const order = orderResponse.rows[0];
+    order.order_total = parseFloat(order.order_total);
 
     const fetchCartItemsSQL = `
       SELECT product_id, inventory_id, product_size, quantity, total_price
@@ -235,17 +237,33 @@ const checkoutCart = async ({ cartId, customerId }) => {
         item.product_id,
         item.inventory_id,
         item.product_size,
-        item.quantity,
-        item.total_price,
+        parseInt(item.quantity),
+        parseFloat(item.total_price),
       ]);
     });
 
     await Promise.all(orderItemsPromises);
 
+    // Clear cart items
     const clearCartSQL = `
       DELETE FROM cart_items WHERE cart_id = $1;
     `;
-    await client.query(clearCartSQL, [cartId]);
+
+    const clearResponse = await client.query(clearCartSQL, [cartId]);
+    console.log(
+      `Cart items cleared for cart_id: ${cartId}. Rows affected: ${clearResponse.rowCount}`
+    );
+
+    // Reset cart total and items count
+    // const resetCartSQL = `
+    //   UPDATE carts
+    //   SET cart_total = 0.00, items_in_cart = 0
+    //   WHERE id = $1;
+    // `;
+    // await client.query(resetCartSQL, [cartId]);
+    // console.log(
+    //   `Cart reset for cart_id: ${cartId} to cart_total: 0.00 and items_in_cart: 0`
+    // );
 
     await client.query('COMMIT');
 

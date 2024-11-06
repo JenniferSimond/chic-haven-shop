@@ -1,12 +1,14 @@
 import React, {useState, useEffect, useContext} from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, CardNumberElement, CardExpiryElement, CardCvcElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import { CustomerContext } from "../../../CustomerContext";
-import { getToken } from "../../shared/auth";
-import { getStripeConfig, createPaymentIntent } from "../../../api/stripe";
+import { CustomerContext } from "../../../../CustomerContext";
+import { getToken } from "../../../shared/auth";
+import { getStripeConfig, createPaymentIntent } from "../../../../api/stripe";
 import AddressCheckbox from "./AddressCheckBox";
-import { fetchCustomerAddress, updateCustomerAddress } from "../../../api/customers";
+import { fetchCustomerAddress, updateCustomerAddress } from "../../../../api/customers";
+import { cartCheckout } from "../../../../api/cart";
 
 const CheckoutWrapper = styled.div`
     display: flex;
@@ -36,10 +38,11 @@ const CheckoutWrapper = styled.div`
 
 const CheckoutContainer = styled.div`
   display: grid;
-  grid-template-columns: minmax(160px, 1fr) minmax(160px, 1fr);
+  grid-template-columns: minmax(160px, 560px) minmax(160px, 560px);
   //grid-template-columns: 1fr 1fr; 
   grid-template-rows: auto auto auto; 
   gap: 20px;
+  // width: 1000px;
   max-length: 100%;
   max-height: 100%
   
@@ -153,7 +156,7 @@ const PaymentDetails = styled.div`
   flex-direction: column;
   justify-content: center;
   background-color: rgb(var(--mustard));
-  padding: 7%;
+  padding: 7% 10%;
   gap: 15px;
   display: flex;
   border-radius: 3px;
@@ -164,37 +167,8 @@ const PaymentDetails = styled.div`
   }
 `;
 
-const InnerPaymentDetails = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  gap: 5px;
-  
-  @media (max-width: 560px) {
-   display: none;
-  }
-`;
-
-const InnerPaymentDetailsMobile = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  display: none;
-  gap: 15px; 
-  // height: 70px;
-  
 
 
-  @media (max-width: 560px) {
-   display: flex;
-  }
-`;
-
-const TopInnerMobile = styled.div`
-  display: flex;
-  justify-content: space-between;
-
-`;
 
 const Input = styled.input`
   padding: ${props => props.$padding ||  '8px 10px'};
@@ -246,6 +220,7 @@ const Input = styled.input`
 
 
 
+
 const Button = styled.button`
   width: 60px;
   height: 60px;
@@ -266,20 +241,26 @@ const Button = styled.button`
     width: 45px;
     height: 45px;
   }
-  @media (max-width: 450px) {
-    width: 40px;
-    height: 40px;
-  }
+
 `;
 
+const CheckoutMessage = styled.div`
+  display: flex;
+  margin-bottom: 10px;
+  font-family: Montserrat, sans-serif;
+  font-size: 20px;
+  color: rgb(var(--purple-dark));
+`;
+
+
 const CartCheckout = () => {
+  const navigate = useNavigate();
   const token = getToken();
   const { customerData } = useContext(CustomerContext);
-  const [pageRefresh, setPageRefresh] = useState(false);
-  const [clientSecret, setClientSecret] = useState(null);
-  const [stripePromise, setStripePromise] = useState(null);
-
-  const [originalAddress, setOriginalAddress] = useState(null);
+  const stripe = useStripe();
+  const elements = useElements();
+  const [checkoutMsg, setCheckoutMsg] = useState(false);
+  const [clientSecret, setClientSecret] = useState('');
   const [address, setAddress] = useState({
     address_line1: '',
     address_line2: '',
@@ -288,28 +269,44 @@ const CartCheckout = () => {
     zip_code: '',
     country: 'US',
   });
-
-
+  const [originalAddress, setOriginalAddress] = useState({});
   
-  // Fetch customer address from database and initialize form fields
+  useEffect(() => {
+    const fetchClientSecret = async () => {
+      console.log("Running fetchClientSecret useEffect");
+      const customerName = `${customerData.first_name} ${customerData.last_name}`;
+      if (customerData.cart_id && customerData.id) {
+        
+        console.log("Fetching client secret with:", { cartId: customerData.cart_id, customerId: customerData.id, token, address, customerName });
+        
+        try {
+          const secret = await createPaymentIntent(token, customerData.id, address, customerName);
+          console.log("Fetched client secret:", secret);
+          setClientSecret(secret);
+        } catch (error) {
+          console.error("Error fetching client secret:", error);
+        }
+      }
+    };
+    fetchClientSecret();
+  }, [customerData.cart_id, customerData.id]);
+
   useEffect(() => {
     if (customerData.id) {
       const getCustomerAddress = async () => {
         try {
-          const addressInDataBase = await fetchCustomerAddress(customerData.id);
-         
-            setOriginalAddress(addressInDataBase);
-            setAddress(addressInDataBase);
-          
+          const addressInDatabase = await fetchCustomerAddress(customerData.id);
+          setOriginalAddress(addressInDatabase);
+          setAddress(addressInDatabase);
         } catch (error) {
           console.error("Failed to fetch customer address:", error);
         }
       };
       getCustomerAddress();
     }
-  }, [pageRefresh]);
+  }, []);
 
-  const handleAddressChange = (event) => {
+  const handleInputChange = (event) => {
     const { name, value } = event.target;
     setAddress((prevAddress) => ({
       ...prevAddress,
@@ -319,122 +316,131 @@ const CartCheckout = () => {
 
   const handleSaveAddress = async (resetCheckbox) => {
     if (JSON.stringify(address) !== JSON.stringify(originalAddress)) {
+      const token = getToken();
       try {
         const updatedAddress = await updateCustomerAddress(customerData.id, address, token);
-        if (updatedAddress) {
-          console.log("Address updated successfully.");
-         // setOriginalAddress(updatedAddress);
-         
-          setAddress(updatedAddress);
-          setPageRefresh(!pageRefresh);
-          resetCheckbox(); // Reset the checkbox after saving
-        }
+        setAddress(updatedAddress);
+        resetCheckbox();
       } catch (error) {
         console.error("Error updating address:", error);
       }
-    } else {
-      console.log("No changes detected in the address.");
     }
   };
 
-  useEffect(() => {
-    const initializeStripe = async () => {
-      const publishableKey = await getStripeConfig();
-      setStripePromise(loadStripe(publishableKey));
-    };
-    initializeStripe();
-  }, []);
-
-  useEffect(() => {
-    // Fetch client secret for payment after fetching customer data and address
-    const fetchClientSecret = async () => {
-      if (customerData.cartId && customerData.customerId && address) {
-        const getClientSecret = await createPaymentIntent(token, customerData.cartId, customerData.customerId, address);
-        console.log('Secret-->', getClientSecret)
-        setClientSecret(getClientSecret);
-        console.log(clientSecret)
-      }
-    };
-    fetchClientSecret();
-   
-  }, [customerData.id, originalAddress]);
+  const handlePaymentSubmit = async (event) => {
+    console.log("handlePaymentSubmit called"); // Debugging log
+    event.preventDefault();
+    
+    if (!stripe || !elements || !clientSecret) {
+      console.log("Stripe, elements, or clientSecret missing"); // Debugging log
+      return;
+    }
   
-  return (
+    try {
+      const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: elements.getElement(CardNumberElement),
+          billing_details: {
+            address: {
+              line1: address.address_line1,
+              line2: address.address_line2,
+              city: address.city,
+              state: address.state,
+              postal_code: address.zip_code,
+              country: address.country,
+            },
+          },
+        },
+      });
+  
+      if (error) {
+        console.error("Payment failed:", error);
+      } else if (paymentIntent && paymentIntent.status === "succeeded") {
+        console.log("Payment succeeded!");
+        const checkoutData = await cartCheckout(token, customerData.cart_id, customerData.id );
+        console.log('Checkout Data -->', checkoutData);
+        if (checkoutData) {
+          setCheckoutMsg(!checkoutMsg);
+        }
+
+        setTimeout(() => {
+          setCheckoutMsg(!checkoutMsg);
+          navigate('/cart')
+        }, 1000);
+      }
+    } catch (error) {
+      console.error("Error during payment submission:", error);
+    }
+  };
+
+  return clientSecret ? (
     <CheckoutWrapper>
+      <CheckoutMessage>{
+        checkoutMsg == true ? 'Payment successful! Your order details will be emailed shortly.': ''
+        }</CheckoutMessage>
       <CheckoutContainer>
         <Title><h1>Checkout Your Chic!</h1></Title>
-        
+
         <Address>
           <H2>Address</H2>
           <Input
             placeholder="Address Line 1"
             name="address_line1"
             value={address.address_line1}
-            onChange={handleAddressChange}
+            onChange={handleInputChange}
           />
           <Input
             placeholder="Apt, Suite, etc."
             name="address_line2"
             value={address.address_line2}
-            onChange={handleAddressChange}
+            onChange={handleInputChange}
           />
           <Input
             placeholder="City"
             name="city"
             value={address.city}
-            onChange={handleAddressChange}
+            onChange={handleInputChange}
           />
           <Input
             placeholder="State"
             name="state"
             value={address.state}
-            onChange={handleAddressChange}
+            onChange={handleInputChange}
           />
           <Input
             placeholder="Zip Code"
             name="zip_code"
             value={address.zip_code}
-            onChange={handleAddressChange}
+            onChange={handleInputChange}
           />
           <Input
             placeholder="Country"
             name="country"
             value={address.country}
-            onChange={handleAddressChange}
+            onChange={handleInputChange}
           />
           <BottomAddressWrapper>
-            <AddressCheckbox onSave={(resetCheckbox) => handleSaveAddress(resetCheckbox)} />
-            <Button $alignSelf={'flex-end'} />
+            <AddressCheckbox onSave={handleSaveAddress} />
           </BottomAddressWrapper>
         </Address>
-        
+
         <OrderDetails>
           <H2>Order Info</H2>
           {/* Add order detail items here */}
         </OrderDetails>
-        
+
         <PaymentDetails>
           <H2 $color={'rgb(var(--purple-mid))'}>Payment Info</H2>
-          <Input placeholder="Card Number" />
-          <InnerPaymentDetails>
-            <Input $textAlign="center" $maxWidth="35%" placeholder="MM/YYYY" maxLength="7" />
-            <Input $textAlign="center" $maxWidth="35%" placeholder="ZIP Code" />
-            <Input $textAlign="center" $maxWidth="20%" placeholder="CVV" maxLength="3" />
-          </InnerPaymentDetails>
-
-          <InnerPaymentDetailsMobile>
-            <TopInnerMobile>
-              <Input $textAlign="center" $maxWidth="65%" $padding="4px 10px" placeholder="MM/YYYY" maxLength="7" />
-              <Input $textAlign="center" $maxWidth="30%" placeholder="CVV" maxLength="3" />
-            </TopInnerMobile>
-            <Input $textAlign="center" $maxWidth="65%" placeholder="ZIP Code" />
-          </InnerPaymentDetailsMobile>
-                
-          <Button $alignSelf="center" />
+          <CardNumberElement />
+       
+            <CardExpiryElement  />
+            <CardCvcElement  />
+        
+          <Button type='button' onClick={handlePaymentSubmit} $alignSelf="center">Submit</Button>
         </PaymentDetails>
       </CheckoutContainer>
     </CheckoutWrapper>
-  );
+  ) :<CheckoutWrapper>Loading...</CheckoutWrapper>;
 };
 
 export default CartCheckout

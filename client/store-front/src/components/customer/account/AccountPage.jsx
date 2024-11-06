@@ -59,7 +59,7 @@ const WebViewInnerWrapper = styled.div`
     max-width: ${props => props.$maxWidth || '30px'};
     height: ${props => props.$height ||'100%'};
     width: ${props => props.$width ||'100%'};
-    margin: 10% 0%;
+    margin-bottom: 7%;
 
     @media (max-width: 950px) {
         margin: 0% 0%;
@@ -194,6 +194,7 @@ const PurpleTile = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     background-color: rgb(var(--purple-mid));
     max-width: ${props => props.$maxWidth || '350px'};
     height: ${props => props.$height || '300px'};
@@ -394,15 +395,16 @@ const sidebarConfig = {
     }
   }
 
-    if (!customerData.id) {
-        navigate('/login');
-         return;
-    }
+    
 
     useEffect(() => {
+        if (!customerData.id) {
+            navigate('/login');
+             return;
+        }
 
         const customerAccountInfo = async () => {
-            if (!customerData.id && !token) {
+            if (!customerData.id ) {
                 navigate('/login');
             }
             
@@ -417,7 +419,7 @@ const sidebarConfig = {
 
                 const fetchedReviews = await getReviewsByUser(customerData.id, token);
                 console.log('Fetched Reviews ->',fetchedReviews);
-                console.log('Fetched Reviews # ->',fetchedReviews.reviews.length);
+                // console.log('Fetched Reviews # ->',fetchedReviews.reviews.length);
                     if (fetchedReviews) {
                         setCustomerReviews(fetchedReviews);
                     } else {
@@ -515,9 +517,9 @@ const sidebarConfig = {
                     </PurpleTile>
                     <PurpleTile>
                         <SvgIcon src={wishlistLP} />
-                        <h3>Items in Wishlist</h3>
+                        <h3>Total Orders</h3>
                         <p>{!customerWishlist.customer_id || customerWishlist.items.length == 0 ? 0 : customerWishlist.items.length}</p>
-                        <TileButton>View Wishlist</TileButton>
+                        <TileButton>View Orders</TileButton>
                     </PurpleTile>
                 </TileWrapper>
               

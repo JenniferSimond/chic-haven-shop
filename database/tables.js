@@ -190,8 +190,6 @@ CREATE TABLE customer_orders(
   id UUID PRIMARY KEY,
   customer_id UUID REFERENCES customers(id) ON DELETE CASCADE,
   address_id UUID REFERENCES customer_addresses(id) ON DELETE CASCADE,
-  quantity INTEGER,
-  price DECIMAL CHECK (price > 0),
   order_total DECIMAL CHECK (order_total > 0),
   status VARCHAR(50),
   created_at TIMESTAMP DEFAULT current_timestamp,
@@ -343,9 +341,9 @@ RETURNS TRIGGER AS $$
 BEGIN
   UPDATE carts
   SET 
-    cart_total = (SELECT COALESCE(SUM(total_price), 0.00) FROM cart_items WHERE cart_id = NEW.cart_id),
-    items_in_cart = (SELECT COALESCE(SUM(quantity), 0) FROM cart_items WHERE cart_id = NEW.cart_id)
-  WHERE id = NEW.cart_id;
+    cart_total = (SELECT COALESCE(SUM(total_price), 0.00) FROM cart_items WHERE cart_id = COALESCE(NEW.cart_id, OLD.cart_id)),
+    items_in_cart = (SELECT COALESCE(SUM(quantity), 0) FROM cart_items WHERE cart_id = COALESCE(NEW.cart_id, OLD.cart_id))
+  WHERE id = COALESCE(NEW.cart_id, OLD.cart_id);
 
   RETURN NEW;
 END;

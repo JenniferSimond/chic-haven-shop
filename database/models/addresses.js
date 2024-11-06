@@ -39,7 +39,7 @@ const fetchCustomerAddressById = async (customerId) => {
 const updateCustomerAddress = async (customerId, updatedAddressData) => {
   const client = await pool.connect();
   try {
-    const { address_line1, address_line2, city, state, zipCode, country } =
+    const { address_line1, address_line2, city, state, zip_code, country } =
       updatedAddressData;
 
     const SQL = `
@@ -62,7 +62,7 @@ const updateCustomerAddress = async (customerId, updatedAddressData) => {
       address_line2,
       city,
       state,
-      zipCode,
+      zip_code,
       country,
     ]);
     if (response.rows.length === 0) {

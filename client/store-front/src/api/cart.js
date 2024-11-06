@@ -84,7 +84,7 @@ const deleteCartItem = async (token, cartId, itemId) => {
 const cartCheckout = async (token, cartId, customerId) => {
   try {
     const response = await fetch(
-      `${API_URL}/carts/${cartId}/items/${itemId}/checkout`,
+      `${API_URL}/carts/${cartId}/customers/${customerId}/checkout`,
       {
         method: 'POST',
         headers: {

@@ -13,7 +13,7 @@ import Products from './components/products/Products';
 import ProductView from './components/products/ProductView'
 import Cart from './components/customer/cart/Cart';
 import MobileTabBar from './components/menuBars/MobileTabBar';
-import CartCheckout from './components/customer/cart/CartChekout';
+import CheckoutPage from './components/customer/cart/checkout/CheckoutPage';
 
 import { CustomerContext, CustomerProvider } from './CustomerContext';
 
@@ -85,7 +85,7 @@ function App() {
           <Route path='/account' element={<Account />}/>
           <Route path='/cart' element={<Cart />}/>
           <Route path='/wishlist' element={<Wishlist />}/>
-          <Route path='/checkout' element={<CartCheckout />}/>
+          <Route path='/checkout' element={<CheckoutPage />}/>
         </Routes>
       </ContentWindow>
       <FootWrapper>

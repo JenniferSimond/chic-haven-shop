@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import React from "react";
+import React, {useEffect} from "react";
 import instagram from '../../assets/icons-svg/socialMedia/instagram.svg';
 import instagramPink from '../../assets/icons-svg/socialMedia/instagramPink.svg';
 import facebook from '../../assets/icons-svg/socialMedia/facebook.svg';
@@ -142,7 +142,7 @@ const SvgIcon = styled.img`
     margin-bottom: 2px;
     `
 
-const SideBar = ({ sidebarConfig={}, topHandleFunction, bottomHandleFunction}) => {
+const SideBar = ({ sidebarConfig={}, topHandleFunction, bottomHandleFunction }) => {
     const {
         firstContainer = {},
         secondContainer = {},
@@ -158,6 +158,9 @@ const SideBar = ({ sidebarConfig={}, topHandleFunction, bottomHandleFunction}) =
     const bottomButtonHandler = () => {
         bottomHandleFunction();
     };
+
+ 
+    
 
     return (
         <SideWrapper>

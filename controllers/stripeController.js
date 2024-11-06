@@ -3,7 +3,7 @@ const env = require('dotenv').config();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const router = express.Router();
 
-const { checkoutCart } = require('../database/index');
+const { fetchCartAndItems } = require('../database/index');
 
 const {
   isAuthenticated,
@@ -11,35 +11,38 @@ const {
   validateCartOrWishlistAccess,
 } = require('../middleware/userAuth');
 
+// Endpoint to get publishable key
 router.get('/config', (req, res) => {
   res.json({ publishableKey: process.env.STRIPE_PUBLISHABLE_KEY });
 });
 
+// Endpoint to create a payment intent
 router.post(
-  'process-payment/carts/:cartId/customers/:customerId',
+  '/process-payment/customers/:customerId',
   isAuthenticated,
-  validateCartOrWishlistAccess,
-  async (req, res, next) => {
+  customerDataAuthorization,
+  async (req, res) => {
     try {
-      const { customerId, cartId } = req.params;
-      const { customerAddress } = req.body;
+      const { customerId } = req.params;
+      const { customerAddress, customerName } = req.body;
 
-      const customerOrder = await checkoutCart({ cartId, customerId });
+      // Fetch cart details without checking out
+      const cart = await fetchCartAndItems(customerId);
 
-      if (!customerOrder) {
+      if (!cart || !cart.cart_total) {
         return res
           .status(404)
-          .json({ message: 'Checkout error, cart not found.' });
+          .json({ message: 'Cart not found or cart total is invalid.' });
       }
 
-      const amount = parseFloat(customerOrder.order_total) * 100;
+      const amount = Math.round(cart.cart_total * 100); // Use cart_total
 
       const paymentIntent = await stripe.paymentIntents.create({
         amount,
         currency: 'usd',
         payment_method_types: ['card'],
-        automatic_tax: { enabled: true },
         shipping: {
+          name: customerName,
           address: {
             line1: customerAddress.address_line1,
             line2: customerAddress.address_line2,
@@ -52,11 +55,14 @@ router.post(
       });
 
       res.status(201).json({
-        order: customerOrder,
+        cart,
         clientSecret: paymentIntent.client_secret,
       });
     } catch (error) {
-      next(error);
+      console.error('Stripe payment intent creation error:', error);
+      res.status(500).json({
+        message: 'Internal Server Error during payment intent creation',
+      });
     }
   }
 );
