@@ -6,6 +6,7 @@ import { getWishlistAndItems } from "../../../api/wishlist";
 import SideBar from "../../menuBars/SideBar";
 import WishlistCard from "./WishlistCard";
 import { getToken } from "../../shared/auth";
+import PromoSidebar from "../../menuBars/PromoSidebar";
 
 
 
@@ -55,6 +56,7 @@ const HeaderBox = styled.div`
     height: 110px;
     min-height: 100px;
     border: 3px solid rgb(var(--ras-pink));
+    border-radius: 3px;
     width: 95%;
     background-color: rgb(var(--cream));
     position: sticky;
@@ -247,14 +249,14 @@ const Wishlist = () => {
              ) : (
               <EmptyWishlistMessage>
               {customerData.id && token
-                ? "Your wishlist is empty. Check out our inventory to add the chic styles you love!"
+                ? "Check out our inventory to add chic styles you love!"
                 : "Log in or sign up to add chic styles you love!"}
             </EmptyWishlistMessage>
               )}
             </WishlistItems>
           </WishlistScrollWrapper>
         </InnerContentWrapper>
-        <SideBar sidebarConfig={sidebarConfig} />
+        <PromoSidebar />
       </OuterWrapper>
     );
   };

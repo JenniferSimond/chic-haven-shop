@@ -23,17 +23,16 @@ const OuterWrapper = styled.div`
 
 const ContentBox = styled.div`
   display-flex;
+  box-sizing: border-box;
   flex-direction: column;
   align-content: center;
   justify-content: center;
-  max-width: 750px;
+  max-width: 800px;
   width: 70%;
-  height: 100%;
-  margin-bottom: 2%;
-  // border: 5px solid rgb(var(--purple-light));
+  height: 80%;
+  border: 5px solid rgb(var(--purple-light));
   border-radius: 3px;
   overflow-y: clip;
-
 
   @media (max-width: 950px) {
     width: 70%;
@@ -47,15 +46,19 @@ const ContentBox = styled.div`
 
 
 const BottomTextWrapper = styled.div`
-  padding: 0% 5%;
+  padding: 2% 5%;
   display: flex;
   flex-direction: column;
-  max-width: 700px;
-  gap: 25px;
-  margin-bottom: 1%;
-  max-height: 32vh;  
+  max-width: 800px;
+  gap: 15px;
+  max-height: 16vh;  
+  margin: 0% 2% 0% 2%;
   overflow-y: auto;  
-  
+  // background-color: pink;
+
+  @media( max-width: 650px) {
+    max-height: 26vh; 
+  }
   
 
 `;
@@ -73,8 +76,7 @@ const OwnerImage = styled.img`
   display: block;
   width: auto;
   height: auto;
-  max-width: 30%;
-  z-index: 4;
+  max-height: 340px;
 
   @media (max-width: 750px) {
     max-width: 35%;
@@ -114,7 +116,7 @@ const P = styled.p`
   font-size: 18px;
   color: #4A4E69;
   font-weight: 500;
-  line-height: 30px;
+  line-height: 26px;
   letter-spacing: 0.4px;
   text-align: start;
 

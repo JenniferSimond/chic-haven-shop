@@ -15,6 +15,8 @@ import Cart from './components/customer/cart/Cart';
 import MobileTabBar from './components/menuBars/MobileTabBar';
 import CheckoutPage from './components/customer/cart/checkout/CheckoutPage';
 import OrderHistory from './components/customer/account/OrderHistory';
+import CustomerReviews from './components/customer/account/CustomerReviews';
+import UpdateAccount from './components/customer/account/UpdateAccount';
 
 import { CustomerContext, CustomerProvider } from './CustomerContext';
 
@@ -88,6 +90,8 @@ function App() {
           <Route path='/wishlist' element={<Wishlist />}/>
           <Route path='/checkout' element={<CheckoutPage />}/>
           <Route path='/orders' element={<OrderHistory />}/>
+          <Route path='/reviews' element={<CustomerReviews />}/>
+          <Route path='/account/update' element={<UpdateAccount />}/>
         </Routes>
       </ContentWindow>
       <FootWrapper>

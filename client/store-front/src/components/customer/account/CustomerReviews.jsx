@@ -4,12 +4,14 @@ import { useNavigate } from "react-router-dom";
 import { CustomerContext } from "../../../CustomerContext";
 import { getToken } from "../../shared/auth";
 import { getOrderAndItems } from "../../../api/orders.js";
+import { getReviewsByUser } from "../../../api/reviews.js";
+import ReviewCard from "./ReviewCard.jsx";
 
 const OuterWrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 3%;
+    padding: 3% 3% 1% 3%;
     box-sizing: border-box;
     height: calc(100vh - 7rem - 3rem);  
     @media (max-width: 768px) {
@@ -25,11 +27,12 @@ const HeaderBox = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 110px;
-    min-height: 100px;
+    height: 105px;
+    min-height: 105px;
     border: 3px solid rgb(var(--ras-pink));
+    border-radius: 3px;
     width: 95%;
-    background-color: rgb(var(--cream));
+    background-color: rgb(var(--ras-pink));
     position: sticky;
     top: 0;
     z-index: 1;
@@ -37,7 +40,7 @@ const HeaderBox = styled.div`
     h1 {
        font-family: Cinzel; 
        font-size: 39px;
-       color: rgb(var(--purple-dark));
+       color: rgb(var(--cream));
        font-weight: 500;
        letter-spacing: 0.34px;
        text-align: center;
@@ -61,23 +64,27 @@ const ReviewsScrollWrapper = styled.div`
     flex-grow: 1;
     display: flex;
     flex-direction: column;
+    
     margin-top: 2%;
+   margin-bottom: 2%;
     overflow-y: auto;
-    width: 100%;
+    width: 95%;
+   // background-color: pink;
     
 `;
 
 const ReviewItems = styled.div`
     display: flex;
     flex-wrap: wrap;
-    row-gap: 40px;
-    column-gap: 15px;
+    row-gap: 25px;
+    column-gap: 25px;
     justify-content: center; 
-    align-items: center; 
+    align-items: flex-start; 
+    height: auto;
     width: 90%;
-    padding: 2% 0;
+  padding-top: 1%;
     margin: 0 auto;  
-    // max-width: 1300px;
+
     
 
     @media (max-width: 950px) {
@@ -86,17 +93,6 @@ const ReviewItems = styled.div`
     }
 `;
 
-const ItemWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-content: center;
-    // border-top: 1px solid rgb(var(--purple-light));
-    border-bottom: 1px solid rgb(var(--purple-light));
-   padding: 0px 10px 2px 10px;
-    width: 100%;
-    gap: 25px;
-`;
 
 const CustomerReviews = () => {
     const [reviews, setReviews] = useState([]);
@@ -106,8 +102,11 @@ const CustomerReviews = () => {
         const fetchOrders = async () => {
             try {
                 
-                const fetchedReviews = await getOrderAndItems(customerData.id, token);
-                setOrders(fetchedReviews || []);
+                const fetchedReviews = await getReviewsByUser(customerData.id, token);
+                console.log(fetchedReviews);
+                if (fetchedReviews && fetchedReviews.reviews.length > 0) {
+                    setReviews(fetchedReviews.reviews)
+                }
             } catch (error) {
                 console.error("Error fetching orders:", error);
             }
@@ -122,7 +121,11 @@ const CustomerReviews = () => {
             </HeaderBox>
             <ReviewsScrollWrapper>
                 <ReviewItems>
-                  
+                  {
+                    reviews.map(review => (
+                        <ReviewCard key={review.review_id} review={review}/>
+                    ))
+                  }
                 </ReviewItems>
             </ReviewsScrollWrapper>
        </OuterWrapper>

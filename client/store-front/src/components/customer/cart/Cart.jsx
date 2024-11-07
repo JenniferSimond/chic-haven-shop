@@ -8,6 +8,7 @@ import CartCard from "./CartCard";
 import { getCartAndItems } from "../../../api/cart";
 
 const OuterWrapper = styled.div`
+
 display: flex;
     flex-direction: column;
 
@@ -50,6 +51,7 @@ const CheckoutBox = styled.div`
     height: 110px;
     min-height: 110px;
     border: 3px solid rgb(var(--ras-pink));
+    border-radius: 3px;
     width: 95%;
     background-color: rgb(var(--cream));
     position: sticky;
@@ -87,8 +89,9 @@ const InnerCheckout = styled.div`
   display: none;
   font-family: Montserrat, sans-serif;
   font-size: 15px;
-  font-weight: 600;
-  color: rgb(var(--purple-dark));
+  font-weight: 500;
+  font-style: italic;
+  color: rgb(var(--ras-pink));
 
   @media (max-width: 950px) {
   display: flex;
@@ -108,16 +111,16 @@ const CartScrollWrapper = styled.div`
 const Button = styled.button`
 
     width: 85px;
-    height: 20px;
+    height: 30px;
     background: #FFBC42;
     border-radius: 3px;
     border: none;
     margin-top: 5px;
 
     font-family: Montserrat, sans-serif;
-    color: #22223B;
+    color: rgb(var(--purple-mid));
     font-size: 12px;
-    font-weight: 550;
+    font-weight: 700;
     letter-spacing: 0.25px;
        
 
@@ -172,16 +175,19 @@ const Cart = () => {
 
     const sidebarConfig = {
         firstContainer: {
+          height: '0%',
           visibility: 'hidden',
           backgroundColor: 'rgb(var(--cream))',
-          text: `Cart Total: `,
+          text: `Free shipping with code -CHICSHIP`,
         },
         secondContainer: {
+          height: '25%',
           visibility: 'visible',
           backgroundColor: 'rgb(var(--cream))',
           text: 'Save 15% on your next order when you spend $100 or more!',
         },
         thirdContainer: {
+          height: '25%',
           visibility: 'visible',
           backgroundColor: 'rgb(var(--cream))',
           text: `Cart Total: $${cartTotal}`,
@@ -196,7 +202,7 @@ const Cart = () => {
   
         },
         socialContainer: {
-          display: 'none',
+          display: 'flex',
           visibility: 'visible',
         }
       }
@@ -244,9 +250,12 @@ const Cart = () => {
         setPageRefresh(!pageRefresh); 
       };
 
-      const handleCheckout = () => {
-        navigate('/checkout')
-       }
+    const handleCheckout = () => {
+      navigate('/checkout')
+      }
+
+    
+    
     
 
    return(

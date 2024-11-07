@@ -34,7 +34,7 @@ const WebView = styled.div`
  display: flex;
   flex-direction: row;   
   width: 100%;
-  height: 82vh;
+  height: 80vh;
   position: relative;
   font-family: Montserrat, sans-serif;
 
@@ -46,7 +46,7 @@ const WebViewInnerWrapper = styled.div`
     max-width: 1330px;
     display: flex;
     flex-direction: column;
-    padding: 5% 4% 3% 4%;
+    padding: 0% 4% 0% 4%;
     margin-right: 250px;
     justify-content: center;
     
@@ -277,20 +277,20 @@ const TileButton = styled.button`
     width: 40%;
     height: 35px;
     font-size: 13px;
-    font-weight: 500;
-    letter-spacing: .1px;
+    font-weight: 550;
+    letter-spacing: .6px;
     padding: .5% 1%;
 
     &:hover {
-    background-color: rgb(var(--purple-light)) ;
-    color: rgb(var(--cream));
+    background-color: rgb(var(--mustard)) ;
+    color: rgb(var(--purple-dark));
     }
 
     @media (max-width: 950px) {
         font-size: 12px;
         width: 100px;
         height: 25px;
-        font-weight: 600;
+        font-weight: 550;
     }
 `;
 
@@ -312,8 +312,8 @@ const DarkButton = styled.button`
     width: 150px;
     height: 35px;
     font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 1px;
+    font-weight: 560;
+    letter-spacing: .5px;
     padding: 1%;
 
     &:hover {
@@ -377,26 +377,29 @@ const [customerOrders, setCustomerOrders] = useState([]);
 
 const sidebarConfig = {
     firstContainer: {
-      display: 'none',
+      visibility: 'visible',
       backgroundColor: 'rgb(var(--mustard))',
-      text: '',
+      text: 'Your Little Piece of Haven!',
     },
     secondContainer: {
-      display: 'none',
-      backgroundColor: 'rgb(var(--mustard))',
-      text: '',
+      height: '25%',  
+      visibility: 'visible',
+      backgroundColor: 'rgb(var(--cream))',
+      text: 'Earn 5 member points with each review!',
     },
     thirdContainer: {
-      display: 'none',
-      backgroundColor: 'rgb(var(--mustard))',
+      height: '0%',
+      visibility: 'collapse',
+      backgroundColor: 'rgb(var(--cream))',
       text: '',
     },
     buttonContainer: {
-      display: 'none',
-      backgroundColor: 'rgb(var(--mustard))',
-      leftText: '',
-      rightText: '',
-      buttonColor: '',
+        topVisibility: 'hidden',
+        bottomVisibility: 'visible',
+        backgroundColor: 'rgb(var(--cream))',
+        topButtonText: 'Test',
+        bottomButtonText: 'Edit Account',
+        buttonColor: '',
 
     },
     socialContainer: {
@@ -416,6 +419,8 @@ const sidebarConfig = {
             if (!customerData.id ) {
                 navigate('/login');
             }
+
+        
             
             try {
                 const fetchedInfo = await fetchCustomer(customerData.id, token);
@@ -471,6 +476,15 @@ const sidebarConfig = {
     const handleOrderHistoryClick = () => {
         navigate('/orders');
     }
+
+    const handleReviewHistoryClick = () => {
+        navigate('/reviews');
+    }
+
+    const handleEditAccountClick = () => {
+        navigate('/account/update')
+      }
+  
    
     return (
         <>
@@ -495,10 +509,10 @@ const sidebarConfig = {
                         <SvgIcon src={diamondFilled} />
                         <h3>Reviews Posted</h3>
                       <p>{!customerReviews.customer_id || customerReviews.reviews.length == 0 ? 0 : customerReviews.reviews.length}</p>
-                        <TileButton>See Reviews</TileButton>
+                        <TileButton onClick={handleReviewHistoryClick}> Reviews</TileButton>
                     </PurpleTile>
                     <MobileButtonWrapper>
-                        <DarkButton>Edit Account</DarkButton>
+                        <DarkButton onClick={handleEditAccountClick}>Edit Account</DarkButton>
                         <DarkButton onClick={handleOrderHistoryClick}>Order History</DarkButton>
                     </MobileButtonWrapper>
                     <CircleButton onClick={handleLogOutClick}>Log Out</CircleButton>
@@ -526,18 +540,18 @@ const sidebarConfig = {
                         <SvgIcon src={diamondFilled} />
                         <h3>Reviews Posted</h3>
                       <p>{!customerReviews.customer_id || customerReviews.reviews.length == 0 ? 0 : customerReviews.reviews.length}</p>
-                        <TileButton>See Reviews</TileButton>
+                        <TileButton onClick={handleReviewHistoryClick}>Reviews</TileButton>
                     </PurpleTile>
                     <PurpleTile>
                         <SvgIcon $maxHeight={'32px'} $maxWidth={'32px'} src={orderBagPink} />
                         <h3>Total Orders</h3>
                         <p>{customerOrders.length == 0 ? 0 : customerOrders.length}</p>
-                        <TileButton onClick={handleOrderHistoryClick}>View Orders</TileButton>
+                        <TileButton onClick={handleOrderHistoryClick}> Orders</TileButton>
                     </PurpleTile>
                 </TileWrapper>
               
               </WebViewInnerWrapper>
-              <SideBar sidebarConfig={sidebarConfig}/>
+              <SideBar sidebarConfig={sidebarConfig} bottomHandleFunction={handleEditAccountClick}/>
             </WebView>
         )};
         </>

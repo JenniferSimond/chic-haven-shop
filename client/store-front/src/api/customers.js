@@ -85,6 +85,7 @@ const fetchCustomer = async (customerId, token) => {
   }
 };
 
+// update Customer Info
 const updateCustomer = async (customerId, newCustomerData, token) => {
   try {
     const response = await fetch(`${API_URL}/customers/${customerId}`, {
@@ -97,8 +98,11 @@ const updateCustomer = async (customerId, newCustomerData, token) => {
     });
 
     const updatedCustomerData = await response.json();
-    console.log('Updated Customer (API) -->', result);
-  } catch (error) {}
+    console.log('Updated Customer (API) -->', updatedCustomerData);
+    return updatedCustomerData;
+  } catch (error) {
+    console.error('Error updating customer data', error);
+  }
 };
 
 // Fetch specific customer address by customer ID
@@ -135,9 +139,6 @@ const fetchCustomerAddress = async (customerId) => {
 // Update customer address by customer ID
 const updateCustomerAddress = async (customerId, newAddressData, token) => {
   try {
-    const testData = newAddressData;
-    // const token = getToken();
-
     if (!token) {
       throw new Error('No token found');
     }
@@ -170,6 +171,7 @@ export {
   customerLogin,
   customerSignup,
   fetchCustomer,
+  updateCustomer,
   fetchCustomerAddress,
   updateCustomerAddress,
 };

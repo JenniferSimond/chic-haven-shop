@@ -12,15 +12,24 @@ const SideWrapper = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
-    // padding-top: 3%;
     align-items: center;
     width: 250px;
     background-color: rgba(var(--mustard), 1);
     right: 0;
     z-index: 90; 
     position: fixed;
-    gap: 8%;
-    height: 100vh; // Ensure it takes the full height of the viewport
+    gap: 10%;
+    // height: 100vh; // Ensure it takes the full height of the viewport
+
+    height: calc(100vh - 7rem - 3rem);  
+
+    @media (max-width: 768px) {
+        height: calc(100vh - 5rem - 3rem);  
+    }
+
+    @media (max-width: 600px) {
+        height: calc(100vh - 4rem - 7rem);  
+    }
     
     @media (max-width: 950px) {
         display: none;
@@ -31,15 +40,32 @@ const SideWrapper = styled.div`
 `;
 
 const FirstContainer = styled.div`
-    display: ${({ $display }) => $display};
+      display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     border-radius: 3%;
     width: 80%;
-    height: 20%;
+    height: ${props => props.$height || '20%'};
     background-color: ${({ $backgroundColor }) => $backgroundColor || 'rgb(var(--cream))'};
      visibility: ${({$visibility}) => $visibility || 'collapse'};
+`;
+
+const FirstContainerText = styled.p`
+    font-family: Cinzel;
+    font-size: 28px;
+    color: ${props => props.$color || 'rgb(var(--ras-pink))'};
+    font-weight:${props => props.$fontWeight || '550'};
+     letter-spacing: 0.34px;
+
+    span {
+        color: rgb(var(--cream));
+    }
+
+    @media (max-width: 1300px) {
+        font-size: 25px;
+    }
+
 `;
 
 const SecondContainer = styled.div`
@@ -48,20 +74,25 @@ const SecondContainer = styled.div`
     justify-content: center;
     align-content: center;
     width: 80%;
-    height: 10%;
+    height: ${props => props.$height || '12%'};
     border-radius: 3%;
     box-sizing: border-box;
     text-align: center;
-    padding: 2% 5%;
+    padding: 2% 4%;
     background-color: ${({ $backgroundColor }) => $backgroundColor || 'rgb(var(--cream))'};
     visibility: ${({$visibility}) => $visibility || 'hidden'};
 
     font-family: Montserrat, sans-serif;
-    font-size: ${props => props.$fontSize || '14px'};
+    font-size: ${props => props.$fontSize || '15px'};
     font-weight: 600;
-    color: rgb(var(--purple-mid));
+    color: ${({ $color }) => $color || 'rgb(var(--ras-pink))'};
     letter-spacing: 0.5px;
-    margin-bottom: 2px;
+    margin-bottom: 0px;
+    font-style: italic;
+
+    @media(max-width: 1300px) {
+        font-size: 15px;
+    }
 `;
 
 const ThirdContainer = styled.div`
@@ -73,10 +104,15 @@ const ThirdContainer = styled.div`
     align-content: center;
     background-color: ${({ $backgroundColor }) => $backgroundColor || 'rgb(var(--cream))'};
     width: 80%;
-    height: 20%;
+    height: ${props => props.$height || '20%'};
     border-radius: 3%;
     visibility: ${({$visibility}) => $visibility || 'visible'};
     padding: 2% 5%;
+    font-family: Montserrat, sans-serif;
+    font-size: ${props => props.$fontSize || '18px'};
+    font-weight: 600;
+    color: rgb(var(--purple-dark));
+    letter-spacing: 0.5px;
 `;
 
 const ButtonContainer = styled.div`
@@ -107,8 +143,16 @@ const Button = styled.button`
   color: rgb(var(--cream));
   border-radius: 3px;
   border: none;
+  font-weight: 500;
+  letter-spacing: 0.95px;
 //   margin-top: 20px;
    visibility: ${({$visibility}) => $visibility || 'collapse'};
+
+   &:hover {
+    background: rgb(var(--ras-pink));
+    color: rgb(var(--purple-dark));
+    font-weight: 600;
+   }
 `;
 
 const SvgIcon = styled.img`
@@ -165,18 +209,26 @@ const SideBar = ({ sidebarConfig={}, topHandleFunction, bottomHandleFunction }) 
     return (
         <SideWrapper>
         <FirstContainer 
-            $display={firstContainer.$display || 'none'}
             $visibility={firstContainer.visibility ||'collapse'}
             $backgroundColor={firstContainer.backgroundColor || 'rgb(var(--cream))'}
+            $height={firstContainer.height || '20%'}
         >
-            {firstContainer.text || ''}
+           <FirstContainerText>
+            Your Little
+           </FirstContainerText>
+           <FirstContainerText>
+            <span>Piece of</span>
+           </FirstContainerText>
+           <FirstContainerText>
+            of Haven
+           </FirstContainerText>
         </FirstContainer>
         <SecondContainer 
-           $visibility={secondContainer.visibility || 'collapse'} $backgroundColor={secondContainer.backgroundColor || 'rgb(var(--cream))'}
+           $visibility={secondContainer.visibility || 'collapse'} $backgroundColor={secondContainer.backgroundColor || 'rgb(var(--cream))'} $height={secondContainer.height}
         >
             {secondContainer.text || ''}
         </SecondContainer>
-        <ThirdContainer $visibility={thirdContainer.visibility || 'collapse'}>
+        <ThirdContainer $visibility={thirdContainer.visibility || 'collapse'} $height={thirdContainer.height}>
             {thirdContainer.text || ''}
         </ThirdContainer>
         <ButtonContainer >

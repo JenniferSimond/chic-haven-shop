@@ -17,7 +17,7 @@ const OuterWrapper = styled.div`
     }
     @media (max-width: 600px) {
         height: calc(100vh - 4rem - 7rem);  
-        padding-top: 10%;
+        padding-top: 8%;
     }
 `;
 
@@ -25,19 +25,20 @@ const HeaderBox = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 110px;
-    min-height: 100px;
+    height: 105px;
+    min-height: 105px;
     border: 3px solid rgb(var(--ras-pink));
     width: 95%;
-    background-color: rgb(var(--cream));
+    background-color: rgb(var(--ras-pink));
     position: sticky;
+    border-radius: 3px;
     top: 0;
     z-index: 1;
 
     h1 {
        font-family: Cinzel; 
        font-size: 39px;
-       color: rgb(var(--purple-dark));
+       color: rgb(var(--cream));
        font-weight: 500;
        letter-spacing: 0.34px;
        text-align: center;
@@ -61,6 +62,7 @@ const OrderScrollWrapper = styled.div`
     flex-grow: 1;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     margin: 2% 0%;
     overflow-y: auto;
     width: 95%;
@@ -119,8 +121,8 @@ const InnerItemWrapper = styled.div`
 const OrderText = styled.p`
     font-family: Montserrat, sans-serif;
     font-family: Montserrat, sans-serif;
-    font-weight: ${props => props.$fontWeight || '600'};
-    font-size: ${props => props.$fontSize || '12px'};
+    font-weight: ${props => props.$fontWeight || '500'};
+    font-size: ${props => props.$fontSize || '13px'};
     color: ${props => props.$color || 'rgb(var(--purple-deep))'};
 
     @media (max-width: 600px) {
@@ -204,19 +206,19 @@ const OrderHistory = () => {
                         
                         <ItemWrapper key={order.orderNumber}>
                             <InnerItemWrapper>
-                                <OrderText $fontWeight={`700`} $color={'rgb(var(--purple-mid))'}>Order Number</OrderText>
+                                <OrderText $fontWeight={`600`} $color={'rgb(var(--ras-pink))'} $fontSize={'14px'}>Order Number</OrderText>
                                 <OrderText>{order.truncatedOrderNum}</OrderText>
                             </InnerItemWrapper>
                             <InnerItemWrapper>
-                                <OrderText $fontWeight={`700`} $color={'rgb(var(--purple-mid))'}>Order Date</OrderText>
+                                <OrderText $fontWeight={'600'} $color={'rgb(var(--ras-pink))'} $fontSize={'14px'}>Order Date</OrderText>
                                 <OrderText>{order.orderDate}</OrderText>
                             </InnerItemWrapper>
                             <InnerItemWrapper>
-                                <OrderText $fontWeight={`700`} $color={'rgb(var(--purple-mid))'}>Total Items</OrderText>
+                                <OrderText $fontWeight={'600'} $color={'rgb(var(--ras-pink))'} $fontSize={'14px'}>Total Items</OrderText>
                                 <OrderText>{order.totalItems}</OrderText>
                             </InnerItemWrapper>
                             <InnerItemWrapper>
-                                <OrderText $fontWeight={`700`} $color={'rgb(var(--purple-mid))'}>Order Total</OrderText>
+                                <OrderText $fontWeight={'600'} $color={'rgb(var(--ras-pink))'} $fontSize={'14px'}>Order Total</OrderText>
                                 <OrderText>{`$${order.orderTotal}`}</OrderText>
                             </InnerItemWrapper>
                             

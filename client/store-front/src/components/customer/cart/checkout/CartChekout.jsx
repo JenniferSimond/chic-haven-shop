@@ -1,13 +1,13 @@
 import React, {useState, useEffect, useContext} from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements, CardNumberElement, CardExpiryElement, CardCvcElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { CardNumberElement, CardExpiryElement, CardCvcElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { CustomerContext } from "../../../../CustomerContext";
 import { getToken } from "../../../shared/auth";
-import { getStripeConfig, createPaymentIntent } from "../../../../api/stripe";
+import { createPaymentIntent } from "../../../../api/stripe";
 import AddressCheckbox from "./AddressCheckBox";
 import { fetchCustomerAddress, updateCustomerAddress } from "../../../../api/customers";
+import { getCartAndItems } from "../../../../api/cart";
 import { cartCheckout } from "../../../../api/cart";
 
 const CheckoutWrapper = styled.div`
@@ -90,11 +90,11 @@ const Title = styled.div`
 
 const H2 = styled.h2`
   font-family: Cinzel; 
-  font-size: 24px;
+  font-size: 25px;
   color: ${props => props.$color || 'rgb(var(--cream))' };
   font-weight: 700;
   line-height: normal;
-  letter-spacing: 1.32px;
+  letter-spacing: 1.6px;
   text-align: center;
   text-wrap: nowrap;
 
@@ -133,21 +133,33 @@ const Address = styled.div`
 const BottomAddressWrapper = styled.div`
   display: flex;
   flex-direction: row;
-  // background-color: pink;
-  justify-content: space-between;
+  //background-color: pink;
+  justify-content: center;
   align-items: center;
   width: 95%;
   align-self: center;
 `;
 
 const OrderDetails = styled.div`
-  grid-column: 2 / 3; // Right column
-  grid-row: 2 / 3; // Second row
-
+  grid-column: 2 / 3; 
+  grid-row: 2 / 3; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  gap: 15%;
   background-color: rgb(var(--purple-light));
   border-radius: 3px;
 
   padding: 7%;
+
+  p {
+    font-style: normal;
+  font-weight: 550;
+  font-size: 15px;
+  letter-spacing: 0.361px;
+  color: rgb(var(--purple-deep));
+  }
 `;
 
 const PaymentDetails = styled.div`
@@ -167,7 +179,32 @@ const PaymentDetails = styled.div`
   }
 `;
 
+const InnerPaymentDetails = styled.div`
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+ // background-color: white;
+  justify-content: center;
+ // padding: 0% 5%;
+  text-align: center;
+  gap: 10px;
+  width: 95%;
+`;
 
+const PaymentItemDiv = styled.div`;
+  display: flex;
+  flex-direction: column;
+  width: 95%;
+  height: 25px;
+  border-radius: 3px;
+  justify-content: center;
+  align-content: center;
+  // background-color: pink;
+  background-color: rgb(var(--cream));
+  //padding-left: 5%;
+  text-align: center;
+  
+`;
 
 
 const Input = styled.input`
@@ -222,26 +259,38 @@ const Input = styled.input`
 
 
 const Button = styled.button`
-  width: 60px;
-  height: 60px;
+  width: 65px;
+  height: 65px;
   background-color: rgb(var(--ras-pink));
   border-radius: 50%;
   border: none;
   cursor: pointer;
   align-self: ${props => props.$alignSelf};
   margin: 10px 0px;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  letter-spacing: 0.35px;
+  text-transform: capitalize;
+  color: rgb(var(--purple-dark));
 
   @media (max-width: 950px) {
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     margin: 5px 0px ;
   }
 
   @media (max-width: 500px) {
-    width: 45px;
-    height: 45px;
+    width: 55px;
+    height: 55px;
+    font-size: 12px;
   }
 
+  &:hover{
+  background-color: rgb(var(--purple-mid));
+  color: rgb(var(--mustard));
+  }
 `;
 
 const CheckoutMessage = styled.div`
@@ -253,6 +302,8 @@ const CheckoutMessage = styled.div`
 `;
 
 
+
+
 const CartCheckout = () => {
   const navigate = useNavigate();
   const token = getToken();
@@ -261,6 +312,7 @@ const CartCheckout = () => {
   const elements = useElements();
   const [checkoutMsg, setCheckoutMsg] = useState(false);
   const [clientSecret, setClientSecret] = useState('');
+  const [cart, setCart] = useState({});
   const [address, setAddress] = useState({
     address_line1: '',
     address_line2: '',
@@ -291,6 +343,26 @@ const CartCheckout = () => {
     fetchClientSecret();
   }, [customerData.cart_id, customerData.id]);
 
+  const stripeStyle = {
+    style: {
+      base: {
+        color: 'rgb(var(--purple-mid))',
+        fontFamily: 'Montserrat, sans-serif',
+        fontSize: '12px',
+        fontWeight: '600',
+        letterSpacing: '0.8px',
+        '::placeholder': {
+          color: 'rgb(var(--purple-light))',
+        },
+        iconColor: 'rgb(var(--mustard))',
+        textAlign: 'center', 
+      },
+      invalid: {
+        color: 'rgb(var(--ras-pink))',
+      },
+    },
+  };
+
   useEffect(() => {
     if (customerData.id) {
       const getCustomerAddress = async () => {
@@ -306,6 +378,22 @@ const CartCheckout = () => {
     }
   }, []);
 
+  useEffect(() => {
+    
+      const getCartData = async () => {
+        try {
+          const cartInfo = await getCartAndItems(token, customerData.id);
+          console.log('Cart -->', cartInfo)
+          setCart(cartInfo)
+        } catch (error) {
+          
+        }
+      }
+    
+    getCartData()
+  }, [customerData.id, token]);
+  
+
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setAddress((prevAddress) => ({
@@ -314,6 +402,8 @@ const CartCheckout = () => {
     }));
   };
 
+  
+  
   const handleSaveAddress = async (resetCheckbox) => {
     if (JSON.stringify(address) !== JSON.stringify(originalAddress)) {
       const token = getToken();
@@ -426,15 +516,26 @@ const CartCheckout = () => {
 
         <OrderDetails>
           <H2>Order Info</H2>
-          {/* Add order detail items here */}
+          <p>{`Order Total: $${cart.cart_total}`}</p>
         </OrderDetails>
 
         <PaymentDetails>
           <H2 $color={'rgb(var(--purple-mid))'}>Payment Info</H2>
-          <CardNumberElement />
+          <InnerPaymentDetails>
+            <PaymentItemDiv >
+              <CardNumberElement options={stripeStyle}/>
+            </PaymentItemDiv>
+
+            <PaymentItemDiv>
+              <CardExpiryElement options={stripeStyle} />
+            </PaymentItemDiv>
        
-            <CardExpiryElement  />
-            <CardCvcElement  />
+           <PaymentItemDiv>
+           <CardCvcElement options={stripeStyle}  />
+           </PaymentItemDiv>
+           
+           
+          </InnerPaymentDetails>
         
           <Button type='button' onClick={handlePaymentSubmit} $alignSelf="center">Submit</Button>
         </PaymentDetails>
