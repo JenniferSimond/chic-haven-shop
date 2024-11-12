@@ -164,38 +164,6 @@ const isAuthorizedCustomer = (req, res, next) => {
   }
 };
 
-// const validateCartOrWishlistAccess = async (req, res, next) => {
-//   try {
-//     // Ensure the user is authenticated
-//     if (!req.user) {
-//       return res.status(401).json({ message: 'Not Authorized' });
-//     }
-
-//     // Extract cart_id and wishlist_id from req.params and req.body
-//     const cart_id = req.params.cartId || req.body.cartId; // Check both params and body for cartId
-//     const wishlist_id = req.params.wishlistId || req.body.wishlistId; // Check both params and body for wishlistId
-
-//     // Validate cart access
-//     if (cart_id && req.user.cart_id !== cart_id) {
-//       return res
-//         .status(403)
-//         .json({ message: 'Forbidden: Cannot access this cart' });
-//     }
-
-//     // Validate wishlist access
-//     if (wishlist_id && req.user.wishlist_id !== wishlist_id) {
-//       return res
-//         .status(403)
-//         .json({ message: 'Forbidden: Cannot access this wishlist' });
-//     }
-
-//     // If validation passes, allow the request to proceed
-//     next();
-//   } catch (error) {
-//     res.status(403).json({ message: 'Forbidden: Access Denied' });
-//   }
-// };
-
 const validateCartOrWishlistAccess = async (req, res, next) => {
   try {
     // Ensure the user is authenticated

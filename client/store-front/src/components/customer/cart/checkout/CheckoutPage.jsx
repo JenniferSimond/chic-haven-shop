@@ -34,6 +34,8 @@ const CheckoutPage = () => {
     initializeStripe();
   }, []);
 
+  
+
   if (!isStripeReady) return <p>Loading...</p>;
 
   return (

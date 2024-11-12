@@ -308,7 +308,7 @@ const DescriptionBox = styled.div`
  
   @media (max-width: 950px) {
     max-width: 450px;
-    fonst-size: 15px;
+    font-size: 15px;
     width: 100%;
     padding-left: 0%;
     margin-top: 0%;

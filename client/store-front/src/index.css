@@ -67,3 +67,13 @@ body {
   border-radius: 1px;
 
 }
+
+.stripe-element {
+  font-weight: 900;
+  color: #19192D;
+}
+
+.InputElement {
+  font-weight: 900;
+  color: #19192D;
+}

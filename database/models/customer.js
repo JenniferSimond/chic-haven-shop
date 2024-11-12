@@ -84,26 +84,53 @@ const fetchCustomersByID = async (id) => {
   }
 };
 
-// UPDATE CUSTOMER
-
 const updateCustomerById = async (id, updatedCustomerData) => {
   const client = await pool.connect();
 
   try {
     const {
-      lastName,
-      firstName,
+      last_name,
+      first_name,
       email,
-      password,
-      customerStatus = 'active',
-      reviewPermissions = 'allowed',
+      newPassword,
+      customer_status = 'active',
+      review_permissions = 'allowed',
+      originalPassword, // originalPassword (or currentPassword) is part of updatedCustomerData
     } = updatedCustomerData;
 
     let hashedPassword;
-    if (password) {
-      hashedPassword = await bcrypt.hash(password, 10);
+
+    // If a new password is provided, check the original password for verification
+    if (newPassword && originalPassword) {
+      // Retrieve the customer's current hashed password from the database
+      const getCurrentPasswordSQL = `
+        SELECT password FROM customers WHERE id = $1
+      `;
+      const currentPasswordResponse = await client.query(
+        getCurrentPasswordSQL,
+        [id]
+      );
+
+      if (currentPasswordResponse.rows.length === 0) {
+        throw new Error('Customer not found');
+      }
+
+      const currentPasswordHash = currentPasswordResponse.rows[0].password;
+
+      // Verify the provided original password matches the stored hash
+      const isMatch = await bcrypt.compare(
+        originalPassword,
+        currentPasswordHash
+      );
+      if (!isMatch) {
+        throw new Error('Current password is incorrect');
+      }
+
+      // Hash the new password
+      hashedPassword = await bcrypt.hash(newPassword, 10);
     }
 
+    // Update customer data, using the hashed password if provided
     const SQL = `
         UPDATE customers
         SET
@@ -111,21 +138,21 @@ const updateCustomerById = async (id, updatedCustomerData) => {
             first_name = COALESCE($3, first_name),
             email = COALESCE($4, email),
             password = COALESCE($5, password),
-            customer_status = $6,
-            review_permissions = $7,
+            customer_status = COALESCE($6, customer_status),
+            review_permissions = COALESCE($7, review_permissions),
             modified_at = CURRENT_TIMESTAMP
         WHERE id = $1
         RETURNING *
-        `;
+    `;
 
     const response = await client.query(SQL, [
       id,
-      lastName,
-      firstName,
+      last_name,
+      first_name,
       email,
-      hashedPassword || password,
-      customerStatus,
-      reviewPermissions,
+      hashedPassword || password, // Pass hashed password if available; otherwise, use null to keep the existing password
+      customer_status,
+      review_permissions,
     ]);
 
     if (response.rows.length === 0) {

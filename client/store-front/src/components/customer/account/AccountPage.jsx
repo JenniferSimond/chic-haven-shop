@@ -482,7 +482,7 @@ const sidebarConfig = {
     }
 
     const handleEditAccountClick = () => {
-        navigate('/account/update')
+        navigate('/update-account')
       }
   
    

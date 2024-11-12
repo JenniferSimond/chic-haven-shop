@@ -150,13 +150,14 @@ const OrderDetails = styled.div`
   gap: 15%;
   background-color: rgb(var(--purple-light));
   border-radius: 3px;
+   font-family: Montserrat, sans-serif;
 
   padding: 7%;
 
   p {
     font-style: normal;
-  font-weight: 550;
-  font-size: 15px;
+  font-weight: 500;
+  font-size: 14px;
   letter-spacing: 0.361px;
   color: rgb(var(--purple-deep));
   }
@@ -168,7 +169,7 @@ const PaymentDetails = styled.div`
   flex-direction: column;
   justify-content: center;
   background-color: rgb(var(--mustard));
-  padding: 7% 10%;
+  padding: 7% 4%;
   gap: 15px;
   display: flex;
   border-radius: 3px;
@@ -183,27 +184,36 @@ const InnerPaymentDetails = styled.div`
   align-self: center;
   display: flex;
   flex-direction: column;
- // background-color: white;
+  //background-color: white;
   justify-content: center;
  // padding: 0% 5%;
   text-align: center;
   gap: 10px;
   width: 95%;
+
+  @media(max-width: 404px) {
+    width: 100%;
+  }
 `;
 
-const PaymentItemDiv = styled.div`;
+const PaymentItemDiv = styled.div`
   display: flex;
   flex-direction: column;
-  width: 95%;
+  width: 100%;
   height: 25px;
   border-radius: 3px;
   justify-content: center;
   align-content: center;
-  // background-color: pink;
   background-color: rgb(var(--cream));
-  //padding-left: 5%;
-  text-align: center;
-  
+
+  & .stripe-element {
+    font-weight: 900; /* Apply font weight */
+    font-family: Montserrat, sans-serif;
+  }
+
+  & .InputElement {
+  font-weight: 900;
+}
 `;
 
 
@@ -214,10 +224,10 @@ const Input = styled.input`
   border: none;
   outline: none;
   border-radius: 3px;
-  color: rgb(var(--purple-mid));
+  color: rgb(var(--purple-deep));
   font-family: Montserrat;
   font-style: normal;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 14px;
   letter-spacing: 0.361px;
   text-align: ${props => props.$textAlign || 'start'};
@@ -225,28 +235,28 @@ const Input = styled.input`
   &:-webkit-autofill {
     box-shadow: 0 0 0 30px rgb(var(--cream)) inset !important;
     -webkit-box-shadow: 0 0 0 30px rgb(var(--cream)) inset !important;
-    -webkit-text-fill-color: rgb(var(--purple-mid)) !important;
+    -webkit-text-fill-color: rgb(var(--purple-deep)) !important;
     font-family: Montserrat;
     font-style: normal;
-    font-weight: 600;
+    font-weight: 500;
     letter-spacing: 0.35px;
     }
 
   @media (max-width 700px) {
-    font-size: 11px;  
+    font-size: 13px;  
       letter-spacing: 0.1px;
 
       &:-webkit-autofill {
-      font-size: 11px;
+      font-size: 13px;
       
     }
   }
 
     @media (max-width: 600px) {
-    font-size: 10px;
+    font-size: 13px;
 
     &:-webkit-autofill {
-    font-size: 10px;
+    font-size: 13px;
   
   }
 
@@ -322,6 +332,11 @@ const CartCheckout = () => {
     country: 'US',
   });
   const [originalAddress, setOriginalAddress] = useState({});
+
+  if (!customerData.id && !token) {
+    navigate('/login');
+    return;
+  }
   
   useEffect(() => {
     const fetchClientSecret = async () => {
@@ -346,22 +361,24 @@ const CartCheckout = () => {
   const stripeStyle = {
     style: {
       base: {
-        color: 'rgb(var(--purple-mid))',
+        color: '#19192D',
+        fontWeight: '900',
+        fontSize: '13px',
         fontFamily: 'Montserrat, sans-serif',
-        fontSize: '12px',
-        fontWeight: '600',
         letterSpacing: '0.8px',
         '::placeholder': {
-          color: 'rgb(var(--purple-light))',
+          color: '#19192D',
+          fontWeight: '900',
         },
         iconColor: 'rgb(var(--mustard))',
-        textAlign: 'center', 
+        textAlign: 'center',
       },
       invalid: {
-        color: 'rgb(var(--ras-pink))',
+        color: '#D81159',
       },
     },
   };
+  
 
   useEffect(() => {
     if (customerData.id) {

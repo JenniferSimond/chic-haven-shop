@@ -91,7 +91,7 @@ function App() {
           <Route path='/checkout' element={<CheckoutPage />}/>
           <Route path='/orders' element={<OrderHistory />}/>
           <Route path='/reviews' element={<CustomerReviews />}/>
-          <Route path='/account/update' element={<UpdateAccount />}/>
+          <Route path='/update-account' element={<UpdateAccount />}/>
         </Routes>
       </ContentWindow>
       <FootWrapper>

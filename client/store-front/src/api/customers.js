@@ -94,7 +94,7 @@ const updateCustomer = async (customerId, newCustomerData, token) => {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ newCustomerData }),
+      body: JSON.stringify(newCustomerData),
     });
 
     const updatedCustomerData = await response.json();

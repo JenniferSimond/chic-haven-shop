@@ -62,7 +62,7 @@ const OrderScrollWrapper = styled.div`
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+   // justify-content: center;
     margin: 2% 0%;
     overflow-y: auto;
     width: 95%;
@@ -75,12 +75,12 @@ const OrderItems = styled.div`
     row-gap: 40px;
     column-gap: 15px;
     justify-content: center; 
-    align-items: center; 
+    align-items: flex-start; 
     width: 90%;
     padding: 5% 0;
     margin: 0 auto;  
     // max-width: 1300px;
-    
+    background-color: pink;
 
     @media (max-width: 950px) {
       justify-content: center;
@@ -131,7 +131,23 @@ const OrderText = styled.p`
     @media (max-width: 449px) {
         font-size: 10px;
     }
-`
+`;
+
+const EmptyOrderMessage = styled.p`
+font-family: Montserrat, sans-serif;
+font-size: 20px;
+font-weight: 500;
+font-style: italic;
+letter-spacing: normal;
+color: rgb(var(--purple-mid));
+text-align: center; // Optional: Center the message
+align-self: center; // Center the element within its parent container
+padding: 20px; // Optional: Add padding if you want some space around the text
+
+ @media (max-width: 800px) {
+  font-size: 15px;
+ }
+`;
 
 const OrderHistory = () => {
     const [orders, setOrders] = useState([]);
@@ -202,7 +218,7 @@ const OrderHistory = () => {
             </HeaderBox>
             <OrderScrollWrapper>
                 <OrderItems>
-                    {orderDetails.map(order => (
+                    { orderDetails.length > 0 ? (orderDetails.map(order => (
                         
                         <ItemWrapper key={order.orderNumber}>
                             <InnerItemWrapper>
@@ -223,7 +239,12 @@ const OrderHistory = () => {
                             </InnerItemWrapper>
                             
                         </ItemWrapper>
-                    ))}
+                    ))
+                ): (
+                    <EmptyOrderMessage>
+                        No orders, start shopping today!
+                    </EmptyOrderMessage>
+                )}
                 </OrderItems>
             </OrderScrollWrapper>
        </OuterWrapper>

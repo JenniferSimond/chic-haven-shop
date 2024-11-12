@@ -87,8 +87,17 @@ const fetchAdminByID = async (id) => {
   const client = await pool.connect();
   try {
     const SQL = `
-  SELECT * FROM admins WHERE id = $1
-`;
+      SELECT
+        a.id AS adminId,
+        a.last_name,
+        a.first_name,
+        a.email,
+        a.created_at,
+        ar.admin_type AS adminRole
+      FROM admins a
+      LEFT JOIN admin_roles ar ON ar.id = a.role_id
+      WHERE a.id = $1;
+    `;
 
     const response = await client.query(SQL, [id]);
     return response.rows[0];

@@ -55,6 +55,28 @@ router.post('/auth/login', async (req, res, next) => {
   }
 });
 
+// get CUSTOMER by DATA and TOKEN
+router.get('/auth/me', isAuthenticated, isAnyAdmin, async (req, res, next) => {
+  try {
+    // The isAuthenticated middleware will populate req.user based on the token
+    const user = req.user;
+
+    if (!user) {
+      return res.status(401).json({ message: 'Not Authorized' });
+    }
+
+    const admin = await fetchCustomersByID(user.id);
+
+    if (!admin) {
+      return res.status(404).json({ message: 'Customer not found' });
+    }
+
+    res.status(200).json(admin);
+  } catch (error) {
+    next(error);
+  }
+});
+
 // GET ALL ADMINS
 router.get('/', isAuthenticated, isAnyAdmin, async (req, res, next) => {
   try {
