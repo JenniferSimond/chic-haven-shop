@@ -78,7 +78,6 @@ const Button = styled.button`
   font-family: Montserrat;
   font-size: ${props => props.$fontSize || '12px'};
   font-weight: 600;
-  // width: 75px;
   padding: ${props => props.$padding ||  '7px 10px'};
   border: none;
   border-radius: 3px;
@@ -153,7 +152,7 @@ const WishlistCard = ({ wishItem, refresh }) => {
   const { customerData } = useContext(CustomerContext);
   const imageUrl = `${BASE_URL}${wishItem.product_image}`;
   const [showOrderBox, setShowOrderBox] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);  // Initially null
+  const [selectedProduct, setSelectedProduct] = useState(null);  
   const [customerSelection, setCustomerSelection] = useState({
     inventoryId: '',
     productSize: '',
@@ -207,9 +206,8 @@ const WishlistCard = ({ wishItem, refresh }) => {
     }
 
     try {
-      setIsProcessing(true);  // Start processing
+      setIsProcessing(true); 
 
-      // Step 1: Add to cart
       const newCartItem = await addCartIem(
         token,
         customerData.cart_id,
@@ -218,16 +216,13 @@ const WishlistCard = ({ wishItem, refresh }) => {
         customerSelection.productSize,
         customerSelection.quantity
       );
-      console.log('Item added to cart:', newCartItem);
 
       const deletedWishlistItem = await deleteWishlistItem(token, customerData.wishlist_id, wishItem.wishlist_item_id);
-      console.log('Item removed from wishlist:', deletedWishlistItem);
 
       refresh();
 
       setShowOrderBox(false);
     } catch (error) {
-      console.error('Error adding item to cart:', error);
     } finally {
       setIsProcessing(false); 
     }

@@ -39,10 +39,8 @@ const CheckoutWrapper = styled.div`
 const CheckoutContainer = styled.div`
   display: grid;
   grid-template-columns: minmax(160px, 560px) minmax(160px, 560px);
-  //grid-template-columns: 1fr 1fr; 
   grid-template-rows: auto auto auto; 
   gap: 20px;
-  // width: 1000px;
   max-length: 100%;
   max-height: 100%
   
@@ -117,7 +115,7 @@ const H2 = styled.h2`
 `;
 
 const Address = styled.div`
-  grid-column: 1 / 2; // Left column
+  grid-column: 1 / 2;
   grid-row: 2 / 4; 
   display: flex;
   flex-direction: column;
@@ -133,7 +131,6 @@ const Address = styled.div`
 const BottomAddressWrapper = styled.div`
   display: flex;
   flex-direction: row;
-  //background-color: pink;
   justify-content: center;
   align-items: center;
   width: 95%;
@@ -164,8 +161,8 @@ const OrderDetails = styled.div`
 `;
 
 const PaymentDetails = styled.div`
-  grid-column: 2 / 3; // Right column
-  grid-row: 3 / 4; // Third row under Order Details
+  grid-column: 2 / 3; 
+  grid-row: 3 / 4; 
   flex-direction: column;
   justify-content: center;
   background-color: rgb(var(--mustard));
@@ -184,9 +181,7 @@ const InnerPaymentDetails = styled.div`
   align-self: center;
   display: flex;
   flex-direction: column;
-  //background-color: white;
   justify-content: center;
- // padding: 0% 5%;
   text-align: center;
   gap: 10px;
   width: 95%;
@@ -340,15 +335,10 @@ const CartCheckout = () => {
   
   useEffect(() => {
     const fetchClientSecret = async () => {
-      console.log("Running fetchClientSecret useEffect");
       const customerName = `${customerData.first_name} ${customerData.last_name}`;
       if (customerData.cart_id && customerData.id) {
-        
-        console.log("Fetching client secret with:", { cartId: customerData.cart_id, customerId: customerData.id, token, address, customerName });
-        
         try {
           const secret = await createPaymentIntent(token, customerData.id, address, customerName);
-          console.log("Fetched client secret:", secret);
           setClientSecret(secret);
         } catch (error) {
           console.error("Error fetching client secret:", error);
@@ -400,7 +390,6 @@ const CartCheckout = () => {
       const getCartData = async () => {
         try {
           const cartInfo = await getCartAndItems(token, customerData.id);
-          console.log('Cart -->', cartInfo)
           setCart(cartInfo)
         } catch (error) {
           
@@ -435,11 +424,9 @@ const CartCheckout = () => {
   };
 
   const handlePaymentSubmit = async (event) => {
-    console.log("handlePaymentSubmit called"); // Debugging log
     event.preventDefault();
     
     if (!stripe || !elements || !clientSecret) {
-      console.log("Stripe, elements, or clientSecret missing"); // Debugging log
       return;
     }
   
@@ -463,9 +450,7 @@ const CartCheckout = () => {
       if (error) {
         console.error("Payment failed:", error);
       } else if (paymentIntent && paymentIntent.status === "succeeded") {
-        console.log("Payment succeeded!");
         const checkoutData = await cartCheckout(token, customerData.cart_id, customerData.id );
-        console.log('Checkout Data -->', checkoutData);
         if (checkoutData) {
           setCheckoutMsg(!checkoutMsg);
         }

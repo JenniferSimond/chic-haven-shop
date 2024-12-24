@@ -254,17 +254,6 @@ const checkoutCart = async ({ cartId, customerId }) => {
       `Cart items cleared for cart_id: ${cartId}. Rows affected: ${clearResponse.rowCount}`
     );
 
-    // Reset cart total and items count
-    // const resetCartSQL = `
-    //   UPDATE carts
-    //   SET cart_total = 0.00, items_in_cart = 0
-    //   WHERE id = $1;
-    // `;
-    // await client.query(resetCartSQL, [cartId]);
-    // console.log(
-    //   `Cart reset for cart_id: ${cartId} to cart_total: 0.00 and items_in_cart: 0`
-    // );
-
     await client.query('COMMIT');
 
     return orderResponse.rows[0];

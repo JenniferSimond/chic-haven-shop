@@ -94,15 +94,12 @@ const BottomRightWrapper = styled.div`
     background-color: rgba(var(--purple-mid), 1);
     width: ${props => props.$width || '155px'};
     height: ${props => props.$height || '50px'};
-    // padding: 0% 2;
-
 `;
 
 const BottomInnerDiv = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: ${props => props.$justifyContent || 'center'};
-    // text-align: ${props => props.$textAlign || 'center'};
     gap: 5px;
    
 `;
@@ -185,10 +182,7 @@ const SvgIcon = styled.img`
 
 
 const SelectBox = styled.div`
-//    display: flex;
-//   flex-direction: row;
-//   width: 26px;
-//   height: 17px;
+
 `;
 
 const CartCard = ({cartItem, refresh}) => {

@@ -8,6 +8,10 @@ const {
   createProduct,
   createInventory,
   createReview,
+  addCartItem,
+  addItemToWishlist,
+  fetchCustomersByID,
+  fetchInventoryById,
 } = require('./index');
 
 const seedDatabase = async () => {
@@ -542,10 +546,48 @@ const seedDatabase = async () => {
         review.rating,
         review.comment
       );
-      // console.log(
-      //   `Created review for product ${product.name} by customer ${customer.first_name} ${customer.last_name}`
-      // );
       console.log('Reviews -->', newReview);
+    }
+  }
+
+  // add items to cart
+  for (const customer of createdCustomer) {
+    const customerDetails = await fetchCustomersByID(customer.id);
+    console.log('CUSTOMER INFO--->', customerDetails);
+    for (let i = 0; i < 9; i++) {
+      const randomProduct =
+        createdProducts[Math.floor(Math.random() * createdProducts.length)];
+      const productInventory = await fetchInventoryById(randomProduct.id);
+      const randomInventory =
+        productInventory[Math.floor(Math.random() * productInventory.length)];
+      const cartItemData = {
+        cartId: customerDetails.cart_id,
+        productId: randomProduct.id,
+        inventoryId: randomInventory.id,
+        productSize: randomInventory.product_size,
+        quantity: 1,
+      };
+
+      const createdCartItem = await addCartItem(cartItemData);
+      console.log('Created Cart Item -->', createdCartItem);
+    }
+  }
+
+  // add items to wishlist
+  for (const customer of createdCustomer) {
+    const customerDetails = await fetchCustomersByID(customer.id);
+    console.log('CUSTOMER INFO--->', customerDetails);
+
+    const shuffledProducts = createdProducts.sort(() => Math.random() - 0.5);
+    for (let i = 0; i < 8; i++) {
+      const selectedProduct = shuffledProducts[i];
+      const wishlistItemData = {
+        wishlistId: customerDetails.wishlist_id,
+        productId: selectedProduct.id,
+      };
+
+      const createdWishlistItem = await addItemToWishlist(wishlistItemData);
+      console.log('Wishlist Item -->', createdWishlistItem);
     }
   }
 

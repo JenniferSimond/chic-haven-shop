@@ -12,8 +12,8 @@ const WebWrapper = styled.div`
     flex-direction: row;
     width: 100%;
     font-family: Montserrat, sans-serif;
-    min-height: 80vh; // Ensure it takes the full height of the viewport
-    position: relative; // Ensure it positions children relative to this container
+    min-height: 80vh; 
+    position: relative; 
 
 `;
 
@@ -277,7 +277,6 @@ const RegisterWeb = () => {
 
     try {
       const data = customerSignup(signupFormData);
-      console.log(data)
       if (data ) {
         setToken(data.token);
         setCustomerData(data.userDetails);

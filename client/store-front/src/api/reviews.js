@@ -13,7 +13,6 @@ const createReview = async (token, productId, customerId, rating, comment) => {
     });
 
     const newReview = await response.json();
-    console.log('Created Review (API) -->', newReview);
     return newReview;
   } catch (error) {
     console.error('Error creating review', error);
@@ -30,7 +29,6 @@ const fetchAllReviews = async (token) => {
     });
 
     const allReviews = await response.json();
-    console.log('Fetched All Reviews (API) -->', allReviews);
     return allReviews;
   } catch (error) {
     console.error('Error fetching all reviews', error);
@@ -47,7 +45,6 @@ const fetchReviewsByProduct = async (productId) => {
       },
     });
     const productReviews = await response.json();
-    console.log('Fetched Reviews for Product (API) -->', productReviews);
     return productReviews;
   } catch (error) {
     console.error('Error fetching reviews for product', error);
@@ -66,7 +63,6 @@ const getReviewsByUser = async (customerId, token) => {
     });
 
     const userReviews = await response.json();
-    console.log('Fetched Reviews by User (API) -->', userReviews);
     return userReviews;
   } catch (error) {
     console.error('Error fetching reviews by user', error);
@@ -86,7 +82,6 @@ const updateReview = async (token, reviewId, rating, comment) => {
     });
 
     const updatedReview = await response.json();
-    console.log('Updated Review (API) -->', updatedReview);
     return updatedReview;
   } catch (error) {
     console.error('Error updating review', error);
@@ -104,7 +99,6 @@ const deleteReview = async (token, reviewId) => {
     });
 
     const result = await response.json();
-    console.log('Deleted Review (API) -->', result);
     return result;
   } catch (error) {
     console.error('Error deleting review', error);

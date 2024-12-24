@@ -41,7 +41,7 @@ const fetchOrdersAndItems = async (customerId) => {
   }
 };
 
-// --> Update Order Admin Only
+// --> Update Order Admin Only (add later)
 const updateOrder = async () => {
   const client = await pool.connect();
 
@@ -53,7 +53,7 @@ const updateOrder = async () => {
   } finally {
   }
 };
-// -- Delete Order Admin Only
+// -- Delete Order Admin Only (add later)
 
 const deleteOrder = async () => {
   const client = await pool.connect();

@@ -34,8 +34,6 @@ const InnerContentWrapper = styled.div`
     align-items: center;
     margin-right: 250px;
     padding: 1rem;
-   // background-color: white;
-
     overflow-y: auto;  
 
     @media (max-width: 1300px) {
@@ -52,7 +50,6 @@ const HeaderBox = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    // box-sizing: border-box;
     height: 110px;
     min-height: 100px;
     border: 3px solid rgb(var(--ras-pink));
@@ -60,7 +57,7 @@ const HeaderBox = styled.div`
     width: 95%;
     background-color: rgb(var(--cream));
     position: sticky;
-    top: 0;  // Keep the header at the top
+    top: 0;  
     z-index: 1;
     margin-top: 2%;
 
@@ -93,18 +90,16 @@ const HeaderBox = styled.div`
 `;
 
 const WishlistScrollWrapper = styled.div`
-    flex-grow: 1;  // Takes up remaining vertical space
+    flex-grow: 1;  
     display: flex;
     flex-direction: column;
     margin-top: 2%;
-    overflow-y: auto;  // Allow scrolling only for wishlist items
-    width: 95%;  // Ensures content fits inside the parent wrapper
+    overflow-y: auto; 
+    width: 95%;  
 
 `;
 
 const WishlistItems = styled.div`
-    
-    // box-sizing: border-box;
     display: flex;
     flex-wrap: wrap;
     row-gap: 40px;
@@ -132,9 +127,9 @@ const EmptyWishlistMessage = styled.p`
     font-style: italic;
     letter-spacing: normal;
     color: rgb(var(--purple-mid));
-    text-align: center; // Optional: Center the message
-    align-self: center; // Center the element within its parent container
-    padding: 20px; // Optional: Add padding if you want some space around the text
+    text-align: center; 
+    align-self: center; 
+    padding: 20px; 
 
      @media (max-width: 800px) {
       font-size: 15px;
@@ -194,22 +189,16 @@ const Wishlist = () => {
     useEffect(() => {
       const getCustomerWishlist = async () => {
         if (!customerData.id || !token) {
-          console.log("Customer ID or token is missing.");
           return;
         }
   
         try {
-          console.log("Fetching wishlist for customer ID:", customerData.id);
-  
           const updatedWishlist = await getWishlistAndItems(customerData.id, token);
-          console.log("Fetched Wishlist:", updatedWishlist);
   
           // Ensure the API response is valid and contains items
           if (updatedWishlist && updatedWishlist.items) {
-            console.log("Setting wishlist items:", updatedWishlist.items);
             setWishlistItems(updatedWishlist.items);
           } else {
-            console.log("No items found in the wishlist.");
             setWishlistItems([]);
           }
         } catch (error) {
@@ -222,13 +211,8 @@ const Wishlist = () => {
     }, [customerData.id, token, pageRefresh]); // Dependencies: run effect when any of these change
   
     const refreshHandlerWish = () => {
-      console.log("Triggering page refresh.");
       setPageRefresh(!pageRefresh); 
     };
-  
-    // Debugging logs to monitor changes
-    console.log("Current Wishlist Items:", wishlistItems);
-    console.log("Page refresh state:", pageRefresh);
   
     return (
       <OuterWrapper>

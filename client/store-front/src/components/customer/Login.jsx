@@ -31,7 +31,6 @@ const WebViewInnerWrapper = styled.div`
     flex-direction: column;
     padding-left: 10%;
     margin-top: 3%;
-    // background-color: red;
     justify-content: center;
     transition: all 0.3s ease;
 
@@ -87,14 +86,14 @@ const MobileLoginWrapper = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: calc(100vh - 7rem - 3rem);  // For larger screens: subtract NavBar and Footer heights
+    height: calc(100vh - 7rem - 3rem);  
 
     @media (max-width: 768px) {
-        height: calc(100vh - 5rem - 3rem);  // For tablets: adjust for smaller NavBar height
+        height: calc(100vh - 5rem - 3rem); 
     }
 
     @media (max-width: 599px) {
-        height: calc(100vh - 4rem - 7rem);  // For mobile: subtract NavBar and MobileTabBar only (no Footer)
+        height: calc(100vh - 4rem - 7rem); 
     }
 `
 const MobileModelBox = styled.div`
@@ -417,7 +416,6 @@ const Login = () => {
   
     try {
       const data = await customerLogin(loginFormData);
-      console.log('User Data (API) >>-->', data);
   
       if (data && data.token) {
         setToken(data.token);

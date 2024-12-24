@@ -103,7 +103,6 @@ const CustomerReviews = () => {
             try {
                 
                 const fetchedReviews = await getReviewsByUser(customerData.id, token);
-                console.log(fetchedReviews);
                 if (fetchedReviews && fetchedReviews.reviews.length > 0) {
                     setReviews(fetchedReviews.reviews)
                 }

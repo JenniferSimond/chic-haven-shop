@@ -18,7 +18,6 @@ const createAdminRoles = async () => {
         ($3, 'super_admin', current_timestamp, current_timestamp)
 `;
     await client.query(SQL, [uuidv4(), uuidv4(), uuidv4()]);
-    console.log('Admin Roles Successfully Created!');
   } catch (error) {
     console.error('Error creating roles', error.stack);
   } finally {

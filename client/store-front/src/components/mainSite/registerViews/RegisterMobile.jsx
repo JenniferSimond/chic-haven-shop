@@ -224,7 +224,6 @@ const RegisterMobile = () => {
 
     try {
       const data = customerSignup(signupFormData);
-      console.log(data)
 
       if (data ) {
         setToken(data.token);

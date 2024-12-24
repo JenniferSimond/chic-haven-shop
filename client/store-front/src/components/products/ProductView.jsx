@@ -471,7 +471,6 @@ const ProductView = () => {
       inventoryId: selectedInventory ? selectedInventory.inventory_id : ''
     }))
 
-    console.log('Customer Selection Size Select ->', selectedInventory, selectedSize)
   };
 
   const handleQtySelect = (event) => {
@@ -499,8 +498,7 @@ const ProductView = () => {
     
     
     try {
-      const newCartItem = await addCartIem(token, customerData.cart_id, selectedProduct.id, customerSelection.inventoryId, customerSelection.productSize, customerSelection.quantity)
-      console.log('Added Item -->', newCartItem);
+      const newCartItem = await addCartIem(token, customerData.cart_id, selectedProduct.id, customerSelection.inventoryId, customerSelection.productSize, customerSelection.quantity);
 
       if (newCartItem) {
         setCartAddMessage(!cartAddMessage);

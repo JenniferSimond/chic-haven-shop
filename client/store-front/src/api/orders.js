@@ -11,8 +11,6 @@ const getOrderAndItems = async (customerId, token) => {
       },
     });
     const order = await response.json();
-
-    console.log('Orders/Items -->', order);
     return order;
   } catch (error) {
     console.error('Error fetching orders', error);

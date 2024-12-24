@@ -44,7 +44,6 @@ const SvgBox = styled.div`
     align-items: center;
     width: 70px;
     min-height: 55px;
-    // background-color: red;
 
     p {
         text-align: center;

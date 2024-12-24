@@ -95,14 +95,12 @@ const updateCustomerById = async (id, updatedCustomerData) => {
       newPassword,
       customer_status = 'active',
       review_permissions = 'allowed',
-      originalPassword, // originalPassword (or currentPassword) is part of updatedCustomerData
+      originalPassword,
     } = updatedCustomerData;
 
     let hashedPassword;
 
-    // If a new password is provided, check the original password for verification
     if (newPassword && originalPassword) {
-      // Retrieve the customer's current hashed password from the database
       const getCurrentPasswordSQL = `
         SELECT password FROM customers WHERE id = $1
       `;
@@ -150,7 +148,7 @@ const updateCustomerById = async (id, updatedCustomerData) => {
       last_name,
       first_name,
       email,
-      hashedPassword || password, // Pass hashed password if available; otherwise, use null to keep the existing password
+      hashedPassword || password, // Pass hashed password if available otherwise, original password.
       customer_status,
       review_permissions,
     ]);

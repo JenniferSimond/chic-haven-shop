@@ -59,25 +59,6 @@ const fetchWishlistAndItems = async (customerId) => {
   }
 };
 
-// Add item to wishlist
-// const addItemToWishlist = async ({ wishlistId, productId }) => {
-//   const client = await pool.connect();
-//   try {
-//     const SQL = `
-//       INSERT INTO wishlist_items (id, wishlist_id, product_id, created_at, modified_at)
-//       VALUES ($1, $2, $3, current_timestamp, current_timestamp)
-//       RETURNING *
-//     `;
-//     const response = await client.query(SQL, [uuidv4(), wishlistId, productId]);
-//     return response.rows[0];
-//   } catch (error) {
-//     console.error('Error adding item to wishlist', error);
-//     throw error;
-//   } finally {
-//     client.release();
-//   }
-// };
-
 const addItemToWishlist = async ({ wishlistId, productId }) => {
   const client = await pool.connect();
   try {

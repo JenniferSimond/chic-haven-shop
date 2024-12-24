@@ -34,17 +34,16 @@ const InnerContentWrapper = styled.div`
     justify-content: center;
     display: flex;
     flex-direction: column;
-    // padding: 0% 4% 0% 4%;
-    margin-right: 250px; // Ensuring space for the sidebar
+    margin-right: 250px; 
 
     @media (max-width: 1300px) {
-        margin-right: 200px; // Adjust margin for smaller sidebar
+        margin-right: 200px; 
     }
 
     @media (max-width: 950px) {
         justify-content: center;
-        margin-right: 0px; // No sidebar on smaller screens
-        padding: 2% 1% 0% 1%; // Adjust padding for smaller screens
+        margin-right: 0px; 
+        padding: 2% 1% 0% 1%; 
        
     }
 `;
@@ -53,21 +52,21 @@ const HeroWrapper = styled.div`
     display: grid;
     box-sizing: border-box;
     margin: 0 5% 3% 5%;
-    grid-template-columns: 40% 61%; // Two equal columns for web layout
+    grid-template-columns: 40% 61%; 
     column-gap: 6%;
-    grid-template-areas: "image text";  // Order for larger screens
+    grid-template-areas: "image text";  
     @media (max-width: 1300px) {
           margin: 0 5% 6% 5%;
     }
     
     @media (max-width: 950px) {
-        grid-template-columns: 1fr; // Single column for mobile layout
+        grid-template-columns: 1fr; 
         grid-template-rows: auto auto;
         grid-template-areas: 
             "text" 
-            "image";  // Text above the image on mobile
+            "image";  
         margin: 0% 0% 3% 0%;
-        gap: 20px; // Add space between image and text
+        gap: 20px; 
           justify-items: center;
     }
 
@@ -106,11 +105,10 @@ const HeroImage = styled.img`
 
 const HeroTextWrapper = styled.div`
     max-width: 560px;
-    grid-area: text; // Position in the grid
+    grid-area: text; // Position text in the grid
     display: flex;
     flex-direction: column;
     justify-content: center;
-    // background-color: blue;
 
     @media (max-width: 1368px) {
         max-width: 500px;
@@ -210,7 +208,7 @@ const P2 = styled.p`
 
     @media (max-width: 950px) {
     text-align: center;
-        font-size: 40px; // Adjust text size for mobile
+        font-size: 40px; 
     }
 
      @media (max-width: 543px) {
@@ -385,7 +383,7 @@ const ProductImage = styled.img`
     border-radius: 3px;
 
     @media (max-width: 950px) {
-        max-width: 100%; // Adjust product image size for mobile
+        max-width: 100%; 
     }
 `;
 

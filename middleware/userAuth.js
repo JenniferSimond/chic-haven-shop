@@ -15,7 +15,6 @@ const isAuthenticated = async (req, res, next) => {
     const user = await findUserByToken(token);
 
     // Log the decoded user to check if the role is present
-    console.log('Decoded User:', user);
 
     req.user = user;
 
@@ -37,7 +36,7 @@ const customerDataAuthorization = async (req, res, next) => {
     const targetUser = await fetchCustomersByID(customerId); // Fetch customer
 
     if (!targetUser) {
-      return res.status(403).json({ message: 'Not Authorized' });
+      return res.status(403).json({ message: 'Forbidden.' });
     }
 
     // Authorization check: Allow if the user is an admin or the customer matches the token's user
@@ -106,7 +105,6 @@ const isAnyAdmin = (req, res, next) => {
 // Middleware --> checks if user is site admin or higher
 const isSiteAdmin = (req, res, next) => {
   try {
-    console.log('User role:', req.user.role); // Check if the role is 'super_admin' or 'site_admin'
     if (req.user.role !== 'site_admin' && req.user.role !== 'super_admin') {
       throw new Error('Forbidden');
     }
@@ -119,7 +117,6 @@ const isSiteAdmin = (req, res, next) => {
 // Middleware --> checks if user is a super admin
 const isSuperAdmin = (req, res, next) => {
   try {
-    console.log(req.user);
     if (req.user.role !== 'super_admin') {
       throw new Error('Forbidden');
     }
@@ -168,7 +165,6 @@ const validateCartOrWishlistAccess = async (req, res, next) => {
   try {
     // Ensure the user is authenticated
     if (!req.user) {
-      console.log('User not authenticated'); // Debugging
       return res.status(401).json({ message: 'Not Authorized' });
     }
 
@@ -176,14 +172,8 @@ const validateCartOrWishlistAccess = async (req, res, next) => {
     const cart_id = req.params.cartId || req.body.cartId;
     const wishlist_id = req.params.wishlistId || req.body.wishlistId;
 
-    console.log('User Cart ID:', req.user.cart_id); // Debugging
-    console.log('Provided Cart ID:', cart_id); // Debugging
-
-    console.log('User Wish ID:', req.user.wishlist_id); // Debugging
-    console.log('Provided Wishlist ID:', wishlist_id);
     // Validate cart access
     if (cart_id && req.user.cart_id !== cart_id) {
-      console.log('Cart ID mismatch'); // Debugging
       return res
         .status(403)
         .json({ message: 'Forbidden: Cannot access this cart' });
@@ -191,7 +181,6 @@ const validateCartOrWishlistAccess = async (req, res, next) => {
 
     // Validate wishlist access
     if (wishlist_id && req.user.wishlist_id !== wishlist_id) {
-      console.log('Wishlist ID mismatch'); // Debugging
       return res
         .status(403)
         .json({ message: 'Forbidden: Cannot access this wishlist' });

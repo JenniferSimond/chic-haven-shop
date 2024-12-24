@@ -11,7 +11,6 @@ import reviewAccount from '../../assets/icons-svg/account/reviewAccount.svg'
 const WebView = styled.div`
 
    display: flex;
-//    flex-grow: 1;
    justify-content: center;
    flex-direction: column;
    align-items: center;
@@ -259,7 +258,6 @@ const ReviewsWrapper = styled.div`
 const CustomerReviewWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    // min-height: 40px;
     max-height: 120px;
     gap: 1%;
    
@@ -356,13 +354,11 @@ const ProductReviews = ({selectedProduct, viewMobileReviews}) => {
         const getProductReviews = async () => {
             try {
                 const productReviews = await fetchReviewsByProduct(selectedProduct.id);
-                console.log('Product Reviews (reviews) --> ',productReviews);
 
                 if (productReviews && Array.isArray(productReviews)) {
                     setReviews(productReviews);
                     const avgRating = productReviews.reduce((accumulator, review) =>  accumulator + parseFloat(review.rating), 0) / productReviews.length;
                     setAverageRating(avgRating);
-                    console.log('Average Rating ->',averageRating)
                 } else {
                     setReviews([]);
                     setAverageRating(0);
@@ -385,12 +381,10 @@ const ProductReviews = ({selectedProduct, viewMobileReviews}) => {
 
     const handleRatingClick = (value) => {
         setNewRating(value)
-        console.log('New Rating ->',newRating);
     }
 
     const handleCommentChange = (event) => {
         setNewComment(event.target.value)
-        console.log(newComment);
     }
 
     const handleReviewSubmit = async () => {
@@ -406,7 +400,6 @@ const ProductReviews = ({selectedProduct, viewMobileReviews}) => {
         }
         try {
             const newReview = await createReview(token, selectedProduct.id, customerData.id, newRating, newComment );
-            console.log('New Review -->', newReview);
             setReviews([...reviews, newReview])
             const newAvgRating = [...reviews, newReview].reduce((accumulator, review) => accumulator + review.rating, 0) / (reviews.length + 1) //all reviews + new review
             setAverageRating(newAvgRating);

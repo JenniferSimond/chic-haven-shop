@@ -62,11 +62,9 @@ const OrderScrollWrapper = styled.div`
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-   // justify-content: center;
     margin: 2% 0%;
     overflow-y: auto;
     width: 95%;
-    // background-color: pink;
 `;
 
 const OrderItems = styled.div`
@@ -79,9 +77,6 @@ const OrderItems = styled.div`
     width: 90%;
     padding: 5% 0;
     margin: 0 auto;  
-    // max-width: 1300px;
-    background-color: pink;
-
     @media (max-width: 950px) {
       justify-content: center;
       width: 85%;
@@ -140,9 +135,9 @@ font-weight: 500;
 font-style: italic;
 letter-spacing: normal;
 color: rgb(var(--purple-mid));
-text-align: center; // Optional: Center the message
-align-self: center; // Center the element within its parent container
-padding: 20px; // Optional: Add padding if you want some space around the text
+text-align: center; 
+align-self: center; 
+padding: 20px; 
 
  @media (max-width: 800px) {
   font-size: 15px;
@@ -179,10 +174,6 @@ const OrderHistory = () => {
             for (const order of orders) {
                 const orderNumSections = order.id.split("-");
                 const formattedOrderDate = dateFormatter(order.created_at);
-                console.log('Formatted Date ->',formattedOrderDate)
-                console.log('Order', order);
-                console.log('Order Num Split -->', orderNumSections);
-                console.log('Last num', orderNumSections.at(-1))
                 infoArray.push(
                     {
                         orderNumber: order.id,
@@ -194,9 +185,7 @@ const OrderHistory = () => {
                 )
     
             }
-            console.log('Info Array ->',infoArray);
-            setOrderDetails(infoArray)
-            console.log('Order Details->',orderDetails)
+            setOrderDetails(infoArray);
     }, [orders])
 
     

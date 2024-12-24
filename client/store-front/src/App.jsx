@@ -67,7 +67,6 @@ function App() {
 
     const { customerData } = useContext(CustomerContext);
     useEffect(() => {
-      console.log('Customer Data updated:', customerData);
     }, [customerData]);
 
   return (

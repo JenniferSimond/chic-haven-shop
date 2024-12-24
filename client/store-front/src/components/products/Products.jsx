@@ -52,7 +52,6 @@ const Products = () => {
 
             try {
                 const chicProducts = await fetchAllProducts()
-                console.log('Products (productPage) -->',chicProducts); 
                 setProducts(chicProducts) 
                 setFilteredProducts(chicProducts)
                
@@ -70,7 +69,6 @@ const Products = () => {
             if (!customerData.id || !token) return;
           try {
             const updatedWishlist = await getWishlistAndItems(customerData.id, token);
-                console.log('Wishlist-(products)->', updatedWishlist)
                 updatedWishlist ? setCustomerWishlist(updatedWishlist) : setCustomerWishlist({})
           } catch (error) {
             console.error('Error fetching wishlist items', error);

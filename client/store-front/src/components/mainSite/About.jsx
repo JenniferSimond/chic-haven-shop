@@ -54,7 +54,6 @@ const BottomTextWrapper = styled.div`
   max-height: 16vh;  
   margin: 0% 2% 0% 2%;
   overflow-y: auto;  
-  // background-color: pink;
 
   @media( max-width: 650px) {
     max-height: 26vh; 

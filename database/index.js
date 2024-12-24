@@ -1,4 +1,4 @@
-//index.js
+//index.js --> centralized access to models
 
 //AUTH
 const {

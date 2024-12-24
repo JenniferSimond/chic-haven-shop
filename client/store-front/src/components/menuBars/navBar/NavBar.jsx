@@ -31,7 +31,6 @@ const DesktopBar = styled.div`
     width: 100%;
     justify-content: space-between;
     align-items: center;
-    // margin: 0% 2%;
 `;
 
 
@@ -47,7 +46,6 @@ const NavbarCenter = styled.div`
     flex-direction: column;
     height: 70px;
     gap: 10%;
-   // background-color: red;
 
     @media (600px) {
     height: 80px;
@@ -94,7 +92,6 @@ const Logo = styled.img`
     width: 154px;
     height: 49.63px;
     cursor: pointer;
-    // margin-left: 10%;
     
      @media (max-width: 768px) {
         width: 100px;

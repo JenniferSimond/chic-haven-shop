@@ -14,7 +14,6 @@ const CardWrapper = styled.div`
     min-width: 420px;
     max-height: 200px;
     padding: 0% 4%;
-   // gap: 5px;
     font-family: Montserrat, sans-serif;
     border-radius: 3px;
 `;
@@ -24,15 +23,11 @@ const InnerCardWrapper = styled.div`
     justify-content: space-evenly;
     align-items: center;
     gap: 2%;
-    // margin: 2px 10px;
-   // width: 95%;
-    // height: 70%;
 `;
 
 const LeftInnerWrapper = styled.div`
     display: flex;
     flex-direction: column;
-  //  background-color: pink;
     justify-content: center;
     height: 50%;
     width: 40%;
@@ -56,7 +51,6 @@ align-self: center;
     justify-content: center;
     width: 52%;
     align-items: center;
-    // background-color: white;
 `;
 
 const SvgIcon = styled.img`
@@ -72,10 +66,8 @@ const CommentWrapper = styled.div`
     align-items: center;
     justify-content: center;
     background-color: rgb(var(--cream));
-   // box-sizing: border-box;
     padding: 4% 3%; 
     width: 55%;   
-    // height: 65%;
     border-radius: 3px;
    
 

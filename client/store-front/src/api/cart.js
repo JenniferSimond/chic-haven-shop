@@ -12,7 +12,7 @@ const getCartAndItems = async (token, customerId) => {
     });
 
     const cart = await response.json();
-    console.log('Cart/Items (API.js) -->', cart);
+
     return cart;
   } catch (error) {
     console.error('Error fetching cart.', error);
@@ -38,7 +38,7 @@ const addCartIem = async (
       body: JSON.stringify({ productId, inventoryId, productSize, quantity }),
     });
     const addedItem = await response.json();
-    console.log('Added Item -->', addedItem);
+
     return addedItem;
   } catch (error) {
     console.error('Error adding cart item.', error);
@@ -57,7 +57,6 @@ const updateCartItem = async (token, cartId, itemId, quantity) => {
       body: JSON.stringify({ quantity }),
     });
     const updatedCartItem = await response.json();
-    console.log('Updated Cart Item (API) -->', updatedCartItem);
     return updatedCartItem;
   } catch (error) {
     console.error('Error updating cart item.', error);
@@ -75,7 +74,6 @@ const deleteCartItem = async (token, cartId, itemId) => {
       },
     });
     const result = await response.json();
-    console.log('Delete Item (API) ->', result);
   } catch (error) {
     console.error('Error deleting cart item.', error);
   }
@@ -94,7 +92,6 @@ const cartCheckout = async (token, cartId, customerId) => {
       }
     );
     const checkout = await response.json();
-    console.log('Checkout (API)-->', checkout);
     return checkout;
   } catch (error) {
     console.error('Cart checkout error.', error);

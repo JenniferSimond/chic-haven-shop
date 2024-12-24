@@ -95,7 +95,6 @@ const ProductCard = ({ product, refreshHandler, customerWishlist }) => {
   const { customerData } = useContext(CustomerContext);
   const token = getToken();
   const imageUrl = `${BASE_URL}${product.image}`;
-  // console.log("Product Image URL", imageUrl);
 
   const isInWishlist = customerWishlist?.items?.some(item => item.product_id === product.id);
 
@@ -111,11 +110,9 @@ const ProductCard = ({ product, refreshHandler, customerWishlist }) => {
     try {
       const newWishlistItem = await addWishlistItem(token, customerData.wishlist_id, product.id);
       refreshHandler();
-      console.log('Refresh->');
-      console.log('New Wishlist Item ->',newWishlistItem)
 
     } catch (error) {
-      console.log(error)
+      console.error(error)
     }
   };
 

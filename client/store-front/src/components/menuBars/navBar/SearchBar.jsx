@@ -61,7 +61,6 @@ const SearchButton = styled.button`
   justify-content: center;
   padding: 10px;
   cursor: pointer;
-  // transition: all 0.2s ease;
   &:hover {
   background-color: #22223B;
   }
@@ -82,7 +81,6 @@ const SearchButton = styled.button`
 const SearchIcon = styled.img`
   width: 29px;
   height: 29px;
-  // transition: all 0.2s ease;
   ${SearchButton}:hover & {
   opacity:0.8;
     content: url(${props => props.$hoverIcon});
@@ -107,19 +105,16 @@ const SearchBar = () => {
     event.preventDefault();
     // trim white space 
     if (searchInput.trim()) {
-      // sedning the search input with url as a query parameter --> Learn more about this
+      // sending the search input with url as a query parameter --> Learn more about this
       navigate(`/products?search=${searchInput.trim()}`)
     }
     setSearchInput('')
-    console.log('Search Form!')
   }
 
   const handleChange = (event) => {
-    console.log('Event ->', event.target.value)
     setSearchInput(event.target.value)
   }
 
-  console.log('Search Input (Search) -->', searchInput)
     return(
         <SearchBarWrapper onSubmit={handleSubmit} >
             <SearchBox type='text' onChange={handleChange} value={searchInput} placeholder='Search products'/>

@@ -45,12 +45,6 @@ router.post(
       const { cartId } = req.params;
       const { productId, inventoryId, productSize, quantity } = req.body; // Get the size from the request body
 
-      // Debugging logs
-      console.log('Cart ID:', cartId);
-      console.log('Product ID:', productId);
-      console.log('Inventory ID:', inventoryId);
-      console.log('Product Size:', productSize);
-      console.log('Quantity:', quantity);
       const newCartItem = await addCartItem({
         cartId,
         productId,
@@ -116,9 +110,6 @@ router.post(
   async (req, res, next) => {
     try {
       const { cartId, customerId } = req.params;
-
-      console.log('cartId:', cartId); // Should output a UUID string
-      console.log('customerId:', customerId); // Should output a UUID string
 
       const order = await checkoutCart({ cartId, customerId });
 

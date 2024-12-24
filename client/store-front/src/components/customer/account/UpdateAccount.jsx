@@ -36,7 +36,6 @@ const CheckoutContainer = styled.div`
   //grid-template-columns: 1fr 1fr; 
   grid-template-rows: auto auto auto; 
   gap: 20px;
-  // width: 1000px;
   max-length: 100%;
   max-height: 100%
   
@@ -111,7 +110,7 @@ const H2 = styled.h2`
 `;
 
 const AccountDetails = styled.div`
-  grid-column: 2 / 3; // Left column
+  grid-column: 2 / 3; 
   grid-row: 2 / 4; 
   display: flex;
   flex-direction: column;
@@ -124,7 +123,7 @@ const AccountDetails = styled.div`
 
 `;
 const Address = styled.div`
-  grid-column: 1 / 2; // Left column
+  grid-column: 1 / 2;
   grid-row: 2 / 4; 
   display: flex;
   flex-direction: column;
@@ -336,7 +335,6 @@ const UpdateAccount = () => {
     const handleSaveAccount = async () => {
         try {
             const updatedAccount = await updateCustomer(customerData.id, newCustomerInfo, token);
-            console.log(updatedAccount);
         } catch (error) {
             console.error('Error updating customer details:', error);
         }

@@ -103,7 +103,7 @@ const AddressCheckbox = ({ onSave }) => {
   };
 
   useEffect(() => {
-    setChecked(false); // Ensure checkbox is reset on each render
+    setChecked(false); // Ensures checkbox is reset on each render
   }, []);
 
   return (

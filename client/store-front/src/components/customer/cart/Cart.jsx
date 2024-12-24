@@ -155,9 +155,9 @@ font-weight: 500;
 font-style: italic;
 letter-spacing: normal;
 color: rgb(var(--purple-mid));
-text-align: center; // Optional: Center the message
-align-self: center; // Center the element within its parent container
-padding: 20px; // Optional: Add padding if you want some space around the text
+text-align: center; 
+align-self: center; 
+padding: 20px; 
 
  @media (max-width: 800px) {
   font-size: 15px;
@@ -214,9 +214,7 @@ const Cart = () => {
       
 
     useEffect(() => {
-    //   if (!customerData.id) {
-    //     navigate('/login');
-    // }
+  
         const getCustomerCart = async () => {
             if (!customerData.id) {
                 navigate('/login');
@@ -224,7 +222,6 @@ const Cart = () => {
     
             try {
                 const fetchedCartInfo = await getCartAndItems(token, customerData.id);
-                console.log('Fetched Cart (cart) -->',fetchedCartInfo)
               
 
                     setCartItems(fetchedCartInfo.items)
@@ -246,7 +243,6 @@ const Cart = () => {
     },[customerData.id, token, pageRefresh, navigate, checkoutButton])
 
     const refreshHandler = () => {
-        console.log("Triggering page refresh.");
         setPageRefresh(!pageRefresh); 
       };
 

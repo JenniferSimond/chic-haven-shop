@@ -7,7 +7,6 @@ const FooterSection = styled.footer`
     align-items: center;
     background-color: rgba(var(--purple-dark), 1);
     width: 100%;
-    // padding: 1rem;
     min-height: 3.5rem;
 
     @media (max-width: 768px) {

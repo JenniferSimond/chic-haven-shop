@@ -38,7 +38,6 @@ const createProduct = async ({
       catId,
     ]);
 
-    console.log('Product Successfully Created!', response.rows[0]);
     return response.rows[0];
   } catch (error) {
     console.error('Error creating product.', error);

@@ -5,14 +5,11 @@ import { CustomerContext } from "../../../CustomerContext.jsx";
 import windowResize from "../../shared/hooks/windowResize.js";
 import { getToken, removeToken } from "../../shared/auth.js";
 import { getReviewsByUser } from "../../../api/reviews.js";
-import { getWishlistAndItems } from "../../../api/wishlist.js";
 import { getOrderAndItems } from "../../../api/orders.js";
 import { fetchCustomer } from "../../../api/customers.js";
 import SideBar from "../../menuBars/SideBar.jsx";
-import wishlistLP from "../../../assets/icons-svg/wishlist/wishlistLP.svg";
 import diamondFilled from '../../../assets/icons-svg/reviewDiamond/diamondFilled.svg';
 import orderBagPink from '../../../assets/icons-svg/orderBag/orderBagPink.svg';
-import Wishlist from "../wishlist/Wishlist.jsx";
 
 
 const MobileView = styled.div`
@@ -424,7 +421,6 @@ const sidebarConfig = {
             
             try {
                 const fetchedInfo = await fetchCustomer(customerData.id, token);
-                console.log('Customer Info ->', fetchedInfo);
                 if (fetchedInfo) {
                     setCustomerAccountInfo(fetchedInfo)
                 } else {
@@ -432,8 +428,6 @@ const sidebarConfig = {
                 }
 
                 const fetchedReviews = await getReviewsByUser(customerData.id, token);
-                console.log('Fetched Reviews ->',fetchedReviews);
-                // console.log('Fetched Reviews # ->',fetchedReviews.reviews.length);
                     if (fetchedReviews) {
                         setCustomerReviews(fetchedReviews);
                     } else {
@@ -441,7 +435,6 @@ const sidebarConfig = {
                     }
 
                 const fetchedOrders = await getOrderAndItems(customerData.id, token);
-                console.log('Fetched Wishlist ->',fetchedOrders);
                     if (fetchedOrders) {
                         setCustomerOrders(fetchedOrders);
                     } else {

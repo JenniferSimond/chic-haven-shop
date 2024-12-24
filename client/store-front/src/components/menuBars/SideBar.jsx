@@ -19,7 +19,6 @@ const SideWrapper = styled.div`
     z-index: 90; 
     position: fixed;
     gap: 10%;
-    // height: 100vh; // Ensure it takes the full height of the viewport
 
     height: calc(100vh - 7rem - 3rem);  
 
@@ -121,7 +120,6 @@ const ButtonContainer = styled.div`
     justify-content: center;
     width: 50%;
     gap: 20px;
-    //  height: 15%;
      visibility: ${({$visibility}) => $visibility || 'collapse'};
 `;
 
@@ -145,7 +143,6 @@ const Button = styled.button`
   border: none;
   font-weight: 500;
   letter-spacing: 0.95px;
-//   margin-top: 20px;
    visibility: ${({$visibility}) => $visibility || 'collapse'};
 
    &:hover {
@@ -160,7 +157,6 @@ const SvgIcon = styled.img`
     max-width: ${props => props.$maxWidth || '25px'};
     height: ${props => props.$height ||'100%'};
     width: ${props => props.$width ||'100%'};
-   // margin: 10% 0%;
 
   &:hover {
     content: url(${props => props.$hoverIcon2})
